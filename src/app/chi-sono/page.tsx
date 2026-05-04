@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import NewsletterCTA from '@/components/sections/NewsletterCTA'
+import Timeline from '@/components/sections/Timeline'
+import VideoEmbed from '@/components/sections/VideoEmbed'
 
 export const metadata: Metadata = {
   title: 'Chi Sono',
@@ -83,6 +85,12 @@ export default function ChiSonoPage() {
         </div>
       </section>
 
+      <Timeline />
+      <VideoEmbed
+        videoId="dQw4w9WgXcQ"
+        title="Come uso l'AI nel mio business"
+        label="Dal canale YouTube"
+      />
       <NewsletterCTA />
     </div>
   )

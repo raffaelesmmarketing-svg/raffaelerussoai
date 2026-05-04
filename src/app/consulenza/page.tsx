@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import FAQ from '@/components/sections/FAQ'
+import Testimonials from '@/components/sections/Testimonials'
 
 export const metadata: Metadata = {
   title: 'Consulenza 1:1',
@@ -64,6 +66,8 @@ export default function ConsulenzaPage() {
           </div>
         </div>
       </section>
+      <Testimonials />
+      <FAQ />
     </div>
   )
 }
