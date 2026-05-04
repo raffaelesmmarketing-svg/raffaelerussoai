@@ -2,34 +2,34 @@ import Reveal from '@/components/Reveal'
 
 const events = [
   {
-    year: '2019',
+    year: '2018',
     title: 'Università abbandonata',
-    description: 'Lascio Economia per capire se il business si poteva fare davvero, non solo studiare.',
+    description: 'Lascio Ingegneria. Non riuscivo a vedere il senso di studiare quello che volevo fare — meglio farlo direttamente.',
   },
   {
-    year: '2020',
-    title: 'Primo business online',
-    description: 'Comincio a lavorare online con il socio Dante. Agenzie, clienti, primi ricavi reali.',
+    year: '2019',
+    title: 'Nasce Adact Studio',
+    description: 'Fondo con il mio socio Dante la nostra agenzia di marketing. Primi clienti, prime campagne, primo business reale.',
   },
   {
     year: '2022',
     title: 'Lisbona',
-    description: 'Mi trasferisco in Portogallo. Lavoro remoto al 100%, focus sulla crescita.',
-  },
-  {
-    year: '2023',
-    title: 'Nasce Cantieri Hub',
-    description: 'Co-fondo il software AI per le imprese edili italiane. Primo contatto concreto con l\'AI applicata.',
+    description: 'Mi trasferisco in Portogallo. Lavoro 100% da remoto, focus totale sulla crescita. La libertà geografica diventa un valore irrinunciabile.',
   },
   {
     year: '2024',
-    title: 'Personal brand AI',
-    description: 'Inizio a raccontare quello che imparo sull\'AI. Il messaggio risuona: imprenditori come me ne avevano bisogno.',
+    title: 'Nasce Cantieri Hub',
+    description: 'Co-fondo il software AI per le imprese edili italiane. È qui che capisco davvero come l\'AI trasforma un business tradizionale.',
   },
   {
-    year: '2025+',
-    title: 'Spingere',
-    description: 'Scala il personal brand, YouTube, newsletter, consulenze. Obiettivo: fare smettere di lavorare i miei genitori.',
+    year: '2025',
+    title: 'Personal brand AI',
+    description: 'Inizio a raccontare quello che ho imparato. Il messaggio risuona: gli imprenditori italiani volevano capire l\'AI, ma nessuno gliela spiegava nella loro lingua.',
+  },
+  {
+    year: '2026',
+    title: 'La missione',
+    description: 'Aiutare più imprenditori possibili a implementare l\'AI — non per inseguire una moda, ma per ritrovare tempo, energie e libertà di investirle in quello che conta davvero.',
   },
 ]
 
