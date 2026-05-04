@@ -86,11 +86,7 @@ export default function ChiSonoPage() {
       </section>
 
       <Timeline />
-      <VideoEmbed
-        videoId="dQw4w9WgXcQ"
-        title="Come uso l'AI nel mio business"
-        label="Dal canale YouTube"
-      />
+      <VideoEmbed />
       <NewsletterCTA />
     </div>
   )
