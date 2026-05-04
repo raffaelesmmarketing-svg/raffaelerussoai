@@ -1,26 +1,77 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─── Design System Token — Raffaele Russo AI ─── */
+@theme {
+  /* Navy */
+  --color-navy-950: #050d1f;
+  --color-navy-900: #08132e;
+  --color-navy-800: #0d1c47;
+  --color-navy-700: #142a63;
+  --color-navy-600: #1f3a82;
+  --color-navy-500: #2a4ea3;
+
+  /* Lime accent */
+  --color-lime-500: #b8ff3d;
+  --color-lime-400: #c8ff5e;
+  --color-lime-600: #9fe61f;
+
+  /* Fog / neutrali */
+  --color-fog-100: #e6ecf5;
+  --color-fog-300: #aab6cc;
+  --color-fog-500: #6b7a96;
+
+  /* Font */
+  --font-display: var(--font-manrope), Inter, system-ui, sans-serif;
+  --font-body: var(--font-manrope), Inter, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, Menlo, monospace;
+
+  /* Shadows / glows */
+  --shadow-glow-lime: 0 0 0 6px rgba(184,255,61,0.18), 0 8px 24px rgba(184,255,61,0.25);
+  --shadow-glow-lime-sm: 0 0 24px rgba(184,255,61,0.35);
+  --shadow-card: 0 8px 24px rgba(0,0,0,0.35);
+  --shadow-pop: 0 16px 48px rgba(0,0,0,0.5);
+
+  /* Easing */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Durate */
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 420ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+  html { scroll-behavior: smooth; }
+  ::selection { background: #b8ff3d; color: #050d1f; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer components {
+  .em-lime {
+    @apply italic text-lime-500 font-extrabold;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs font-bold tracking-[0.16em] uppercase text-lime-500;
+  }
+
+  .cta-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-shimmer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cta-shimmer:hover::before {
+    transform: translateX(120%);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(184,255,61,0.45); }
+  50% { box-shadow: 0 0 0 8px rgba(184,255,61,0); }
 }
