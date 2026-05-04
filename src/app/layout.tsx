@@ -3,6 +3,7 @@ import { Manrope, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import NeuralNoise from '@/components/NeuralNoise'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -35,9 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="it" className={`${manrope.variable} ${jetbrains.variable}`}>
       <body className="bg-navy-950 text-white font-body antialiased">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <NeuralNoise />
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   )
