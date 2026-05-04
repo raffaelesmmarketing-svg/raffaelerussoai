@@ -36,7 +36,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-16">
           <div>
             <Link href="/" className="inline-flex items-center gap-3 no-underline mb-5">
-              <div className="w-9 h-9 rounded-md bg-lime-500/20 border border-lime-500/40" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/logo-mark.svg" alt="Logo" className="w-9 h-9" />
               <span className="font-display font-extrabold text-lg text-white tracking-[-0.01em]">
                 Raffaele Russo <em className="em-lime">AI</em>
               </span>

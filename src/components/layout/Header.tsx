@@ -34,7 +34,8 @@ export default function Header() {
     >
       <div className="max-w-[1200px] mx-auto px-8 py-4 flex items-center justify-between gap-6">
         <Link href="/" className="flex items-center gap-2.5 no-underline">
-          <div className="w-7 h-7 rounded-md bg-lime-500/20 border border-lime-500/40" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/images/logo-mark.svg" alt="Logo" className="w-8 h-8" />
           <span className="font-display font-extrabold text-base tracking-[-0.01em] text-white">
             Raffaele Russo <em className="em-lime">AI</em>
           </span>

@@ -6,11 +6,12 @@ export default function AboutSnippet() {
     <section id="chi-sono" className="py-32">
       <div className="max-w-[1200px] mx-auto px-8 grid md:grid-cols-[5fr_6fr] gap-16 items-center">
         <Reveal>
-          <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-white/[0.08] bg-gradient-to-br from-navy-900 to-navy-800">
-            {/* Sostituire con <Image src="/portrait-raffaele.png" fill className="object-cover" /> */}
-            <div className="absolute inset-0 grid place-items-center text-fog-500 font-mono text-sm">
-              [ ritratto ]
-            </div>
+          <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-white/[0.08]">
+            <img
+              src="/images/portrait.jpg"
+              alt="Raffaele Russo"
+              className="w-full h-full object-cover object-top"
+            />
             <div className="absolute left-4 bottom-4 px-3 py-1.5 rounded-full bg-navy-950/60 backdrop-blur-md border border-white/10 font-mono text-[11px] tracking-[0.12em] uppercase text-fog-300">
               Lisbona · 2026
             </div>
