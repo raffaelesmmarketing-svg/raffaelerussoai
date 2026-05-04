@@ -7,90 +7,121 @@ export const metadata: Metadata = {
   description: 'Consulenza 1:1, formazione aziendale e collaborazioni sponsorizzate con Raffaele Russo.',
 }
 
+const services = [
+  {
+    id: 'consulenza',
+    Icon: MessageSquare,
+    title: 'Consulenza 1:1',
+    price: '€199',
+    description: '60 minuti con me per analizzare il tuo business e identificare dove e come l\'AI può farti risparmiare tempo, automatizzare processi e aumentare il fatturato.',
+    items: [
+      "Analisi del tuo business attuale",
+      "Identificazione delle 3 aree prioritarie per l'AI",
+      "Piano d'azione concreto step by step",
+      "Follow-up email con risorse e tool consigliati",
+    ],
+    cta: 'Prenota la sessione',
+    href: '/consulenza',
+    isLink: true,
+  },
+  {
+    id: 'formazione',
+    Icon: Building2,
+    title: 'Formazione Aziendale',
+    price: 'Su richiesta',
+    description: "Workshop e percorsi formativi sull'AI per team aziendali. Pratico, concreto, costruito sul vostro settore specifico. Niente slide teoriche — solo cose che il team può applicare dal giorno dopo.",
+    items: [],
+    cta: 'Richiedi un preventivo',
+    href: 'mailto:raffaele.smmarketing@gmail.com?subject=Formazione Aziendale',
+    isLink: false,
+  },
+  {
+    id: 'sponsorizzazioni',
+    Icon: Megaphone,
+    title: 'Contenuti Sponsorizzati',
+    price: 'Su richiesta',
+    description: "Collaboro solo con brand e tool che ho usato e che consiglierei anche senza compenso. Il mio pubblico è fatto di imprenditori italiani attivi — niente curiosi, solo persone che vogliono usare l'AI nel loro business.",
+    items: [],
+    cta: 'Scrivimi',
+    href: 'mailto:raffaele.smmarketing@gmail.com?subject=Collaborazione Sponsorizzata',
+    isLink: false,
+  },
+]
+
 export default function LavoriamoInsiemePage() {
   return (
     <div className="pt-24">
       <section className="py-16 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-[1200px] mx-auto">
+
           <div className="mb-14">
-            <p className="text-sm font-semibold text-blue-600 uppercase tracking-widest mb-3">
-              Lavoriamo Insieme
-            </p>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Come posso aiutarti</h1>
-            <p className="text-gray-500 max-w-xl">
+            <div className="eyebrow">Lavoriamo Insieme</div>
+            <h1
+              className="font-display font-extrabold tracking-[-0.02em] mt-3 mb-4 text-white"
+              style={{ fontSize: 'clamp(36px, 4vw, 56px)' }}
+            >
+              Come posso <em className="em-lime">aiutarti</em>
+            </h1>
+            <p className="font-body text-[17px] text-fog-300 max-w-xl">
               Tre modi per lavorare insieme, a seconda di dove sei e cosa ti serve.
             </p>
           </div>
 
-          <div className="space-y-8">
-            <div id="consulenza" className="bg-white rounded-xl border border-gray-200 p-8">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                    <MessageSquare size={20} className="text-blue-600" />
+          <div className="space-y-5">
+            {services.map(s => {
+              const Icon = s.Icon
+              return (
+                <div
+                  key={s.id}
+                  id={s.id}
+                  className="p-8 rounded-2xl bg-navy-800 border border-white/[0.08]"
+                >
+                  <div className="flex items-start justify-between mb-5 flex-wrap gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-11 h-11 bg-lime-500/10 border border-lime-500/25 rounded-xl flex items-center justify-center text-lime-500">
+                        <Icon size={22} strokeWidth={2} />
+                      </div>
+                      <h2 className="font-display font-extrabold text-[22px] text-white">{s.title}</h2>
+                    </div>
+                    <span className="font-mono text-sm font-bold text-lime-500 px-3 py-1 rounded-full bg-lime-500/10 border border-lime-500/25">
+                      {s.price}
+                    </span>
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900">Consulenza 1:1</h2>
-                </div>
-                <span className="text-lg font-bold text-gray-900">€199</span>
-              </div>
-              <p className="text-gray-500 mb-4 leading-relaxed">
-                60 minuti con me per analizzare il tuo business e identificare dove e come
-                l&apos;AI può farti risparmiare tempo, automatizzare processi e aumentare il fatturato.
-                Porti il problema, io porto le soluzioni concrete.
-              </p>
-              <ul className="text-sm text-gray-500 space-y-1.5 mb-6">
-                <li>→ Analisi del tuo business attuale</li>
-                <li>→ Identificazione delle 3 aree prioritarie per l&apos;AI</li>
-                <li>→ Piano d&apos;azione concreto step by step</li>
-                <li>→ Follow-up email con risorse e tool consigliati</li>
-              </ul>
-              <Link
-                href="/consulenza"
-                className="inline-flex items-center px-6 py-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors"
-              >
-                Prenota la sessione →
-              </Link>
-            </div>
 
-            <div id="formazione" className="bg-white rounded-xl border border-gray-200 p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <Building2 size={20} className="text-blue-600" />
-                </div>
-                <h2 className="text-xl font-semibold text-gray-900">Formazione Aziendale</h2>
-              </div>
-              <p className="text-gray-500 mb-4 leading-relaxed">
-                Workshop e percorsi formativi sull&apos;AI per team aziendali. Pratico, concreto,
-                costruito sul vostro settore specifico. Niente slide teoriche — solo cose che
-                il team può applicare dal giorno dopo.
-              </p>
-              <a
-                href="mailto:raffaele.smmarketing@gmail.com?subject=Formazione Aziendale"
-                className="inline-flex items-center px-6 py-3 border border-gray-200 text-gray-900 text-sm font-medium rounded-lg hover:border-gray-900 transition-colors"
-              >
-                Richiedi un preventivo →
-              </a>
-            </div>
+                  <p className="font-body text-[16px] leading-[1.65] text-fog-300 mb-4">
+                    {s.description}
+                  </p>
 
-            <div id="sponsorizzazioni" className="bg-white rounded-xl border border-gray-200 p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <Megaphone size={20} className="text-blue-600" />
+                  {s.items.length > 0 && (
+                    <ul className="space-y-2 mb-6">
+                      {s.items.map(item => (
+                        <li key={item} className="flex items-start gap-2 font-body text-sm text-fog-300">
+                          <span className="text-lime-500 mt-0.5">→</span>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {s.isLink ? (
+                    <Link
+                      href={s.href}
+                      className="cta-shimmer group inline-flex items-center gap-2 font-display font-extrabold text-sm tracking-[0.06em] uppercase bg-lime-500 text-navy-950 px-6 py-3 rounded-full no-underline shadow-glow-lime-sm mt-2"
+                    >
+                      <span className="relative z-10">{s.cta}</span>
+                      <span className="relative z-10 transition-transform duration-200 group-hover:translate-x-1">→</span>
+                    </Link>
+                  ) : (
+                    <a
+                      href={s.href}
+                      className="group inline-flex items-center gap-2 font-display font-bold text-sm tracking-[0.06em] uppercase text-white border border-white/20 hover:border-lime-500 hover:text-lime-500 px-6 py-3 rounded-full no-underline transition-colors duration-200 mt-2"
+                    >
+                      {s.cta} →
+                    </a>
+                  )}
                 </div>
-                <h2 className="text-xl font-semibold text-gray-900">Contenuti Sponsorizzati</h2>
-              </div>
-              <p className="text-gray-500 mb-4 leading-relaxed">
-                Collaboro solo con brand e tool che ho usato e che consiglierei anche senza
-                compenso. Il mio pubblico è fatto di imprenditori italiani attivi — niente
-                curiosi, solo persone che vogliono usare l&apos;AI nel loro business.
-              </p>
-              <a
-                href="mailto:raffaele.smmarketing@gmail.com?subject=Collaborazione Sponsorizzata"
-                className="inline-flex items-center px-6 py-3 border border-gray-200 text-gray-900 text-sm font-medium rounded-lg hover:border-gray-900 transition-colors"
-              >
-                Scrivimi →
-              </a>
-            </div>
+              )
+            })}
           </div>
         </div>
       </section>

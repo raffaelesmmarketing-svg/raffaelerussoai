@@ -27,26 +27,39 @@ export default async function BlogPostPage({ params }: Props) {
   return (
     <div className="pt-24">
       <article className="py-16 px-4 sm:px-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="mb-8">
-            <Link href="/blog" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-              ← Torna al blog
-            </Link>
-          </div>
-          <span className="inline-block text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded mb-4">
+        <div className="max-w-[720px] mx-auto">
+
+          {/* Back */}
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-fog-500 hover:text-lime-500 transition-colors mb-10"
+          >
+            ← Torna al blog
+          </Link>
+
+          {/* Header */}
+          <span className="inline-block px-2.5 py-1 rounded-full font-mono text-[10px] tracking-[0.12em] uppercase text-lime-500 bg-lime-500/10 border border-lime-500/25 mb-5">
             {post.category}
           </span>
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{post.title}</h1>
-          <div className="flex items-center gap-4 text-sm text-gray-400 mb-10 pb-10 border-b border-gray-100">
+          <h1
+            className="font-display font-extrabold leading-[1.1] tracking-[-0.02em] text-white mb-4"
+            style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
+          >
+            {post.title}
+          </h1>
+          <div className="flex items-center gap-4 font-mono text-xs text-fog-500 pb-10 border-b border-white/[0.08] mb-10">
             <span>{post.date}</span>
             <span>·</span>
             <span>{post.readingTime}</span>
           </div>
-          <div className="prose prose-gray max-w-none">
+
+          {/* Contenuto */}
+          <div className="font-body text-[17px] leading-[1.75] text-fog-300 space-y-5">
             {post.content}
           </div>
         </div>
       </article>
+
       <NewsletterCTA />
     </div>
   )
