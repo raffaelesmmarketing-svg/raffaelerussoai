@@ -16,7 +16,7 @@ export default function ChiSonoPage() {
           {/* Foto */}
           <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-white/[0.08] sticky top-24">
             <img
-              src="/images/portrait.jpg"
+              src="/images/portrait-chisono.jpg"
               alt="Raffaele Russo"
               className="w-full h-full object-cover object-top"
             />
