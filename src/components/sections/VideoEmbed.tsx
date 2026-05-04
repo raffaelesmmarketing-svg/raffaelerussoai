@@ -12,9 +12,9 @@ interface Props {
 }
 
 const defaultVideos: Video[] = [
-  { id: 'SOSTITUISCI_1', title: 'Ultimo video — titolo da aggiornare' },
-  { id: 'SOSTITUISCI_2', title: 'Secondo video — titolo da aggiornare' },
-  { id: 'SOSTITUISCI_3', title: 'Terzo video — titolo da aggiornare' },
+  { id: 'cCRWy_FcMpM', title: 'Migliore Intelligenza Artificiale per Avvocati (2025)' },
+  { id: 'NgL-JT7vkcA', title: 'AI per Architetti: dalla bozza al render in metà tempo' },
+  { id: 'mfi9CR2bPwM', title: 'Commercialista nel 2026: come l\'AI cambia (davvero) il tuo studio' },
 ]
 
 export default function VideoEmbed({
