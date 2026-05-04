@@ -43,6 +43,11 @@
 @layer base {
   html { scroll-behavior: smooth; }
   ::selection { background: #b8ff3d; color: #050d1f; }
+  body {
+    background: linear-gradient(160deg, #000000 0%, #050d1f 45%, #0d1c47 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
 }
 
 @layer components {
