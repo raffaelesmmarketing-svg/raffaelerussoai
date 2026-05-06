@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automatizza 3 Ore al Giorno con n8n — Raffaele Russo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0A0F1E;
+      --surface:   #0F1525;
+      --surface2:  #141C30;
+      --border:    #1E2940;
+      --border2:   #253350;
+      --text:      #e8e8ec;
+      --muted:     #7a7a88;
+      --accent:    #84E110;
+      --accent2:   #a8f040;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 88px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 420px;
+      background: radial-gradient(ellipse, rgba(132,225,16,0.10) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.28);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 100px);
+      letter-spacing: 0.04em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #d0d0d8 40%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 18px);
+      color: var(--muted); font-weight: 300;
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section-wrap { padding: 64px 24px; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 4.5vw, 48px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-intro {
+      color: var(--muted); font-size: 15px;
+      max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* ── OUTPUT GRID ── */
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-top: 24px;
+    }
+    .output-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .output-card:hover { border-color: rgba(132,225,16,0.3); }
+    .output-icon { font-size: 22px; margin-bottom: 10px; }
+    .output-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .output-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── ERROR LIST ── */
+    .err-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .err-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid #f87171;
+      border-radius: var(--radius); padding: 18px 22px;
+    }
+    .err-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .err-title::before { content: '✗'; color: #f87171; font-weight: 700; }
+    .err-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PART HEADER ── */
+    .part-header { padding: 56px 24px 0; }
+    .part-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── STEP CARDS ── */
+    .steps-wrapper { padding: 28px 24px 52px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .step-card:hover { border-color: var(--border2); }
+    .step-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .step-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--accent);
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 8px; padding: 4px 10px; white-space: nowrap;
+    }
+    .step-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .step-time  { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .step-body  { padding: 22px 24px; }
+    .step-body p { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body strong { color: var(--text); font-weight: 500; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px; margin: 12px 0;
+    }
+    .action-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text); line-height: 1.5;
+    }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-item:first-child { padding-top: 0; }
+    .action-arrow { color: var(--accent); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout.info    { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.22); color: #a8c4fc; }
+    .callout.warning { background: rgba(245,200,66,0.07); border: 1px solid rgba(245,200,66,0.22); color: #f5d98a; }
+    .callout.success { background: rgba(132,225,16,0.07); border: 1px solid rgba(132,225,16,0.22); color: #b4f06a; }
+    .callout.danger  { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: #fca5a5; }
+    .callout strong  { color: inherit; font-weight: 600; }
+
+    /* ── TOOL / ESTENSIONI ── */
+    .ext-list { margin-top: 20px; }
+    .ext-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .ext-item:hover { border-color: rgba(132,225,16,0.3); }
+    .ext-badge {
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.20);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent2);
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .ext-text h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ext-text h4 a { color: var(--accent2); text-decoration: none; }
+    .ext-text h4 a:hover { color: var(--accent); }
+    .ext-text p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── CTA FINALE ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,225,16,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { text-align: center; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .cta-desc {
+      font-size: 16px; color: var(--muted); font-weight: 300;
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0D0D0D;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 36px; border-radius: var(--radius);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px; text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.15em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .footer-handle { font-size: 14px; color: var(--accent2); font-weight: 500; text-decoration: none; }
+    .footer-handle:hover { color: var(--accent); }
+    .footer-keyword {
+      display: inline-block; margin-top: 20px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 13px; font-weight: 600; color: var(--accent2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .step-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .output-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><span></span> Guida Pratica &middot; 18 minuti &middot; zero tech</div>
+      <h1>Automatizza 3 Ore al Giorno con n8n</h1>
+      <p class="hero-sub">Scopri come collegare Gmail, Notion, WhatsApp e Google Sheets senza scrivere una riga di codice — e recuperare oltre 180 ore l'anno da dedicare a ciò che conta davvero.</p>
+    </div>
+  </header>
+
+  <!-- COSA OTTIENI -->
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Risultato finale</div>
+      <div class="section-title">Cosa ottieni da questa guida</div>
+      <p class="section-intro">Prima di iniziare, ecco cosa avrai in mano quando arrivi in fondo. Non teoria — strumenti pronti da usare.</p>
+      <div class="output-grid">
+        
+        <div class="output-card fade-in">
+          <div class="output-icon">⏱️</div>
+          <h4>182 ore l'anno risparmiate</h4>
+          <p>Anche solo 30 minuti al giorno di task automatizzate si trasformano in 182 ore annue. Non è fantascienza: è matematica applicata al tuo lavoro quotidiano.</p>
+        </div>
+        <div class="output-card fade-in">
+          <div class="output-icon">🔗</div>
+          <h4>Workflow pronto in 10 minuti</h4>
+          <p>Impari a costruire il tuo primo flusso automatico partendo da zero, senza toccare una riga di codice. Il risultato è un sistema che lavora per te anche quando sei offline.</p>
+        </div>
+        <div class="output-card fade-in">
+          <div class="output-icon">🧠</div>
+          <h4>Mentalità da delegatore</h4>
+          <p>Capisci la differenza tra usare l'AI per rispondere più in fretta e usarla per delegare del tutto. È lo shift mentale che separa chi si svuota il calendario da chi lo riempie sempre di più.</p>
+        </div>
+        <div class="output-card fade-in">
+          <div class="output-icon">📲</div>
+          <h4>Notifiche e aggiornamenti automatici</h4>
+          <p>Ricevi avvisi su Telegram o WhatsApp ogni volta che arriva un lead, un pagamento o un aggiornamento importante — senza dover controllare email e fogli di calcolo ogni ora.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ERRORI COMUNI -->
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Leggi prima di iniziare</div>
+      <div class="section-title">Gli errori più comuni</div>
+      <p class="section-intro">La maggior parte delle persone fallisce qui. Tienili a mente mentre segui i prossimi step e risparmierai ore di frustrazione.</p>
+      <div class="err-list">
+        
+        <div class="err-item fade-in">
+          <div class="err-title">Automatizzare tutto subito, senza priorità</div>
+          <div class="err-desc">Il primo istinto è voler automatizzare ogni cosa in una settimana. Il risultato? Workflow incompleti, confusione e abbandono. Il metodo giusto è opposto: scegli UN solo processo ripetitivo che ti costa almeno 20-30 minuti al giorno e inizia da lì. Solo quando funziona, passi al secondo.</div>
+        </div>
+        <div class="err-item fade-in">
+          <div class="err-title">Usare l'AI solo per velocizzare, non per delegare</div>
+          <div class="err-desc">Il 90% dei freelancer usa strumenti come ChatGPT per rispondere più in fretta alle email. Questo non libera tempo: lo comprime. La vera automazione delega il task completamente — tu non lo esegui più, nemmeno in versione accelerata. Se sei ancora tu a cliccare 'invia', non hai automatizzato nulla.</div>
+        </div>
+        <div class="err-item fade-in">
+          <div class="err-title">Scegliere strumenti troppo complessi per iniziare</div>
+          <div class="err-desc">Zapier, Make, n8n: tutti validi, ma con curve di apprendimento diverse. Molti iniziano con lo strumento sbagliato per il loro livello, si bloccano al primo errore e abbandonano. n8n in versione cloud è il punto di partenza ideale per chi non ha mai costruito un workflow: interfaccia visuale, template pronti e community attiva in italiano.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="part-divider" />
+
+  <!-- STEP PER STEP -->
+  <section id="guide-steps">
+    <div class="part-header container fade-in">
+      <div class="section-label">La guida</div>
+      <div class="section-title">Step per step</div>
+      <p class="section-intro">Segui nell'ordine. Ogni step è autosufficiente — fai uno, poi il prossimo.</p>
+    </div>
+    <div class="steps-wrapper container">
+      
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number">STEP 01</div>
+          <div>
+            <div class="step-title">Mappa i tuoi 30 minuti da recuperare</div>
+            <div class="step-time">⏱️ 5 minuti</div>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Prima di aprire qualsiasi strumento, devi sapere esattamente cosa vuoi automatizzare. Questo step ti sembra banale ma è il più importante: senza una mappa chiara dei task ripetitivi, costruirai workflow inutili. L'obiettivo è trovare UN'attività che fai ogni giorno, che segue sempre gli stessi passaggi e che non richiede giudizio creativo da parte tua.</p>
+          <div class='actions'>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Prendi carta e penna (o un foglio Google) e scrivi tutte le attività che hai fatto ieri — anche le più piccole come 'ho copiato il lead dal form e l'ho incollato in Sheets'.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Evidenzia quelle che si ripetono ogni giorno o ogni settimana con gli stessi passaggi. Esempi tipici: rispondere a richieste info standard, aggiornare fogli di calcolo, mandare conferme di appuntamento, archiviare documenti.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Stima il tempo di ciascuna attività evidenziata. Scegli quella che ti costa di più e che segue una logica 'SE succede X → fai Y'. Quella è la tua prima automazione.</div>
+            </div></div>
+          
+            <div class="callout info">
+              <div class="callout-icon">ℹ️</div>
+              <div>💡 Il workflow ideale per iniziare è sempre del tipo trigger → azione: 'Quando arriva una nuova email con oggetto X, aggiungila a Google Sheets e mandami una notifica su Telegram.' Semplice, misurabile, immediato.</div>
+            </div>
+        </div>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number">STEP 02</div>
+          <div>
+            <div class="step-title">Apri n8n e costruisci il primo workflow</div>
+            <div class="step-time">⏱️ 10 minuti</div>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>n8n è uno strumento di automazione visuale: invece di scrivere codice, trascini blocchi e li colleghi tra loro. Ogni blocco è un'app (Gmail, Notion, Google Sheets, Telegram…) e ogni connessione è una regola. Il tuo primo workflow sarà composto da soli 2-3 blocchi — ed è sufficiente per iniziare a risparmiare tempo da subito.</p>
+          <div class='actions'>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Vai su n8n.io e crea un account gratuito (versione cloud). Non installare nulla in locale per ora: la versione cloud ti fa partire in 2 minuti senza configurazioni tecniche.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Clicca su 'New Workflow' e aggiungi il tuo primo nodo trigger. Se vuoi replicare l'esempio del video, scegli 'Webhook' come trigger (si attiva ogni volta che il tuo sito manda una richiesta) oppure 'Gmail Trigger' se vuoi partire dalle email.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Aggiungi un secondo nodo azione: per esempio 'Telegram' per ricevere una notifica, oppure 'Google Sheets' per salvare i dati automaticamente. Collega i due blocchi con una freccia, configura le credenziali delle app e clicca 'Execute Workflow' per testarlo in tempo reale.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Salva il workflow e attivalo con il toggle in alto a destra. Da questo momento, ogni volta che si verifica il trigger, n8n esegue l'azione senza che tu debba fare nulla.</div>
+            </div></div>
+          
+            <div class="callout success">
+              <div class="callout-icon">✅</div>
+              <div>✅ Primo risultato concreto: se hai collegato un form del sito a una notifica Telegram, d'ora in poi ogni nuovo lead ti arriva direttamente sullo smartphone in tempo reale — senza aprire email, senza controllare fogli, senza dimenticartene.</div>
+            </div>
+        </div>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number">STEP 03</div>
+          <div>
+            <div class="step-title">Passa dalla velocità alla delega totale</div>
+            <div class="step-time">⏱️ 3 minuti</div>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Questo step non è tecnico: è mentale. E vale più di qualsiasi workflow. La maggior parte dei freelancer usa gli strumenti digitali per fare le stesse cose di prima, solo un po' più in fretta. Ma il vero salto avviene quando smetti di essere il punto di passaggio di un'informazione — quando il sistema la gestisce senza che tu la tocchi mai.</p>
+          <div class='actions'>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Rivedi il workflow che hai appena costruito e chiediti: 'C'è ancora un passaggio che faccio io manualmente dopo che il workflow si attiva?' Se la risposta è sì, quel passaggio è la tua prossima automazione.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Applica la regola del 'tocco zero': ogni task che segue una logica prevedibile (stesse condizioni, stessa risposta) deve essere gestito al 100% dal sistema. Tu intervieni solo sulle eccezioni.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Calcola il tuo ROI temporale: se il workflow ti salva 30 minuti al giorno per 5 giorni a settimana, in un anno recuperi 130 ore. Se arrivi a 45 minuti al giorno, salgono a 195. Scrivi questo numero da qualche parte visibile — ti motiverà a costruire il secondo workflow.</div>
+            </div></div>
+          
+            <div class="callout warning">
+              <div class="callout-icon">⚠️</div>
+              <div>⚠️ Attenzione: delegare al sistema non significa perdere controllo. Significa spostare la tua attenzione dalle esecuzioni ripetitive alle decisioni strategiche. Continua a monitorare i workflow la prima settimana per assicurarti che funzionino correttamente.</div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="part-divider" />
+
+  <!-- TOOL E RISORSE -->
+  <section class='section-wrap'><div class='container fade-in'><div class='section-label'>Strumenti</div><div class='section-title'>Tool e risorse utili</div><p class='section-intro'>Tutto quello che ti serve, con link diretto. Salva questa sezione — tornerai a consultarla.</p><div class='ext-list'>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://n8n.io" target="_blank" rel="noopener">n8n ↗</a></h4>
+            <p>Lo strumento principale della guida. La versione cloud gratuita ti permette di costruire workflow con fino a 5 workflow attivi e 2.500 esecuzioni al mese — più che sufficiente per iniziare. L'interfaccia visuale drag-and-drop non richiede nessuna competenza tecnica.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS</div>
+          <div class="ext-text">
+            <h4><a href="https://sheets.google.com" target="_blank" rel="noopener">Google Sheets ↗</a></h4>
+            <p>Il database gratuito più usato dai freelancer italiani. Con n8n puoi scrivere, leggere e aggiornare righe di Google Sheets automaticamente — perfetto per tenere traccia di lead, clienti, fatture e scadenze senza toccarle a mano.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS</div>
+          <div class="ext-text">
+            <h4><a href="https://telegram.org" target="_blank" rel="noopener">Telegram ↗</a></h4>
+            <p>Il canale di notifica più veloce e affidabile da collegare a n8n. Crea un bot Telegram in 2 minuti con BotFather e ricevi avvisi istantanei ogni volta che il tuo workflow si attiva — lead, pagamenti, scadenze, qualsiasi evento tu voglia monitorare.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://notion.so" target="_blank" rel="noopener">Notion ↗</a></h4>
+            <p>Usato come hub centrale per gestire progetti, clienti e contenuti. n8n si integra con Notion per creare automaticamente nuove pagine, aggiornare database e archiviare informazioni senza intervento manuale. La versione gratuita è sufficiente per la maggior parte dei workflow.</p>
+          </div>
+        </div></div></div></section><hr class='part-divider' />
+
+  <!-- CTA FINALE -->
+  <section class="cta-section">
+    <div class="container fade-in">
+      <div class="section-label">Vai oltre</div>
+      <h2 class="cta-title">Vuoi il Sistema Completo?</h2>
+      <p class="cta-desc">Nella Scuola AI di Raffaele Russo trovi i workflow già pronti da importare in n8n, le lezioni video passo-passo per configurarli in meno di un'ora e una community di freelancer e imprenditori italiani che condividono automazioni testate sul campo. Niente teoria: solo sistemi che funzionano dal primo giorno.</p>
+      <a href="https://raffaelerussoai.com" target="_blank" rel="noopener" class="cta-btn">
+        Scopri la Scuola AI →
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">Guida di Raffaele Russo AI</div>
+      <a href="https://instagram.com/raffaelerusso.ai" target="_blank" rel="noopener" class="footer-handle">@raffaelerusso.ai</a>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 12px; font-style: italic;">Domande? Scrivimi su Instagram.</p>
+      <div class="footer-keyword">Hai ricevuto questa guida commentando <strong>SISTEMA</strong></div>
+    </div>
+  </footer>
+
+  <script>
+    // Progress bar
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const max = document.body.scrollHeight - window.innerHeight;
+      document.getElementById('progressBar').style.width = (scrolled / max * 100) + '%';
+    });
+
+    // Fade-in observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
