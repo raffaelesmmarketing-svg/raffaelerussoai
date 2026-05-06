@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatGPT non è Google: usalo davvero — Raffaele Russo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0D0D0D;
+      --surface:   #141414;
+      --surface2:  #1c1c1c;
+      --border:    #252525;
+      --border2:   #333333;
+      --text:      #e8e8ec;
+      --muted:     #7a7a88;
+      --accent:    #84E110;
+      --accent2:   #a8f040;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 88px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 420px;
+      background: radial-gradient(ellipse, rgba(132,225,16,0.10) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.28);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 100px);
+      letter-spacing: 0.04em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #d0d0d8 40%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 18px);
+      color: var(--muted); font-weight: 300;
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section-wrap { padding: 64px 24px; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 4.5vw, 48px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-intro {
+      color: var(--muted); font-size: 15px;
+      max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* ── OUTPUT GRID ── */
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-top: 24px;
+    }
+    .output-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .output-card:hover { border-color: rgba(132,225,16,0.3); }
+    .output-icon { font-size: 22px; margin-bottom: 10px; }
+    .output-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .output-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── ERROR LIST ── */
+    .err-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .err-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid #f87171;
+      border-radius: var(--radius); padding: 18px 22px;
+    }
+    .err-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .err-title::before { content: '✗'; color: #f87171; font-weight: 700; }
+    .err-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PART HEADER ── */
+    .part-header { padding: 56px 24px 0; }
+    .part-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── STEP CARDS ── */
+    .steps-wrapper { padding: 28px 24px 52px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .step-card:hover { border-color: var(--border2); }
+    .step-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .step-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--accent);
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 8px; padding: 4px 10px; white-space: nowrap;
+    }
+    .step-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .step-time  { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .step-body  { padding: 22px 24px; }
+    .step-body p { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body strong { color: var(--text); font-weight: 500; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px; margin: 12px 0;
+    }
+    .action-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text); line-height: 1.5;
+    }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-item:first-child { padding-top: 0; }
+    .action-arrow { color: var(--accent); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout.info    { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.22); color: #a8c4fc; }
+    .callout.warning { background: rgba(245,200,66,0.07); border: 1px solid rgba(245,200,66,0.22); color: #f5d98a; }
+    .callout.success { background: rgba(132,225,16,0.07); border: 1px solid rgba(132,225,16,0.22); color: #b4f06a; }
+    .callout.danger  { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: #fca5a5; }
+    .callout strong  { color: inherit; font-weight: 600; }
+
+    /* ── TOOL / ESTENSIONI ── */
+    .ext-list { margin-top: 20px; }
+    .ext-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .ext-item:hover { border-color: rgba(132,225,16,0.3); }
+    .ext-badge {
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.20);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent2);
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .ext-text h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ext-text h4 a { color: var(--accent2); text-decoration: none; }
+    .ext-text h4 a:hover { color: var(--accent); }
+    .ext-text p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── CTA FINALE ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,225,16,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { text-align: center; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .cta-desc {
+      font-size: 16px; color: var(--muted); font-weight: 300;
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0D0D0D;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 36px; border-radius: var(--radius);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px; text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.15em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .footer-handle { font-size: 14px; color: var(--accent2); font-weight: 500; text-decoration: none; }
+    .footer-handle:hover { color: var(--accent); }
+    .footer-keyword {
+      display: inline-block; margin-top: 20px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 13px; font-weight: 600; color: var(--accent2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .step-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .output-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><span></span> Guida Pratica &middot; 12 minuti &middot; zero tech</div>
+      <h1>ChatGPT non è Google: usalo davvero</h1>
+      <p class="hero-sub">Smetti di fare domande generiche e inizia a ottenere risposte concrete. In questa guida trovi il metodo per dare contesto a ChatGPT e trasformarlo in un collaboratore che lavora per la tua azienda.</p>
+    </div>
+  </header>
+
+  <!-- COSA OTTIENI -->
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Risultato finale</div>
+      <div class="section-title">Cosa ottieni da questa guida</div>
+      <p class="section-intro">Prima di iniziare, ecco cosa avrai in mano quando arrivi in fondo. Non teoria — strumenti pronti da usare.</p>
+      <div class="output-grid">
+        
+        <div class="output-card fade-in">
+          <div class="output-icon">🎯</div>
+          <h4>Risposte subito utili</h4>
+          <p>Ogni volta che apri ChatGPT, saprai esattamente come impostare la richiesta per ottenere output concreti, non risposte da Wikipedia. Niente più copia-incolla inutile.</p>
+        </div>
+        <div class="output-card fade-in">
+          <div class="output-icon">⚙️</div>
+          <h4>Il metodo del contesto</h4>
+          <p>Impari la struttura in 3 elementi (chi sei, cosa fai, cosa vuoi) che trasforma qualsiasi domanda generica in un brief professionale. Funziona in qualsiasi settore.</p>
+        </div>
+        <div class="output-card fade-in">
+          <div class="output-icon">🔁</div>
+          <h4>Prompt riutilizzabili</h4>
+          <p>Costruisci i tuoi template di prompt personalizzati per le attività che ripeti ogni settimana: email, offerte, analisi, risposte ai clienti. Scrivi una volta, usi cento volte.</p>
+        </div>
+        <div class="output-card fade-in">
+          <div class="output-icon">💡</div>
+          <h4>Cambio di paradigma reale</h4>
+          <p>Capisci la differenza mentale tra 'fare una ricerca' e 'delegare un compito'. È questo cambio di prospettiva che separa chi ottiene valore da ChatGPT da chi lo abbandona dopo una settimana.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ERRORI COMUNI -->
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Leggi prima di iniziare</div>
+      <div class="section-title">Gli errori più comuni</div>
+      <p class="section-intro">La maggior parte delle persone fallisce qui. Tienili a mente mentre segui i prossimi step e risparmierai ore di frustrazione.</p>
+      <div class="err-list">
+        
+        <div class="err-item fade-in">
+          <div class="err-title">Scrivere domande da motore di ricerca</div>
+          <div class="err-desc">Frasi come 'come faccio un piano marketing' o 'cos'è il cashflow' sono query da Google, non istruzioni per un collaboratore. ChatGPT non ha contesto su di te, sul tuo settore o sul tuo problema specifico — e quindi ti risponde in modo altrettanto generico. Il risultato è una risposta che potrebbe andare bene per chiunque, e quindi non va bene per nessuno.</div>
+        </div>
+        <div class="err-item fade-in">
+          <div class="err-title">Non dire chi sei prima di chiedere</div>
+          <div class="err-desc">Se non specifichi il tuo ruolo, il tuo settore e la dimensione della tua azienda, ChatGPT assume un contesto neutro e produce output da manuale scolastico. Un commercialista, un'impresa edile e un e-commerce hanno bisogni completamente diversi — ma se non glielo dici, ChatGPT non lo sa.</div>
+        </div>
+        <div class="err-item fade-in">
+          <div class="err-title">Aspettarsi la risposta perfetta al primo tentativo</div>
+          <div class="err-desc">ChatGPT funziona come una conversazione, non come una slot machine. Se la prima risposta non è quella giusta, non significa che lo strumento non funziona — significa che devi raffinare il brief. Aggiungere dettagli, correggere la direzione, chiedere varianti: è così che si lavora con un collaboratore reale, e così si lavora con ChatGPT.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="part-divider" />
+
+  <!-- STEP PER STEP -->
+  <section id="guide-steps">
+    <div class="part-header container fade-in">
+      <div class="section-label">La guida</div>
+      <div class="section-title">Step per step</div>
+      <p class="section-intro">Segui nell'ordine. Ogni step è autosufficiente — fai uno, poi il prossimo.</p>
+    </div>
+    <div class="steps-wrapper container">
+      
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number">STEP 01</div>
+          <div>
+            <div class="step-title">Riconosci il ciclo che ti blocca</div>
+            <div class="step-time">⏱️ 3 minuti</div>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Prima di cambiare come usi ChatGPT, devi riconoscere il pattern che stai ripetendo. Il ciclo è sempre lo stesso: domanda vaga → risposta vaga → 'tanto non serve a niente' → abbandono. Questo schema non dipende dallo strumento — dipende da come lo stai usando. E si rompe in un solo passaggio.</p>
+          <div class='actions'>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Pensa all'ultima volta che hai usato ChatGPT e sei rimasto deluso — scrivi su un foglio com'era formulata la domanda. Quasi certamente era una domanda che avresti fatto anche su Google.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Confronta mentalmente questi due approcci: 'Come faccio a trovare nuovi clienti?' vs. 'Sono un'impresa edile di 8 persone a Bergamo, faccio ristrutturazioni di interni, voglio trovare 5 nuovi clienti questo mese. Da dove inizio?' Il secondo è un brief. Il primo è una ricerca.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Da oggi, prima di scrivere qualsiasi cosa su ChatGPT, fermati 10 secondi e chiediti: 'Sto facendo una ricerca o sto delegando un compito?' Se è una ricerca, riformula.</div>
+            </div></div>
+          
+            <div class="callout warning">
+              <div class="callout-icon">⚠️</div>
+              <div>Il 90% delle delusioni con ChatGPT nasce qui. Non è lo strumento che non funziona — è il modo in cui viene interrogato. Cambia la domanda, cambia tutto.</div>
+            </div>
+        </div>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number">STEP 02</div>
+          <div>
+            <div class="step-title">Aggiungi contesto prima di tutto</div>
+            <div class="step-time">⏱️ 4 minuti</div>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Il contesto è il carburante di ChatGPT. Più informazioni gli dai su chi sei, cosa fai e per chi lo fai, più l'output sarà preciso, pertinente e direttamente utilizzabile. Non è una questione di fortuna — è matematica: input ricco, output ricco. Questa è la regola che non ha eccezioni.</p>
+          <div class='actions'>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Costruisci il tuo 'blocco di contesto' personale: un testo di 4-6 righe che descrive chi sei, cosa fa la tua azienda, quante persone siete, a chi vi rivolgete e qual è il vostro problema principale in questo momento. Salvalo nel blocco note o in un documento — ti servirà ogni volta.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Incolla sempre il tuo blocco di contesto all'inizio di ogni nuova conversazione, prima di fare qualsiasi domanda. Esempio: 'Sono Mario, titolare di uno studio di commercialisti a Milano con 3 collaboratori. Mi occupo principalmente di PMI nel settore manifatturiero. In questo momento sto cercando di semplificare la comunicazione con i clienti sui documenti fiscali. [domanda]'</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Aggiungi sempre il formato di output che vuoi: 'Dammi 3 opzioni concrete', 'Scrivimi una email pronta da inviare', 'Fammi un elenco puntato di massimo 5 punti'. ChatGPT si adatta al formato che chiedi — sfruttalo.</div>
+            </div></div>
+          
+            <div class="callout success">
+              <div class="callout-icon">✅</div>
+              <div>Regola pratica: se il tuo prompt ha meno di 3 righe, probabilmente manca contesto. Non è una questione di lunghezza per la lunghezza — è una questione di informazioni necessarie per avere una risposta utile.</div>
+            </div>
+        </div>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-header">
+          <div class="step-number">STEP 03</div>
+          <div>
+            <div class="step-title">Usa ChatGPT come un collaboratore, non come un oracolo</div>
+            <div class="step-time">⏱️ 5 minuti</div>
+          </div>
+        </div>
+        <div class="step-body">
+          <p>Il cambio mentale più importante è questo: ChatGPT non ti dà LA risposta giusta — ti aiuta a costruirla insieme. Come faresti con un collaboratore bravo ma nuovo, devi dargli indicazioni, correggere la direzione, chiedere varianti. La conversazione è lo strumento, non la singola domanda.</p>
+          <div class='actions'>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Dopo la prima risposta, non fermarti. Usa frasi come: 'Bene, ora approfondisci il punto 2', 'Riscrivilo in un tono più diretto', 'Dammi una versione più breve adatta a una email', 'Questo non va bene per il mio settore, adattalo a [contesto specifico]'. Ogni risposta è un punto di partenza, non un punto di arrivo.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Crea il tuo primo template di prompt per l'attività che ripeti più spesso (email ai clienti, offerte commerciali, risposta a obiezioni, analisi di un problema). Struttura: [chi sei] + [contesto specifico del compito] + [cosa vuoi ottenere] + [formato dell'output]. Salvalo e riusalo ogni volta.</div>
+            </div>
+            <div class="action-item">
+              <div class="action-arrow">→</div>
+              <div>Testa subito la differenza: prendi una domanda che hai già fatto in passato e che ti ha deluso, riformulala con il metodo del contesto (blocco di presentazione + domanda specifica + formato richiesto) e confronta i due output. Questo esercizio vale più di qualsiasi spiegazione teorica.</div>
+            </div></div>
+          
+            <div class="callout info">
+              <div class="callout-icon">ℹ️</div>
+              <div>Tip avanzato: puoi iniziare una conversazione con 'Da ora in poi rispondimi sempre come se fossi un esperto di [settore] che parla con un imprenditore pratico, senza tecnicismi'. ChatGPT manterrà quel tono per tutta la sessione.</div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="part-divider" />
+
+  <!-- TOOL E RISORSE -->
+  <section class='section-wrap'><div class='container fade-in'><div class='section-label'>Strumenti</div><div class='section-title'>Tool e risorse utili</div><p class='section-intro'>Tutto quello che ti serve, con link diretto. Salva questa sezione — tornerai a consultarla.</p><div class='ext-list'>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://chat.openai.com" target="_blank" rel="noopener">ChatGPT ↗</a></h4>
+            <p>La versione gratuita (GPT-3.5) è sufficiente per iniziare ad applicare il metodo del contesto. La versione Plus (GPT-4, 20€/mese) è consigliata se usi lo strumento ogni giorno per lavoro — risponde meglio su testi complessi e ragionamenti articolati.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://www.notion.so" target="_blank" rel="noopener">Notion ↗</a></h4>
+            <p>Usa Notion per salvare il tuo blocco di contesto personale e i template di prompt che costruisci nel tempo. Crea una pagina 'I miei prompt' e organizzali per categoria (clienti, offerte, comunicazione interna). In 2 settimane avrai una libreria che ti fa risparmiare ore.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS</div>
+          <div class="ext-text">
+            <h4><a href="https://prompthero.com" target="_blank" rel="noopener">PromptHero ↗</a></h4>
+            <p>Libreria di prompt condivisi dalla community. Utile per prendere ispirazione su come altri professionisti strutturano le richieste nel tuo settore. Non copiare — adatta sempre al tuo contesto specifico.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://claude.ai" target="_blank" rel="noopener">Claude (Anthropic) ↗</a></h4>
+            <p>Alternativa a ChatGPT particolarmente efficace per testi lunghi, analisi di documenti e comunicazione professionale. Il metodo del contesto funziona esattamente allo stesso modo — se hai già imparato a usare ChatGPT con questo approccio, Claude lo usi subito bene.</p>
+          </div>
+        </div></div></div></section><hr class='part-divider' />
+
+  <!-- CTA FINALE -->
+  <section class="cta-section">
+    <div class="container fade-in">
+      <div class="section-label">Vai oltre</div>
+      <h2 class="cta-title">Vai oltre il prompt singolo</h2>
+      <p class="cta-desc">Nella Scuola AI di Raffaele Russo trovi il percorso completo per integrare ChatGPT nei processi reali della tua azienda — non esercizi teorici, ma flussi di lavoro pronti per PMI italiane. Ogni modulo è costruito su casi concreti: commercio, servizi, artigianato, professioni. Entra e inizia dalla prima lezione gratuita.</p>
+      <a href="https://raffaelerussoai.com" target="_blank" rel="noopener" class="cta-btn">
+        Scopri la Scuola AI →
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">Guida di Raffaele Russo AI</div>
+      <a href="https://instagram.com/raffaelerusso.ai" target="_blank" rel="noopener" class="footer-handle">@raffaelerusso.ai</a>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 12px; font-style: italic;">Domande? Scrivimi su Instagram.</p>
+      <div class="footer-keyword">Hai ricevuto questa guida commentando <strong>GUIDA</strong></div>
+    </div>
+  </footer>
+
+  <script>
+    // Progress bar
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const max = document.body.scrollHeight - window.innerHeight;
+      document.getElementById('progressBar').style.width = (scrolled / max * 100) + '%';
+    });
+
+    // Fade-in observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
