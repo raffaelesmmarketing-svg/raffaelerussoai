@@ -88,7 +88,7 @@ export default function Hero() {
             href="/risorse"
             className="cta-shimmer group inline-flex items-center gap-2.5 font-display font-extrabold text-sm tracking-[0.06em] uppercase bg-lime-500 text-navy-950 px-7 py-4 rounded-full no-underline shadow-glow-lime"
           >
-            <span className="relative z-10">Scarica la guida gratuita</span>
+            <span className="relative z-10">Scarica le guide gratuite</span>
             <span className="relative z-10 transition-transform duration-200 group-hover:translate-x-1">→</span>
           </Link>
           <Link

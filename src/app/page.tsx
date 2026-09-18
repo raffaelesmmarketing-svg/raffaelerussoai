@@ -4,7 +4,7 @@ import MarqueeSection from '@/components/sections/Marquee'
 import AboutSnippet from '@/components/sections/AboutSnippet'
 import BentoFeatures from '@/components/sections/BentoFeatures'
 import LatestPosts from '@/components/sections/LatestPosts'
-import LeadMagnet from '@/components/sections/LeadMagnet'
+import GuideGratuite from '@/components/sections/GuideGratuite'
 import Testimonials from '@/components/sections/Testimonials'
 import PricingCard from '@/components/sections/PricingCard'
 import WorkTogether from '@/components/sections/WorkTogether'
@@ -23,7 +23,7 @@ export default function HomePage() {
       <AboutSnippet />
       <BentoFeatures />
       <LatestPosts posts={posts} />
-      <LeadMagnet />
+      <GuideGratuite />
       <Testimonials />
       <PricingCard />
       <WorkTogether />

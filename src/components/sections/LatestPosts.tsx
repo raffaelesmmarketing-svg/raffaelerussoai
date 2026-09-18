@@ -6,14 +6,10 @@ interface Props {
   posts: Post[]
 }
 
-const placeholders = [
-  { cat: 'Strategia',   title: 'Come scegliere il primo strumento AI per la tua azienda', excerpt: 'Una checklist pratica in 7 passaggi per non sbagliare il primo investimento.', read: '6 min' },
-  { cat: 'Casi studio', title: 'Commercialista risparmia 10 ore a settimana con l\'AI',   excerpt: 'Quali processi automatizzare per primi e quali errori evitare.',               read: '8 min' },
-  { cat: 'Fondamenti',  title: 'ChatGPT, Claude, Gemini: quale serve a te?',              excerpt: 'Le differenze spiegate in italiano, senza tecnicismi.',                       read: '5 min' },
-]
-
+// Senza articoli veri la sezione non c'è: niente titoli «in arrivo» messi lì a riempire.
 export default function LatestPosts({ posts }: Props) {
-  const items = posts.length > 0 ? posts.slice(0, 3) : null
+  if (posts.length === 0) return null
+  const items = posts.slice(0, 3)
 
   return (
     <section id="blog" className="py-32 border-t border-white/[0.08]">
@@ -35,7 +31,7 @@ export default function LatestPosts({ posts }: Props) {
         </Reveal>
 
         <div className="grid md:grid-cols-3 gap-5">
-          {items ? items.map((post, i) => (
+          {items.map((post, i) => (
             <Reveal key={post.slug} delay={i * 0.1}>
               <Link
                 href={`/blog/${post.slug}`}
@@ -53,20 +49,6 @@ export default function LatestPosts({ posts }: Props) {
                   <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                 </div>
               </Link>
-            </Reveal>
-          )) : placeholders.map((p, i) => (
-            <Reveal key={i} delay={i * 0.1}>
-              <div className="block p-7 rounded-2xl bg-navy-800 border border-white/[0.08] h-full">
-                <span className="inline-block px-2.5 py-1 rounded-full font-mono text-[10px] tracking-[0.12em] uppercase text-lime-500 bg-lime-500/10 border border-lime-500/25 mb-5">
-                  {p.cat}
-                </span>
-                <h3 className="font-display font-bold text-[22px] leading-[1.25] tracking-[-0.01em] text-white mb-3">{p.title}</h3>
-                <p className="font-body text-[15px] leading-[1.55] text-fog-300 mb-6">{p.excerpt}</p>
-                <div className="pt-4 border-t border-white/[0.08] flex justify-between font-mono text-[11px] tracking-[0.1em] uppercase text-fog-500">
-                  <span>{p.read} di lettura</span>
-                  <span>In arrivo</span>
-                </div>
-              </div>
             </Reveal>
           ))}
         </div>

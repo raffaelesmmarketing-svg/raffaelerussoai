@@ -2,20 +2,8 @@
 
 import { useActionState } from 'react'
 import { domande } from '@/components/landing/architetti/dati'
+import { guide, pdfDi } from '@/lib/guide'
 import { inviaQuestionario, type EsitoQuestionario } from './questionario-actions'
-
-const risorse = [
-  {
-    titolo: 'ChatGPT non è Google: usalo davvero',
-    sotto: 'Guida pratica, 12 minuti. Da domande generiche a un collaboratore che conosce il tuo lavoro.',
-    href: '/guide/chatgpt-non-e-google-usalo-davvero.pdf',
-  },
-  {
-    titolo: 'Stop al ChatGPT che ti dà sempre ragione',
-    sotto: 'Guida pratica, 12 minuti. Come farti dire quello che non torna, invece di quello che vuoi sentire.',
-    href: '/guide/stop-al-chatgpt-che-ti-da-sempre-ragione.pdf',
-  },
-]
 
 const campo =
   'w-full rounded-md bg-navy-950 border border-white/[0.14] px-4 py-3 font-body text-[16px] text-white placeholder:text-fog-500 focus:outline-none focus:ring-2 focus:ring-lime-500/60 transition-shadow'
@@ -35,19 +23,19 @@ export default function Questionario({ richiestaId }: { richiestaId: string }) {
           In chiamata partiamo da lì: dalle cose che rifai più spesso e da quella che ti porta via più tempo.
         </p>
 
-        {/* Due guide vere, già scritte: chi aspetta la chiamata ha qualcosa da leggere. */}
+        {/* Le guide vere, già scritte: chi aspetta la chiamata ha qualcosa da leggere. */}
         <div className="mt-8 border-t border-white/[0.12] pt-6">
-          <p className="font-body text-[16px] font-semibold text-fog-100">Intanto, due guide gratuite da scaricare:</p>
+          <p className="font-body text-[16px] font-semibold text-fog-100">Intanto, le guide gratuite da scaricare:</p>
           <ul className="mt-3 space-y-3">
-            {risorse.map((r) => (
-              <li key={r.href}>
-                <a href={r.href} download className="group inline-flex items-start gap-3 no-underline">
+            {guide.map((g) => (
+              <li key={g.slug}>
+                <a href={pdfDi(g)} download className="group inline-flex items-start gap-3 no-underline">
                   <span aria-hidden className="mt-[11px] h-px w-5 shrink-0 bg-lime-500" />
                   <span>
                     <span className="block font-display font-bold text-white text-[17px] leading-[1.3] group-hover:text-lime-500 transition-colors">
-                      {r.titolo}
+                      {g.titolo}
                     </span>
-                    <span className="block font-body text-[14px] text-fog-300 mt-0.5">{r.sotto} <span className="text-fog-500">· PDF</span></span>
+                    <span className="block font-body text-[14px] text-fog-300 mt-0.5">Guida pratica, {g.minuti} minuti. {g.sotto} <span className="text-fog-500">· PDF</span></span>
                   </span>
                 </a>
               </li>
