@@ -27,7 +27,7 @@ export default function RisorsePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-5 max-w-4xl mx-auto">
+          <div className={`grid md:grid-cols-2 gap-5 mx-auto ${guide.length >= 3 ? 'lg:grid-cols-3' : 'max-w-4xl'}`}>
             {guide.map((g) => (
               <SchedaGuida key={g.slug} guida={g} />
             ))}

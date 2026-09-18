@@ -21,6 +21,7 @@ const radice = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 
 export const GUIDE = [
   { html: '2026-05-13-prov-smettila-di-usare-chatgpt-come-un-motore.html', slug: 'chatgpt-non-e-google-usalo-davvero' },
   { html: '2026-05-06-prov-chatgpt-ti-dice-sempre-che-hai-ragione-e.html', slug: 'stop-al-chatgpt-che-ti-da-sempre-ragione' },
+  { html: '2026-09-19-dieci-cose-da-automatizzare-senza-installare-niente.html', slug: 'dieci-cose-da-automatizzare-senza-installare-niente' },
 ]
 
 const CSS_STAMPA = `
@@ -31,6 +32,8 @@ const CSS_STAMPA = `
   .footer-keyword { display: none !important; }
   .fade-in { opacity: 1 !important; transform: none !important; transition: none !important; }
   .hero-badge span { animation: none !important; }
+  .hero { padding: 56px 24px 40px !important; }
+  .section-wrap { padding: 48px 24px !important; }
   h1 { background: none !important; -webkit-text-fill-color: #ffffff !important; color: #ffffff !important; }
   .output-grid { grid-template-columns: 1fr 1fr !important; }
   .output-card, .err-item, .ext-item, .callout, .action-item, .step-header, .section-intro, .step-body > p, .cosa, .avviso { break-inside: avoid; }

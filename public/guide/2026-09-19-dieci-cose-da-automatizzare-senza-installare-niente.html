@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dieci cose che puoi automatizzare da domani, senza installare niente · Raffaele Russo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0A0F1E;
+      --surface:   #0F1525;
+      --surface2:  #141C30;
+      --border:    #1E2940;
+      --border2:   #253350;
+      --text:      #e8e8ec;
+      --muted:     #7a7a88;
+      --accent:    #84E110;
+      --accent2:   #a8f040;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 88px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 420px;
+      background: radial-gradient(ellipse, rgba(132,225,16,0.10) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.28);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 100px);
+      letter-spacing: 0.04em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #d0d0d8 40%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 18px);
+      color: var(--muted); font-weight: 300;
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section-wrap { padding: 64px 24px; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 4.5vw, 48px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-intro {
+      color: var(--muted); font-size: 15px;
+      max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* ── OUTPUT GRID ── */
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-top: 24px;
+    }
+    .output-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .output-card:hover { border-color: rgba(132,225,16,0.3); }
+    .output-icon { font-size: 22px; margin-bottom: 10px; }
+    .output-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .output-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── ERROR LIST ── */
+    .err-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .err-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid #f87171;
+      border-radius: var(--radius); padding: 18px 22px;
+    }
+    .err-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .err-title::before { content: '✗'; color: #f87171; font-weight: 700; }
+    .err-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PART HEADER ── */
+    .part-header { padding: 56px 24px 0; }
+    .part-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── STEP CARDS ── */
+    .steps-wrapper { padding: 28px 24px 52px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .step-card:hover { border-color: var(--border2); }
+    .step-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .step-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--accent);
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 8px; padding: 4px 10px; white-space: nowrap;
+    }
+    .step-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .step-time  { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .step-body  { padding: 22px 24px; }
+    .step-body p { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body strong { color: var(--text); font-weight: 500; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px; margin: 12px 0;
+    }
+    .action-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text); line-height: 1.5;
+    }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-item:first-child { padding-top: 0; }
+    .action-arrow { color: var(--accent); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout.info    { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.22); color: #a8c4fc; }
+    .callout.warning { background: rgba(245,200,66,0.07); border: 1px solid rgba(245,200,66,0.22); color: #f5d98a; }
+    .callout.success { background: rgba(132,225,16,0.07); border: 1px solid rgba(132,225,16,0.22); color: #b4f06a; }
+    .callout.danger  { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: #fca5a5; }
+    .callout strong  { color: inherit; font-weight: 600; }
+
+    /* ── TOOL / ESTENSIONI ── */
+    .ext-list { margin-top: 20px; }
+    .ext-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .ext-item:hover { border-color: rgba(132,225,16,0.3); }
+    .ext-badge {
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.20);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent2);
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .ext-text h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ext-text h4 a { color: var(--accent2); text-decoration: none; }
+    .ext-text h4 a:hover { color: var(--accent); }
+    .ext-text p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── CTA FINALE ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,225,16,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { text-align: center; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .cta-desc {
+      font-size: 16px; color: var(--muted); font-weight: 300;
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0D0D0D;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 36px; border-radius: var(--radius);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px; text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.15em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .footer-handle { font-size: 14px; color: var(--accent2); font-weight: 500; text-decoration: none; }
+    .footer-handle:hover { color: var(--accent); }
+    .footer-keyword {
+      display: inline-block; margin-top: 20px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 13px; font-weight: 600; color: var(--accent2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .step-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .output-grid { grid-template-columns: 1fr; }
+    }
+  
+    /* ── LE DIECI COSE ── */
+    h1 { font-size: clamp(40px, 7vw, 76px); }
+    .cosa {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+    }
+    .cosa-testa {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .cosa-numero {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; letter-spacing: 0.06em; line-height: 1;
+      color: var(--accent); min-width: 34px;
+    }
+    .cosa-titolo { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .cosa-corpo { padding: 8px 24px 22px; }
+    .riga { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .riga:last-child { border-bottom: none; padding-bottom: 0; }
+    .riga-etichetta {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 5px;
+    }
+    .riga p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    .riga p + p { margin-top: 8px; }
+    .prompt {
+      margin-top: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius); padding: 14px 18px;
+      font-size: 14px; color: var(--text); line-height: 1.65;
+    }
+    .prompt-etichetta {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .avviso {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 22px; margin-bottom: 12px;
+    }
+    .avviso h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .avviso p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    @media (max-width: 600px) {
+      .cosa-testa { padding: 16px 18px; gap: 12px; }
+      .cosa-corpo { padding: 6px 18px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><span></span> Guida Pratica &middot; 9 minuti &middot; dal browser</div>
+      <h1>Dieci cose che puoi automatizzare da domani, senza installare niente</h1>
+      <p class="hero-sub">Dieci lavori che rifai ogni settimana e che da domani può prepararti l'AI. Per ognuno trovi <strong>cosa fa lei, cosa resta a te e da dove cominci in dieci minuti</strong>, con il browser che hai già.</p>
+    </div>
+  </header>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Prima di cominciare</div>
+      <div class="section-title">Tre cose da sapere</div>
+      <div class="avviso fade-in">
+        <h4>Cosa vuol dire «automatizzare», qui</h4>
+        <p>La prima stesura la prepara l'AI in un paio di minuti. Tu la leggi, la correggi e la firmi. Il tempo che recuperi è quello della pagina bianca e del copia-incolla.</p>
+      </div>
+      <div class="avviso fade-in">
+        <h4>Cosa ti serve</h4>
+        <p>Un browser e un account su ChatGPT, Claude o Gemini. Per provare basta la versione gratuita. Gli esempi funzionano con tutti e tre: dove leggi «la chat», è quella che preferisci.</p>
+      </div>
+      <div class="avviso fade-in">
+        <h4>I dati dei tuoi clienti</h4>
+        <p>Prima di incollare un documento, togli nomi, codici fiscali e indirizzi, oppure sostituiscili con «Cliente A». Nelle impostazioni di questi strumenti c'è una voce che decide se le tue conversazioni vengono usate per migliorare il modello: cercala e spegnila.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="part-divider" />
+
+  <section id="le-dieci-cose">
+    <div class="part-header container fade-in">
+      <div class="section-label">La guida</div>
+      <div class="section-title">Le dieci cose</div>
+      <p class="section-intro">Sono in ordine sparso: parti da quella che questa settimana rifai più volte.</p>
+    </div>
+    <div class="steps-wrapper container">
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">01</div>
+          <div class="cosa-titolo">Il preventivo, dagli appunti al documento</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Prende gli appunti del sopralluogo o della telefonata e un tuo preventivo vecchio come modello. Ti restituisce il preventivo nuovo con le stesse voci, lo stesso tono e le condizioni già scritte.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>I prezzi e le quantità. L'AI non conosce i tuoi costi: i numeri li metti e li controlli tu.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Apri la chat, carica un preventivo che hai già mandato (senza i dati del cliente) e incolla sotto gli appunti del lavoro nuovo.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Questo è un preventivo che ho già fatto: usalo come modello per struttura, tono e condizioni. Qui sotto trovi gli appunti di un lavoro nuovo. Preparami il preventivo nello stesso formato. Dove ti manca un prezzo o una quantità scrivi [DA COMPLETARE] e lascia a me i numeri. Appunti: …</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">02</div>
+          <div class="cosa-titolo">La relazione che riscrivi ogni volta</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Parte da una relazione che hai già consegnato e dai dati del caso nuovo. Scrive la bozza con la stessa scaletta e il tuo modo di scrivere. Vale per relazioni tecniche, perizie, report al cliente, fine lavori.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>I fatti, i riferimenti e la firma. Ogni norma e ogni numero che compare nella bozza lo verifichi tu: capita che l'AI citi un articolo che non esiste.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Carica una tua relazione vecchia, poi incolla i dati del caso nuovo.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Ti carico una relazione che ho scritto io: prendine scaletta e stile. Poi ti do i dati del caso nuovo. Scrivi la bozza seguendo la stessa scaletta. Usa solo le norme, gli articoli e i numeri che ti ho dato io: dove ne servirebbe uno in più, scrivi [RIFERIMENTO DA INSERIRE].</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">03</div>
+          <div class="cosa-titolo">Le risposte ai clienti</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Scrive la risposta alla mail o al messaggio del cliente nel tuo tono, partendo da due righe tue su cosa vuoi dirgli.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Decidere cosa rispondere, rileggere e premere Invia.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Incolla il messaggio del cliente e sotto scrivi in due righe cosa vuoi rispondere. Dopo una settimana ti accorgi che le domande sono sempre le stesse dieci: salva le risposte migliori in una nota.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Rispondi a questo messaggio di un cliente. Quello che voglio dirgli: [due righe]. Tono cordiale e diretto, dagli del lei o del tu come fa lui. Massimo otto righe.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">04</div>
+          <div class="cosa-titolo">Il riassunto del documento lungo</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Legge il PDF di quaranta pagine (capitolato, contratto, bando, verbale) e ti dice in una pagina cosa c'è scritto: scadenze, obblighi a tuo carico, penali, punti ambigui. Per ognuno ti indica la pagina.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Leggere per intero le parti che contano, prima di firmare. Il riassunto ti serve a sapere dove guardare.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Carica il PDF nella chat.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Riassumi questo documento in una pagina. Poi elenca: scadenze, obblighi a mio carico, penali, punti ambigui. Per ogni punto indica la pagina in cui l'hai trovato, così lo verifico.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">05</div>
+          <div class="cosa-titolo">I solleciti di pagamento</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Scrive la sequenza completa: il primo promemoria gentile, il secondo più fermo, il terzo formale. Ogni messaggio è pronto, con gli spazi per nome, numero di fattura e importo.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Decidere quando mandarli, e a chi è meglio telefonare. Il cliente storico che sta passando un brutto periodo lo conosci tu.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Chiedi i tre messaggi, correggili una volta con le tue parole e salvali come modelli nella posta.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Scrivimi tre messaggi di sollecito per una fattura scaduta, da mandare a 7, 20 e 40 giorni dalla scadenza. Il primo è un promemoria gentile, il secondo è fermo, il terzo è formale e annuncia i passi successivi. Lascia tra parentesi quadre nome, numero di fattura, importo e data. Il mio tono con i clienti di solito è [descrivilo].</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">06</div>
+          <div class="cosa-titolo">Gli appuntamenti: conferma, promemoria, cosa portare</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Per ogni tipo di incontro che fai scrive il messaggio di conferma, il promemoria del giorno prima e l'elenco di quello che il cliente deve portare.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>L'agenda. Se vuoi che i clienti scelgano l'orario da soli, Google Calendar ha le «pianificazioni degli appuntamenti»: una pagina con gli orari che hai lasciato liberi, che si attiva dal browser.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Parti dall'incontro che fissi più spesso.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Fisso spesso questo tipo di incontro: [sopralluogo, prima consulenza, consegna documenti…]. Scrivimi il messaggio di conferma, il promemoria da mandare il giorno prima e l'elenco di cosa deve portare il cliente. Messaggi brevi, da WhatsApp.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">07</div>
+          <div class="cosa-titolo">L'offerta scritta per quel cliente</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Parte da quello che ti ha detto il cliente e da come lavori tu, e scrive la proposta di una pagina: il suo problema con le sue parole, cosa fai, cosa è incluso, il prossimo passo.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Quello che prometti. Rileggi ogni impegno scritto: è una cosa che poi dovrai mantenere.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Incolla le parole del cliente (la sua mail, o i tuoi appunti della telefonata) e due righe su cosa gli proponi.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Un cliente mi ha chiesto questo: […]. Io gli propongo questo: […]. Scrivi una proposta di una pagina: il suo problema detto con le sue parole, cosa faccio io, cosa è incluso e cosa resta fuori, i tempi, il prossimo passo. Scrivi solo gli impegni che ti ho dato io.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">08</div>
+          <div class="cosa-titolo">Il verbale della riunione</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Trasforma i tuoi appunti, anche dettati a voce appena esci, in un verbale ordinato: decisioni prese, chi fa cosa, entro quando.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Controllare che le decisioni siano quelle vere, e mandarlo ai presenti.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Appena finisce la riunione detta gli appunti a ruota libera, col microfono della tastiera del telefono o con quello della chat.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Questi sono i miei appunti dettati dopo una riunione. Fanne un verbale: presenti, decisioni prese, cose da fare con nome e scadenza, punti rimasti aperti. Se un punto non è chiaro fammi una domanda, senza interpretare.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">09</div>
+          <div class="cosa-titolo">La ricerca nel tuo archivio</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Carichi i tuoi documenti (contratti, relazioni, manuali, le norme che usi) in NotebookLM, uno strumento di Google che funziona dal browser. Poi gli fai domande in italiano e lui risponde indicando il documento e il punto da cui ha preso la risposta.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Scegliere cosa caricare, e aprire la citazione prima di fidarti.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>Vai su notebooklm.google.com, crea un taccuino per un solo argomento (per esempio «Contratti di quest'anno») e carica una decina di PDF. Poi fai una domanda che oggi ti costerebbe mezz'ora di ricerca.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>In quali di questi contratti ho previsto una penale per ritardo, e di quanto? Indicami il documento e il punto.</div>
+          </div>
+        </div>
+      </div>
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">10</div>
+          <div class="cosa-titolo">Le immagini: bozzetti, render, prima e dopo</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa l'AI</div>
+            <p>Da una foto o da uno schizzo genera un'immagine di come potrebbe diventare: una stanza con un altro pavimento, una facciata di un altro colore, la copertina di una presentazione.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Dire al cliente che è un'idea. Proporzioni e misure sono approssimative: l'immagine serve a scegliere una direzione, il disegno vero lo fai tu.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Comincia in 10 minuti</div>
+            <p>In ChatGPT o in Gemini carica una foto e descrivi il cambiamento.</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Questa è la foto di [un soggiorno]. Mostrami come sarebbe con [parquet chiaro e pareti bianche]. Tieni uguali la forma della stanza, le finestre e i mobili.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="part-divider" />
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Da quale parto</div>
+      <div class="section-title">Una sola, su un caso vero</div>
+      <p class="section-intro" style="max-width: 640px;">Scegli la cosa che questa settimana rifai più volte e provala su un lavoro che hai davvero sulla scrivania. Quando un prompt ti dà un buon risultato, salvalo in una nota: la volta dopo lo incolli, cambi i dati e in due minuti hai la bozza. Alla terza volta che funziona, passa alla seconda cosa.</p>
+      <div class="callout success">
+        <div class="callout-icon">✅</div>
+        <div>Se hai già fissato la chiamata con me, portati la cosa che hai scelto: partiamo da lì.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class='section-wrap'><div class='container fade-in'><div class='section-label'>Strumenti</div><div class='section-title'>Quello che ti serve</div><p class='section-intro'>Si aprono tutti dal browser, con un account gratuito.</p><div class='ext-list'>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT ↗</a></h4>
+            <p>Va bene per tutte le cose di questa guida, immagini comprese. Legge PDF e foto.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://claude.ai" target="_blank" rel="noopener">Claude ↗</a></h4>
+            <p>Spesso il migliore sui testi lunghi: relazioni, offerte, documenti da riassumere.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini ↗</a></h4>
+            <p>Comodo se lavori già con Gmail, Drive e Calendar. Genera e modifica immagini.</p>
+          </div>
+        </div>
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS</div>
+          <div class="ext-text">
+            <h4><a href="https://notebooklm.google.com" target="_blank" rel="noopener">NotebookLM ↗</a></h4>
+            <p>Per la ricerca nel tuo archivio: risponde solo sui documenti che gli carichi, e ti mostra da dove ha preso ogni risposta.</p>
+          </div>
+        </div></div></div></section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">Guida di Raffaele Russo AI</div>
+      <a href="https://instagram.com/raffaelerusso.ai" target="_blank" rel="noopener" class="footer-handle">@raffaelerusso.ai</a>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 12px; font-style: italic;">Domande? Scrivimi su Instagram.</p>
+      <p style="font-size: 13px; margin-top: 14px;"><a href="https://raffaelerussoai.com/risorse" class="footer-handle">Le altre guide gratuite: raffaelerussoai.com/risorse</a></p>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      document.getElementById('progressBar').style.width = (window.scrollY / max * 100) + '%';
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

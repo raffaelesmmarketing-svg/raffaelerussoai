@@ -16,6 +16,20 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'dieci-cose-da-automatizzare-senza-installare-niente',
+    titolo: 'Dieci cose che puoi automatizzare da domani, senza installare niente',
+    minuti: 9,
+    sotto: 'Dieci lavori che rifai ogni settimana, con il prompt da copiare per ognuno.',
+    descrizione:
+      'Preventivi, relazioni, risposte ai clienti, solleciti, verbali e altre cinque cose che rifai ogni settimana. Per ognuna trovi cosa fa l’AI, cosa resta a te e il prompt da copiare per cominciare in dieci minuti, dal browser.',
+    dentro: [
+      'Dieci lavori, dal preventivo alla ricerca nel tuo archivio',
+      'Per ognuno: cosa fa l’AI e cosa resta a te',
+      'Dieci prompt pronti da copiare',
+      'Cosa fare con i dati dei clienti prima di incollarli in una chat',
+    ],
+  },
+  {
     slug: 'chatgpt-non-e-google-usalo-davvero',
     titolo: 'ChatGPT non è Google: usalo davvero',
     minuti: 12,
