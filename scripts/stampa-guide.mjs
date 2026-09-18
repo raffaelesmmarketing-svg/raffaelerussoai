@@ -34,6 +34,9 @@ const CSS_STAMPA = `
   .hero-badge span { animation: none !important; }
   .hero { padding: 56px 24px 40px !important; }
   .section-wrap { padding: 48px 24px !important; }
+  /* la chiamata finale resta intera: titolo, testo e bottone sulla stessa pagina */
+  .cta-section { padding: 48px 24px !important; break-inside: avoid; }
+  .footer { padding: 32px 24px !important; break-inside: avoid; }
   h1 { background: none !important; -webkit-text-fill-color: #ffffff !important; color: #ffffff !important; }
   .output-grid { grid-template-columns: 1fr 1fr !important; }
   .output-card, .err-item, .ext-item, .callout, .action-item, .step-header, .section-intro, .step-body > p, .cosa, .avviso { break-inside: avoid; }
