@@ -90,7 +90,9 @@ async function email(a: { titolo: string; righe: string[] }, r: Riga): Promise<b
       method: 'POST',
       headers: { Authorization: `Bearer ${chiave}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'Sito raffaelerussoai <onboarding@resend.dev>',
+        // Finché il dominio non è verificato su Resend si spedisce dal loro mittente di prova;
+        // poi basta AVVISI_MITTENTE=Raffaele Russo <avvisi@raffaelerussoai.com> su Vercel.
+        from: process.env.AVVISI_MITTENTE || 'Sito raffaelerussoai <onboarding@resend.dev>',
         to: [a_chi],
         reply_to: r.email,
         subject: `${a.titolo} — ${r.nome}`,
