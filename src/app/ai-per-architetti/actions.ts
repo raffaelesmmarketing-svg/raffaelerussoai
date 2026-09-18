@@ -1,6 +1,8 @@
 'use server'
 
+import { randomUUID } from 'node:crypto'
 import { esempi, PAGINA, PRIMA_COSA_ALTRO } from '@/components/landing/architetti/dati'
+import { avvisaRichiesta } from '@/lib/avvisi'
 
 // Il sito non ha un backend con segreti: la richiesta viene scritta nel database con la chiave
 // pubblica, che per questa tabella può SOLO inserire (RLS: nessuna lettura per anon).
@@ -48,7 +50,11 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
     return { stato: 'errore', messaggio: 'Manca qualcosa: controlla i campi segnati.', campi }
   }
 
+  // L'id lo generiamo qui: la chiave pubblica può inserire ma non rileggere, e l'id serve dopo
+  // per l'avviso (e al giro dei dieci minuti, se l'avviso non parte).
+  const id = randomUUID()
   const riga = {
+    id,
     pagina: PAGINA,
     nome,
     email,
@@ -79,39 +85,7 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
     }
   }
 
-  await avvisaTelegram(riga)
+  // L'avviso è un di più: se cade, la riga è salvata e il database ci riprova ogni dieci minuti.
+  await avvisaRichiesta(id).catch((e) => console.error('[ai-per-architetti] avviso', e))
   return { stato: 'ok', nome }
-}
-
-// Avviso sul telefono di Raffaele. Se le variabili non ci sono (in locale) la richiesta è comunque
-// salvata: l'avviso è un di più, non il canale.
-async function avvisaTelegram(r: {
-  nome: string
-  email: string
-  telefono: string | null
-  situazione: string
-  ore_settimana: string
-  prima_cosa: string | null
-  origine: string | null
-}) {
-  const token = process.env.TELEGRAM_BOT_TOKEN
-  const chat = process.env.TELEGRAM_CHAT_ID
-  if (!token || !chat) return
-  const sit = r.situazione === 'studio' ? 'studio con collaboratori' : 'da solo'
-  const righe = [
-    `<b>Nuova richiesta — AI per architetti</b>`,
-    `${escape(r.nome)} · ${sit} · ${r.ore_settimana} ore/settimana rifatte`,
-    r.prima_cosa ? `Per primo: ${escape(r.prima_cosa)}` : null,
-    `${escape(r.email)}${r.telefono ? ' · ' + escape(r.telefono) : ''}`,
-    r.origine ? `Da: ${escape(r.origine)}` : null,
-  ].filter(Boolean)
-  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chat, text: righe.join('\n'), parse_mode: 'HTML' }),
-  }).catch((e) => console.error('[ai-per-architetti] telegram', e))
-}
-
-function escape(s: string) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
