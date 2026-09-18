@@ -16,8 +16,8 @@ export default async function GraziePage({ searchParams }: { searchParams: Promi
   const richiestaId = r && UUID.test(r) ? r : null
 
   return (
-    <div className="pt-36 pb-24 sm:pt-44 sm:pb-32">
-      <div className="max-w-[1200px] mx-auto px-6 sm:px-8 grid lg:grid-cols-[5fr_7fr] gap-12 lg:gap-16 items-start">
+    <div className="pt-28 pb-20 sm:pt-44 sm:pb-32">
+      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 grid lg:grid-cols-[5fr_7fr] gap-10 lg:gap-16 items-start">
         <div className="lg:sticky lg:top-28">
           <p className="font-mono text-xs font-bold tracking-[0.16em] uppercase text-lime-500">Richiesta ricevuta</p>
           <h1

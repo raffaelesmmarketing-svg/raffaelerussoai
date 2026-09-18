@@ -51,14 +51,14 @@ export type Domanda =
   | { id: string; testo: string; tipo: 'testo'; suggerimento?: string }
 
 export const domande: Domanda[] = [
-  { id: 'lavori', testo: 'Che tipo di lavori segui più spesso?', tipo: 'scelta', multipla: true, opzioni: ['Ristrutturazioni private', 'Pratiche edilizie (CILA, SCIA, permessi)', 'Progettazione di nuove costruzioni', 'Direzione lavori', 'Interni e arredo', 'Altro'] },
-  { id: 'volume', testo: 'Quanti progetti o pratiche hai in mano in un mese normale?', tipo: 'scelta', opzioni: ['1–3', '4–8', '9–15', 'Più di 15'] },
-  { id: 'ripetuta', testo: 'Qual è la cosa che rifai più spesso quasi uguale?', tipo: 'testo', suggerimento: 'Es. la relazione tecnica, il cartiglio, l’elenco documenti, il preventivo…' },
-  { id: 'tempo', testo: 'Quanto tempo ti porta via, ogni volta?', tipo: 'scelta', opzioni: ['Meno di mezz’ora', '1–2 ore', 'Mezza giornata', 'Di più'] },
-  { id: 'documenti', testo: 'Quali documenti scrivi da zero invece di partire da un modello?', tipo: 'testo' },
-  { id: 'clienti', testo: 'Come tieni aggiornati i clienti sullo stato dei lavori?', tipo: 'scelta', multipla: true, opzioni: ['WhatsApp', 'Email', 'Telefono', 'Un gestionale', 'Quando chiamano loro'] },
-  { id: 'strumenti', testo: 'Che strumenti usi oggi? (CAD o BIM, gestionale, preventivi, render…)', tipo: 'testo' },
+  { id: 'lavoro', testo: 'Di cosa ti occupi, e che tipo di lavori segui più spesso?', tipo: 'testo', suggerimento: 'Es. architetto: ristrutturazioni private e pratiche edilizie' },
+  { id: 'volume', testo: 'Quanti progetti, pratiche o clienti hai in mano in un mese normale?', tipo: 'testo', suggerimento: 'Es. cinque o sei progetti, una decina di clienti' },
+  { id: 'ripetuta', testo: 'Qual è la cosa che rifai più spesso quasi uguale?', tipo: 'testo', suggerimento: 'Es. la relazione tecnica, il preventivo, le mail di aggiornamento' },
+  { id: 'tempo', testo: 'Quanto tempo ti porta via, ogni volta?', tipo: 'testo', suggerimento: 'Es. un paio d’ore, mezza giornata' },
+  { id: 'documenti', testo: 'Quali documenti o messaggi scrivi da zero invece di partire da un modello?', tipo: 'testo' },
+  { id: 'clienti', testo: 'Come tieni aggiornati i clienti su quello che stai facendo per loro?', tipo: 'testo', suggerimento: 'Es. WhatsApp e telefono, di solito quando chiamano loro' },
+  { id: 'strumenti', testo: 'Che strumenti usi oggi per lavorare? (programmi, gestionali, app)', tipo: 'testo' },
   { id: 'provato', testo: 'Hai già provato qualcosa con l’intelligenza artificiale? Cos’è andato bene, cosa no?', tipo: 'testo' },
   { id: 'sparire', testo: 'Se domani un’attività sparisse dalla tua settimana, quale sceglieresti?', tipo: 'testo' },
-  { id: 'freno', testo: 'Cosa ti frena di più, oggi?', tipo: 'scelta', multipla: true, opzioni: ['Il tempo per impararlo', 'Il costo', 'La privacy dei dati dei clienti', 'Non so da dove iniziare', 'La paura di sbagliare una norma'] },
+  { id: 'freno', testo: 'Cosa ti frena di più, oggi, dal cambiare come lavori?', tipo: 'testo', suggerimento: 'Es. il tempo, il costo, la privacy dei dati, non sapere da dove iniziare' },
 ]

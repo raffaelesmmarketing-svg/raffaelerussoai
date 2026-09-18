@@ -121,8 +121,43 @@ export async function avvisaRichiesta(id: string) {
   return 'fallita' as const
 }
 
-// Spedizione generica su tutti e due i canali (senza memoria sulla riga): per il questionario.
-export async function spedisci(a: { titolo: string; righe: string[] }, replyTo: { nome: string; email: string }) {
-  const [tg, mail] = await Promise.all([telegram(a), email(a, replyTo)])
-  return { telegram: tg, email: mail }
+type RigaQuestionario = {
+  id: string
+  creato_il: string
+  richiesta_id: string | null
+  risposte: Record<string, string | string[]>
+  avviso_telegram_il: string | null
+  avviso_email_il: string | null
+  notificata_il: string | null
+  tentativi_avviso: number
+  nome: string | null
+  email: string | null
+}
+
+// Avviso per un questionario compilato: stessa rete delle richieste (spunta per canale, ritento
+// solo il canale scoperto). Le domande arrivano da chi chiama, per non importare la pagina qui.
+export async function avvisaQuestionario(id: string, domande: { id: string; testo: string }[]) {
+  const righe = await rpc<RigaQuestionario[]>('questionario_per_id', { p_id: id })
+  const q = righe?.[0]
+  if (!q) return 'non_trovata' as const
+  if (q.notificata_il) return 'gia_avvisata' as const
+  const nome = q.nome ?? 'sconosciuto'
+  const quando = new Date(q.creato_il).toLocaleString('it-IT', { timeZone: 'Europe/Rome', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+  const a = {
+    titolo: `Questionario compilato — ${nome} (${quando})`,
+    righe: [
+      ...domande
+        .filter((d) => q.risposte[d.id])
+        .map((d) => `• ${d.testo}\n  ${Array.isArray(q.risposte[d.id]) ? (q.risposte[d.id] as string[]).join(', ') : q.risposte[d.id]}`),
+      q.tentativi_avviso > 0 ? `(avviso ripetuto, tentativo ${q.tentativi_avviso + 1})` : '',
+    ].filter(Boolean),
+  }
+  const [tg, mail] = await Promise.all([
+    q.avviso_telegram_il ? Promise.resolve(true) : telegram(a),
+    q.avviso_email_il ? Promise.resolve(true) : email(a, { nome, email: q.email ?? '' }),
+  ])
+  await rpc('segna_questionario_avvisato', { p_id: id, p_telegram: tg, p_email: mail })
+  if (tg && mail) return 'avvisata' as const
+  if (tg || mail) return 'parziale' as const
+  return 'fallita' as const
 }

@@ -52,7 +52,7 @@ export default function Modulo() {
   const bordo = (k: string) => (campi[k] ? 'border-lime-500/70' : 'border-white/[0.14]')
 
   return (
-    <form action={azione} noValidate className="rounded-lg bg-navy-800 border border-white/[0.12] p-6 sm:p-8">
+    <form action={azione} noValidate className="rounded-lg bg-navy-800 border border-white/[0.12] p-4 sm:p-8">
       <input type="hidden" name="origine" defaultValue="" ref={origine} />
       <input type="hidden" name="t" defaultValue="" ref={reso} />
       {/* Trappola per i bot: un umano non la vede e non la compila. */}

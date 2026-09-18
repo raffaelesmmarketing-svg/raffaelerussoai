@@ -4,6 +4,19 @@ import { useActionState } from 'react'
 import { domande } from '@/components/landing/architetti/dati'
 import { inviaQuestionario, type EsitoQuestionario } from './questionario-actions'
 
+const risorse = [
+  {
+    titolo: 'ChatGPT non è Google: usalo davvero',
+    sotto: 'Guida pratica, 12 minuti. Da domande generiche a un collaboratore che conosce il tuo lavoro.',
+    href: '/guide/2026-05-13-prov-smettila-di-usare-chatgpt-come-un-motore.html',
+  },
+  {
+    titolo: 'Stop al ChatGPT che ti dà sempre ragione',
+    sotto: 'Guida pratica, 12 minuti. Come farti dire quello che non torna, invece di quello che vuoi sentire.',
+    href: '/guide/2026-05-06-prov-chatgpt-ti-dice-sempre-che-hai-ragione-e.html',
+  },
+]
+
 const campo =
   'w-full rounded-md bg-navy-950 border border-white/[0.14] px-4 py-3 font-body text-[16px] text-white placeholder:text-fog-500 focus:outline-none focus:ring-2 focus:ring-lime-500/60 transition-shadow'
 
@@ -13,7 +26,7 @@ export default function Questionario({ richiestaId }: { richiestaId: string }) {
 
   if (esito.stato === 'ok') {
     return (
-      <div className="rounded-lg bg-navy-800 border border-lime-500/40 p-7 sm:p-9">
+      <div className="rounded-lg bg-navy-800 border border-lime-500/40 p-5 sm:p-9">
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-lime-500">Ricevuto</p>
         <h2 className="font-display font-extrabold text-white text-[26px] leading-[1.15] mt-3 text-balance">
           Grazie. Le tue risposte le ho già davanti.
@@ -21,16 +34,41 @@ export default function Questionario({ richiestaId }: { richiestaId: string }) {
         <p className="font-body text-[16px] leading-[1.7] text-fog-300 mt-4 max-w-[52ch]">
           In chiamata partiamo da lì: dalle cose che rifai più spesso e da quella che ti porta via più tempo.
         </p>
+
+        {/* Due guide vere, già scritte: chi aspetta la chiamata ha qualcosa da leggere. */}
+        <div className="mt-8 border-t border-white/[0.12] pt-6">
+          <p className="font-body text-[16px] font-semibold text-fog-100">Intanto, due letture gratuite:</p>
+          <ul className="mt-3 space-y-3">
+            {risorse.map((r) => (
+              <li key={r.href}>
+                <a
+                  href={r.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-start gap-3 no-underline"
+                >
+                  <span aria-hidden className="mt-[11px] h-px w-5 shrink-0 bg-lime-500" />
+                  <span>
+                    <span className="block font-display font-bold text-white text-[17px] leading-[1.3] group-hover:text-lime-500 transition-colors">
+                      {r.titolo}
+                    </span>
+                    <span className="block font-body text-[14px] text-fog-300 mt-0.5">{r.sotto}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     )
   }
 
   return (
-    <form action={azione} className="rounded-lg bg-navy-800 border border-white/[0.12] p-6 sm:p-8">
+    <form action={azione} className="rounded-lg bg-navy-800 border border-white/[0.12] p-4 sm:p-8">
       <input type="hidden" name="r" value={richiestaId} />
-      <ol className="space-y-8">
+      <ol className="space-y-7 sm:space-y-8">
         {domande.map((d, i) => (
-          <li key={d.id} className="grid grid-cols-[2.25rem_1fr] gap-3">
+          <li key={d.id} className="grid grid-cols-[1.6rem_1fr] gap-2 sm:grid-cols-[2.25rem_1fr] sm:gap-3">
             <span className="font-mono text-[13px] font-bold text-lime-500 pt-1 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
             <div>
               {d.tipo === 'scelta' ? (
@@ -52,7 +90,7 @@ export default function Questionario({ richiestaId }: { richiestaId: string }) {
                   <label htmlFor={d.id} className="block font-body text-[16px] font-semibold text-fog-100 mb-2.5 text-pretty">
                     {d.testo}
                   </label>
-                  <textarea id={d.id} name={d.id} rows={2} maxLength={800} placeholder={d.suggerimento} className={`${campo} resize-y min-h-[72px]`} />
+                  <textarea id={d.id} name={d.id} rows={3} maxLength={800} placeholder={d.suggerimento} className={`${campo} resize-y min-h-[84px]`} />
                 </>
               )}
             </div>

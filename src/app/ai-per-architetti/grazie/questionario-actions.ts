@@ -1,7 +1,8 @@
 'use server'
 
 import { domande } from '@/components/landing/architetti/dati'
-import { spedisci } from '@/lib/avvisi'
+import { randomUUID } from 'node:crypto'
+import { avvisaQuestionario } from '@/lib/avvisi'
 
 const SUPABASE_URL = 'https://wvfazhoklpmcifimvooo.supabase.co'
 const SUPABASE_KEY_PUBBLICA = 'sb_publishable_9Yc0GLvZrQzOV7Ss82kyEQ_jNzTGIpW'
@@ -32,10 +33,11 @@ export async function inviaQuestionario(_prev: EsitoQuestionario, formData: Form
     return { stato: 'errore', messaggio: 'Rispondi almeno a una domanda, anche in due parole.' }
   }
 
+  const id = randomUUID()
   const res = await fetch(`${SUPABASE_URL}/rest/v1/questionario`, {
     method: 'POST',
     headers: { apikey: SUPABASE_KEY_PUBBLICA, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-    body: JSON.stringify({ richiesta_id: richiestaId, risposte }),
+    body: JSON.stringify({ id, richiesta_id: richiestaId, risposte }),
     cache: 'no-store',
   }).catch(() => null)
   if (!res || !res.ok) {
@@ -43,22 +45,7 @@ export async function inviaQuestionario(_prev: EsitoQuestionario, formData: Form
     return { stato: 'errore', messaggio: 'Non sono riuscito a salvare le risposte. Riprova fra un minuto.' }
   }
 
-  // A Raffaele: le risposte, domanda per domanda, con il nome di chi le ha scritte.
-  const chi = await fetch(`${SUPABASE_URL}/rest/v1/rpc/richiesta_per_id`, {
-    method: 'POST',
-    headers: { apikey: SUPABASE_KEY_PUBBLICA, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ p_id: richiestaId }),
-    cache: 'no-store',
-  })
-    .then((r) => (r.ok ? r.json() : null))
-    .catch(() => null)
-  const r = Array.isArray(chi) ? chi[0] : null
-  const nome = r?.nome ?? 'sconosciuto'
-  const righe = domande
-    .filter((d) => risposte[d.id])
-    .map((d) => `• ${d.testo}\n  ${Array.isArray(risposte[d.id]) ? (risposte[d.id] as string[]).join(', ') : risposte[d.id]}`)
-  await spedisci({ titolo: `Questionario compilato — ${nome}`, righe }, { nome, email: r?.email ?? '' }).catch((e) =>
-    console.error('[questionario] avviso', e)
-  )
+  // L'avviso ha memoria per canale: se ne cade uno, il giro dei dieci minuti ritenta solo quello.
+  await avvisaQuestionario(id, domande).catch((e) => console.error('[questionario] avviso', e))
   return { stato: 'ok' }
 }
