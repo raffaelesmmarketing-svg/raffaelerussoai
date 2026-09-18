@@ -2,7 +2,7 @@
 
 import { randomUUID } from 'node:crypto'
 import { redirect } from 'next/navigation'
-import { PAGINA } from '@/components/landing/architetti/dati'
+import { PAGINA, PAGINE_RICHIESTA, type PaginaRichiesta } from '@/components/landing/architetti/dati'
 import { avvisaRichiesta } from '@/lib/avvisi'
 
 // Il sito non ha un backend con segreti: la richiesta viene scritta nel database con la chiave
@@ -13,7 +13,9 @@ const SUPABASE_KEY_PUBBLICA = 'sb_publishable_9Yc0GLvZrQzOV7Ss82kyEQ_jNzTGIpW'
 export type Esito =
   | { stato: 'inizio' }
   | { stato: 'ok'; nome: string }
-  | { stato: 'errore'; messaggio: string; campi: Record<string, string> }
+  // ⛔ `valori` torna indietro con l'errore: dopo un'azione React rimette il modulo ai valori di partenza,
+  //    e senza questi chi dimentica una scelta ritrova vuoto tutto quello che aveva scritto.
+  | { stato: 'errore'; messaggio: string; campi: Record<string, string>; valori: Record<string, string> }
 
 const SITUAZIONI = new Set(['solo', 'studio'])
 const ORE = new Set(['0-2', '2-5', '5-10', '10+'])
@@ -31,6 +33,9 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
   const ore = testo(formData, 'ore_settimana', 10)
   const primaCosa = testo(formData, 'prima_cosa', 600)
   const origine = testo(formData, 'origine', 500)
+  // La pagina arriva dal modulo, ma vale solo se è una di quelle previste (le stesse del vincolo nel database).
+  const dichiarata = testo(formData, 'pagina', 40)
+  const pagina: PaginaRichiesta = (PAGINE_RICHIESTA as readonly string[]).includes(dichiarata) ? (dichiarata as PaginaRichiesta) : PAGINA
 
   // Due trappole per i bot, entrambe silenziose: un campo che un umano non vede, e un modulo
   // compilato in meno di tre secondi. Al bot si risponde «ok» e non si scrive niente.
@@ -40,13 +45,15 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
     redirect('/ai-per-architetti/grazie')
   }
 
+  const valori = { nome, email, telefono, situazione, ore_settimana: ore, prima_cosa: primaCosa, origine, t: testo(formData, 't', 20) }
+
   const campi: Record<string, string> = {}
   if (nome.length < 2) campi.nome = 'Scrivi il tuo nome.'
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) campi.email = 'Controlla l’indirizzo email.'
   if (!SITUAZIONI.has(situazione)) campi.situazione = 'Scegli una delle due.'
   if (!ORE.has(ore)) campi.ore_settimana = 'Scegli una fascia.'
   if (Object.keys(campi).length) {
-    return { stato: 'errore', messaggio: 'Manca qualcosa: controlla i campi segnati.', campi }
+    return { stato: 'errore', messaggio: 'Manca qualcosa: controlla i campi segnati.', campi, valori }
   }
 
   // L'id lo generiamo qui: la chiave pubblica può inserire ma non rileggere, e l'id serve dopo
@@ -54,7 +61,7 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
   const id = randomUUID()
   const riga = {
     id,
-    pagina: PAGINA,
+    pagina,
     nome,
     email,
     telefono: telefono || null,
@@ -81,6 +88,7 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
       stato: 'errore',
       messaggio: 'Non sono riuscito a registrare la richiesta. Riprova fra un minuto, oppure scrivimi a raffaele.smmarketing@gmail.com.',
       campi: {},
+      valori,
     }
   }
 

@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react'
 import { inviaRichiesta, type Esito } from '@/app/ai-per-architetti/actions'
-import { opzioniOre, opzioniSituazione } from './dati'
+import { PAGINA, opzioniOre, opzioniSituazione, type PaginaRichiesta } from './dati'
 
 const campoBase =
   'w-full rounded-md bg-navy-950 border px-4 py-3 font-body text-[16px] text-white placeholder:text-fog-500 focus:outline-none focus:ring-2 focus:ring-lime-500/60 transition-shadow'
@@ -16,7 +16,7 @@ function Errore({ testo, id }: { testo?: string; id: string }) {
   )
 }
 
-export default function Modulo() {
+export default function Modulo({ pagina = PAGINA }: { pagina?: PaginaRichiesta }) {
   const [esito, azione, inCorso] = useActionState<Esito, FormData>(inviaRichiesta, { stato: 'inizio' })
   const origine = useRef<HTMLInputElement>(null)
   const reso = useRef<HTMLInputElement>(null)
@@ -26,8 +26,8 @@ export default function Modulo() {
     // Da dove è arrivato (referrer + parametri della pagina) e quando il modulo è stato reso: il
     // primo serve a Raffaele, il secondo a scartare i bot che inviano in meno di tre secondi.
     // Si scrive direttamente nei campi nascosti: sono valori del browser, non stato di React.
-    if (origine.current) origine.current.value = [document.referrer, window.location.search].filter(Boolean).join(' ').slice(0, 500)
-    if (reso.current) reso.current.value = String(Date.now())
+    if (origine.current && !origine.current.value) origine.current.value = [document.referrer, window.location.search].filter(Boolean).join(' ').slice(0, 500)
+    if (reso.current && !reso.current.value) reso.current.value = String(Date.now())
   }, [])
 
   useEffect(() => {
@@ -48,13 +48,18 @@ export default function Modulo() {
     )
   }
 
+  // Fuori dalla landing per architetti «studio» non dice niente a un imprenditore: stessa scelta, parole neutre.
+  const neutra = pagina !== PAGINA
   const campi = esito.stato === 'errore' ? esito.campi : {}
+  // Quello che la persona aveva già scritto: torna con l'errore e ripopola i campi.
+  const valori: Record<string, string> = esito.stato === 'errore' ? esito.valori : {}
   const bordo = (k: string) => (campi[k] ? 'border-lime-500/70' : 'border-white/[0.14]')
 
   return (
     <form action={azione} noValidate className="rounded-lg bg-navy-800 border border-white/[0.12] p-4 sm:p-8">
-      <input type="hidden" name="origine" defaultValue="" ref={origine} />
-      <input type="hidden" name="t" defaultValue="" ref={reso} />
+      <input type="hidden" name="pagina" value={pagina} />
+      <input type="hidden" name="origine" defaultValue={valori.origine ?? ''} ref={origine} />
+      <input type="hidden" name="t" defaultValue={valori.t ?? ''} ref={reso} />
       {/* Trappola per i bot: un umano non la vede e non la compila. */}
       <div className="absolute -left-[10000px] top-auto w-px h-px overflow-hidden" aria-hidden>
         <label>
@@ -67,32 +72,34 @@ export default function Modulo() {
           <label htmlFor="nome" className="block font-body text-[14px] font-semibold text-fog-100 mb-1.5">
             Nome e cognome
           </label>
-          <input id="nome" name="nome" type="text" autoComplete="name" required className={`${campoBase} ${bordo('nome')}`} aria-describedby={campi.nome ? 'e-nome' : undefined} aria-invalid={!!campi.nome} />
+          <input id="nome" name="nome" type="text" defaultValue={valori.nome ?? ''} autoComplete="name" required className={`${campoBase} ${bordo('nome')}`} aria-describedby={campi.nome ? 'e-nome' : undefined} aria-invalid={!!campi.nome} />
           <Errore id="e-nome" testo={campi.nome} />
         </div>
         <div>
           <label htmlFor="email" className="block font-body text-[14px] font-semibold text-fog-100 mb-1.5">
             Email
           </label>
-          <input id="email" name="email" type="email" autoComplete="email" inputMode="email" required className={`${campoBase} ${bordo('email')}`} aria-describedby={campi.email ? 'e-email' : undefined} aria-invalid={!!campi.email} />
+          <input id="email" name="email" type="email" defaultValue={valori.email ?? ''} autoComplete="email" inputMode="email" required className={`${campoBase} ${bordo('email')}`} aria-describedby={campi.email ? 'e-email' : undefined} aria-invalid={!!campi.email} />
           <Errore id="e-email" testo={campi.email} />
         </div>
         <div>
           <label htmlFor="telefono" className="block font-body text-[14px] font-semibold text-fog-100 mb-1.5">
             Telefono <span className="font-normal text-fog-300">(se preferisci che ti chiami)</span>
           </label>
-          <input id="telefono" name="telefono" type="tel" autoComplete="tel" inputMode="tel" className={`${campoBase} ${bordo('telefono')}`} />
+          <input id="telefono" name="telefono" type="tel" defaultValue={valori.telefono ?? ''} autoComplete="tel" inputMode="tel" className={`${campoBase} ${bordo('telefono')}`} />
         </div>
       </div>
 
       <fieldset className="mt-7">
-        <legend className="font-body text-[14px] font-semibold text-fog-100 mb-2.5">Lavori da solo o in uno studio?</legend>
+        <legend className="font-body text-[14px] font-semibold text-fog-100 mb-2.5">
+          {neutra ? 'Lavori da solo o con dei collaboratori?' : 'Lavori da solo o in uno studio?'}
+        </legend>
         <div className="flex flex-wrap gap-2.5">
           {opzioniSituazione.map((o) => (
             <label key={o.valore} className="cursor-pointer">
-              <input type="radio" name="situazione" value={o.valore} className="peer sr-only" required />
+              <input type="radio" name="situazione" value={o.valore} defaultChecked={valori.situazione === o.valore} className="peer sr-only" required />
               <span className="inline-block rounded-full border border-white/[0.18] px-4 py-2 font-body text-[15px] text-fog-100 transition-colors peer-checked:bg-lime-500 peer-checked:text-navy-950 peer-checked:border-lime-500 peer-focus-visible:ring-2 peer-focus-visible:ring-lime-500/60 hover:border-white/40">
-                {o.etichetta}
+                {neutra && o.valore === 'studio' ? 'Ho dei collaboratori' : o.etichetta}
               </span>
             </label>
           ))}
@@ -107,7 +114,7 @@ export default function Modulo() {
         <div className="flex flex-wrap gap-2.5">
           {opzioniOre.map((o) => (
             <label key={o.valore} className="cursor-pointer">
-              <input type="radio" name="ore_settimana" value={o.valore} className="peer sr-only" required />
+              <input type="radio" name="ore_settimana" value={o.valore} defaultChecked={valori.ore_settimana === o.valore} className="peer sr-only" required />
               <span className="inline-block rounded-full border border-white/[0.18] px-4 py-2 font-body text-[15px] text-fog-100 tabular-nums transition-colors peer-checked:bg-lime-500 peer-checked:text-navy-950 peer-checked:border-lime-500 peer-focus-visible:ring-2 peer-focus-visible:ring-lime-500/60 hover:border-white/40">
                 {o.etichetta}
               </span>
@@ -126,6 +133,7 @@ export default function Modulo() {
           name="prima_cosa"
           rows={3}
           maxLength={600}
+          defaultValue={valori.prima_cosa ?? ''}
           placeholder="Scrivilo con parole tue: i preventivi, le relazioni, le risposte ai clienti…"
           className={`${campoBase} ${bordo('prima_cosa')} resize-y min-h-[96px]`}
         />
