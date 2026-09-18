@@ -8,12 +8,12 @@ const risorse = [
   {
     titolo: 'ChatGPT non è Google: usalo davvero',
     sotto: 'Guida pratica, 12 minuti. Da domande generiche a un collaboratore che conosce il tuo lavoro.',
-    href: '/guide/2026-05-13-prov-smettila-di-usare-chatgpt-come-un-motore.html',
+    href: '/guide/chatgpt-non-e-google-usalo-davvero.pdf',
   },
   {
     titolo: 'Stop al ChatGPT che ti dà sempre ragione',
     sotto: 'Guida pratica, 12 minuti. Come farti dire quello che non torna, invece di quello che vuoi sentire.',
-    href: '/guide/2026-05-06-prov-chatgpt-ti-dice-sempre-che-hai-ragione-e.html',
+    href: '/guide/stop-al-chatgpt-che-ti-da-sempre-ragione.pdf',
   },
 ]
 
@@ -37,22 +37,17 @@ export default function Questionario({ richiestaId }: { richiestaId: string }) {
 
         {/* Due guide vere, già scritte: chi aspetta la chiamata ha qualcosa da leggere. */}
         <div className="mt-8 border-t border-white/[0.12] pt-6">
-          <p className="font-body text-[16px] font-semibold text-fog-100">Intanto, due letture gratuite:</p>
+          <p className="font-body text-[16px] font-semibold text-fog-100">Intanto, due guide gratuite da scaricare:</p>
           <ul className="mt-3 space-y-3">
             {risorse.map((r) => (
               <li key={r.href}>
-                <a
-                  href={r.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-start gap-3 no-underline"
-                >
+                <a href={r.href} download className="group inline-flex items-start gap-3 no-underline">
                   <span aria-hidden className="mt-[11px] h-px w-5 shrink-0 bg-lime-500" />
                   <span>
                     <span className="block font-display font-bold text-white text-[17px] leading-[1.3] group-hover:text-lime-500 transition-colors">
                       {r.titolo}
                     </span>
-                    <span className="block font-body text-[14px] text-fog-300 mt-0.5">{r.sotto}</span>
+                    <span className="block font-body text-[14px] text-fog-300 mt-0.5">{r.sotto} <span className="text-fog-500">· PDF</span></span>
                   </span>
                 </a>
               </li>
