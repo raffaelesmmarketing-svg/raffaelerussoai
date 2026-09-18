@@ -36,47 +36,78 @@ function escape(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
-function testoAvviso(r: Riga) {
+function righeAvviso(r: Riga) {
   const sit = r.situazione === 'studio' ? 'studio con collaboratori' : r.situazione === 'solo' ? 'da solo' : '—'
   const quando = new Date(r.creato_il).toLocaleString('it-IT', { timeZone: 'Europe/Rome', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
-  return [
-    `<b>Nuova richiesta — AI per architetti</b> (${quando})`,
-    `${escape(r.nome)} · ${sit} · ${r.ore_settimana ?? '—'} ore/settimana rifatte`,
-    r.prima_cosa ? `Per primo: ${escape(r.prima_cosa)}` : null,
-    `${escape(r.email)}${r.telefono ? ' · ' + escape(r.telefono) : ''}`,
-    r.origine ? `Da: ${escape(r.origine)}` : null,
-    r.tentativi_avviso > 0 ? `(avviso ripetuto, tentativo ${r.tentativi_avviso + 1})` : null,
-  ]
-    .filter(Boolean)
-    .join('\n')
+  return {
+    titolo: `Nuova richiesta — AI per architetti (${quando})`,
+    righe: [
+      `${r.nome} · ${sit} · ${r.ore_settimana ?? '—'} ore/settimana rifatte`,
+      r.prima_cosa ? `Per primo: ${r.prima_cosa}` : null,
+      `${r.email}${r.telefono ? ' · ' + r.telefono : ''}`,
+      r.origine ? `Da: ${r.origine}` : null,
+      r.tentativi_avviso > 0 ? `(avviso ripetuto, tentativo ${r.tentativi_avviso + 1})` : null,
+    ].filter((x): x is string => Boolean(x)),
+  }
 }
 
-async function telegram(testo: string): Promise<boolean> {
-  const token = process.env.TELEGRAM_BOT_TOKEN
-  const chat = process.env.TELEGRAM_CHAT_ID
-  if (!token || !chat) return false
-  // Tre tentativi: un'attesa breve fra uno e l'altro basta per i singhiozzi di rete; se cadono
-  // tutti e tre, la riga resta scoperta e il giro dei dieci minuti ci riprova.
+// Ogni canale prova tre volte: un'attesa breve fra un tentativo e l'altro basta per i singhiozzi
+// di rete; se cadono tutti, la riga resta scoperta e il giro dei dieci minuti ci riprova.
+async function conTentativi(nome: string, invio: () => Promise<Response | null>): Promise<boolean> {
   for (const attesa of [0, 600, 1800]) {
     if (attesa) await new Promise((r) => setTimeout(r, attesa))
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chat, text: testo, parse_mode: 'HTML' }),
-    }).catch(() => null)
+    const res = await invio().catch(() => null)
     if (res?.ok) return true
-    console.error('[avvisi] telegram fallito', res?.status, await res?.text().catch(() => ''))
+    console.error(`[avvisi] ${nome} fallito`, res?.status, await res?.text().catch(() => ''))
   }
   return false
 }
 
-// Torna: 'avvisata' | 'gia_avvisata' | 'non_trovata' | 'fallita'
+async function telegram(a: { titolo: string; righe: string[] }): Promise<boolean> {
+  const token = process.env.TELEGRAM_BOT_TOKEN
+  const chat = process.env.TELEGRAM_CHAT_ID
+  if (!token || !chat) return false
+  const testo = [`<b>${escape(a.titolo)}</b>`, ...a.righe.map(escape)].join('\n')
+  return conTentativi('telegram', () =>
+    fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chat, text: testo, parse_mode: 'HTML' }),
+    })
+  )
+}
+
+// Secondo canale: email via Resend, al solo indirizzo di Raffaele (piano gratuito, mittente di
+// Resend finché il dominio non è verificato).
+async function email(a: { titolo: string; righe: string[] }, r: Riga): Promise<boolean> {
+  const chiave = process.env.RESEND_API_KEY
+  const a_chi = process.env.AVVISI_EMAIL
+  if (!chiave || !a_chi) return false
+  return conTentativi('email', () =>
+    fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${chiave}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Sito raffaelerussoai <onboarding@resend.dev>',
+        to: [a_chi],
+        reply_to: r.email,
+        subject: `${a.titolo} — ${r.nome}`,
+        text: [a.titolo, '', ...a.righe, '', 'Rispondi a questa email per scrivere direttamente alla persona.'].join('\n'),
+      }),
+    })
+  )
+}
+
+// Torna: 'avvisata' | 'gia_avvisata' | 'non_trovata' | 'fallita'.
+// «Avvisata» vuol dire che almeno un canale ha consegnato: i due partono insieme.
 export async function avvisaRichiesta(id: string) {
   const righe = await rpc<Riga[]>('richiesta_per_id', { p_id: id })
   const r = righe?.[0]
   if (!r) return 'non_trovata' as const
   if (r.notificata_il) return 'gia_avvisata' as const
-  const ok = await telegram(testoAvviso(r))
+  const a = righeAvviso(r)
+  const [tg, mail] = await Promise.all([telegram(a), email(a, r)])
+  const ok = tg || mail
   await rpc('segna_avvisata', { p_id: id, p_ok: ok })
   return ok ? ('avvisata' as const) : ('fallita' as const)
 }
