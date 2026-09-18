@@ -17,6 +17,8 @@ type Riga = {
   prima_cosa: string | null
   origine: string | null
   notificata_il: string | null
+  avviso_telegram_il: string | null
+  avviso_email_il: string | null
   tentativi_avviso: number
 }
 
@@ -98,16 +100,21 @@ async function email(a: { titolo: string; righe: string[] }, r: Riga): Promise<b
   )
 }
 
-// Torna: 'avvisata' | 'gia_avvisata' | 'non_trovata' | 'fallita'.
-// «Avvisata» vuol dire che almeno un canale ha consegnato: i due partono insieme.
+// Torna: 'avvisata' | 'parziale' | 'gia_avvisata' | 'non_trovata' | 'fallita'.
+// I due canali partono insieme, ognuno solo se non ha già consegnato; la richiesta è «avvisata»
+// quando hanno consegnato tutti e due. Se ne manca uno, il giro dei dieci minuti ritenta solo quello.
 export async function avvisaRichiesta(id: string) {
   const righe = await rpc<Riga[]>('richiesta_per_id', { p_id: id })
   const r = righe?.[0]
   if (!r) return 'non_trovata' as const
   if (r.notificata_il) return 'gia_avvisata' as const
   const a = righeAvviso(r)
-  const [tg, mail] = await Promise.all([telegram(a), email(a, r)])
-  const ok = tg || mail
-  await rpc('segna_avvisata', { p_id: id, p_ok: ok })
-  return ok ? ('avvisata' as const) : ('fallita' as const)
+  const [tg, mail] = await Promise.all([
+    r.avviso_telegram_il ? Promise.resolve(true) : telegram(a),
+    r.avviso_email_il ? Promise.resolve(true) : email(a, r),
+  ])
+  await rpc('segna_avvisata', { p_id: id, p_telegram: tg, p_email: mail })
+  if (tg && mail) return 'avvisata' as const
+  if (tg || mail) return 'parziale' as const
+  return 'fallita' as const
 }
