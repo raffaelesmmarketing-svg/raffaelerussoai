@@ -27,7 +27,7 @@ export default function InstagramPost({ url, etichetta }: { url: string; etichet
       className="instagram-media"
       data-instgrm-permalink={url}
       data-instgrm-version="14"
-      style={{ background: '#0d1c47', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, margin: 0, maxWidth: 540, minWidth: 280, width: '100%', padding: 0 }}
+      style={{ background: '#0d1c47', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, margin: 0, maxWidth: 540, minWidth: 280, minHeight: 520, width: '100%', padding: 0 }}
     >
       <a href={url} target="_blank" rel="noopener noreferrer" className="block p-5 font-body text-[15px] text-fog-300 no-underline hover:text-white">
         {etichetta} → apri su Instagram

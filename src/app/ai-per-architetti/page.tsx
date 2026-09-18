@@ -6,7 +6,7 @@ import ChiSono from '@/components/landing/architetti/ChiSono'
 import Chiamata from '@/components/landing/architetti/Chiamata'
 import Recensioni from '@/components/landing/architetti/Recensioni'
 import Faq from '@/components/landing/architetti/Faq'
-import DueStrade from '@/components/landing/architetti/DueStrade'
+import Richiesta from '@/components/landing/architetti/Richiesta'
 import { faq } from '@/components/landing/architetti/dati'
 
 const TITOLO = 'Intelligenza artificiale per architetti: cosa puoi fare davvero nel tuo studio'
@@ -48,7 +48,7 @@ export default function AiPerArchitettiPage() {
       <Chiamata />
       <Recensioni />
       <Faq />
-      <DueStrade />
+      <Richiesta />
     </>
   )
 }

@@ -20,6 +20,10 @@ export default function Rise({
   useLayoutEffect(() => {
     const el = ref.current
     if (!el || typeof IntersectionObserver === 'undefined') return
+    // Quello che è già a schermo quando arriva il JS resta com'è: il server l'ha disegnato
+    // visibile, e nasconderlo per farlo rientrare si vede come un salto (giù di 24 px, poi su).
+    // L'entrata vale solo per ciò che sta sotto la piega.
+    if (el.getBoundingClientRect().top < window.innerHeight) return
     const ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     el.style.transitionDelay = `${delay}s`
     el.classList.add(ridotto ? 'rise-fade' : 'rise')
