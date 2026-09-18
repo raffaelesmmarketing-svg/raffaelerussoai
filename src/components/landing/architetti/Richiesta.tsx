@@ -14,7 +14,7 @@ export default function Richiesta() {
             Richiedi una consulenza <em className="em-lime">gratuita</em> con me.
           </h2>
           <p className="font-body text-[17px] leading-[1.65] text-fog-300 mt-6 max-w-[44ch] text-pretty">
-            Venti minuti in video, senza impegno. Compili il modulo, ti scrivo io entro 24 ore e fissiamo l’orario.
+            Compili il modulo, ti scrivo io entro 24 ore e fissiamo l’orario.
           </p>
         </Rise>
 
