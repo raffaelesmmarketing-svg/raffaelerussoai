@@ -6,12 +6,14 @@ export default function ChiSono() {
       <div className="max-w-[1200px] mx-auto px-6 sm:px-8 grid md:grid-cols-[4fr_7fr] gap-10 md:gap-16 items-start">
         <Rise>
           <figure className="relative">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/[0.1]">
+            <div className="relative aspect-square overflow-hidden rounded-2xl border border-white/[0.1]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/portrait-studio.jpg"
-                alt="Raffaele Russo al lavoro, al portatile"
-                className="h-full w-full object-cover object-top"
+                src="/images/ritratto-raffaele-bn.jpg"
+                alt="Raffaele Russo, ritratto in bianco e nero"
+                width={640}
+                height={640}
+                className="h-full w-full object-cover"
                 loading="lazy"
               />
             </div>

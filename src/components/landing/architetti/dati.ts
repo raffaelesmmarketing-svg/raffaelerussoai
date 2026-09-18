@@ -6,17 +6,15 @@ export const PAGINA = 'ai-per-architetti'
 export const ANCORA_MODULO = '#prenota'
 
 export const esempi: { cosa: string; esito: string }[] = [
-  { cosa: 'Chiedere al regolamento edilizio del tuo Comune', esito: 'e avere la risposta con l’articolo.' },
-  { cosa: 'Scrivere la relazione tecnica dal tuo modello e dai dati del progetto', esito: 'la bozza in minuti, la firma tua.' },
-  { cosa: 'Compilare cartiglio ed elenco documenti della pratica', esito: 'dai dati che hai già inserito.' },
-  { cosa: 'Il disciplinare d’incarico', esito: 'le prestazioni le scrive lui, il compenso lo metti tu.' },
-  { cosa: 'Il render dalla piantina', esito: 'e le varianti di luce e materiali senza rifare tutto.' },
-  { cosa: 'Tradurre lo stato tecnico della pratica', esito: 'in un messaggio chiaro al cliente.' },
-  { cosa: 'Il sollecito che parte alla scadenza', esito: 'col tono giusto, senza che tu lo scriva.' },
-  { cosa: 'Riassumere un capitolato o una norma di 80 pagine in una', esito: 'con i riferimenti.' },
-  { cosa: 'Ritrovare in dieci secondi come avevi risolto un caso simile', esito: 'tre anni fa.' },
-  { cosa: 'Bandi e concorsi filtrati sul tuo profilo', esito: 'ogni settimana.' },
+  { cosa: 'Render in automatico', esito: 'dalla piantina o dal modello, con le varianti di luce e materiali.' },
+  { cosa: 'Preventivi in automatico per i tuoi clienti', esito: 'dai dati del progetto e dai tuoi listini, pronti da rivedere e firmare.' },
+  { cosa: 'Computi metrici in automatico', esito: 'voci e quantità dalle tavole, senza ribattere tutto a mano.' },
+  { cosa: 'Relazioni tecniche in automatico', esito: 'dal tuo modello e dai dati del progetto: la bozza in minuti, la firma tua.' },
+  { cosa: 'Rispondere ai clienti in autonomia', esito: 'e aggiornarli sullo stato delle commesse, senza che tu scriva ogni mail.' },
 ]
+
+// Nel modulo, oltre ai cinque, si può scegliere «altro»: la lista di sopra non è tutto.
+export const PRIMA_COSA_ALTRO = 'Altro — ne parliamo in chiamata'
 
 export const faq: { q: string; a: string }[] = [
   {

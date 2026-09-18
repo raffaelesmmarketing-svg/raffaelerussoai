@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react'
 import { inviaRichiesta, type Esito } from '@/app/ai-per-architetti/actions'
-import { esempi, opzioniOre, opzioniSituazione } from './dati'
+import { esempi, opzioniOre, opzioniSituazione, PRIMA_COSA_ALTRO } from './dati'
 
 const campoBase =
   'w-full rounded-md bg-navy-950 border px-4 py-3 font-body text-[16px] text-white placeholder:text-fog-500 focus:outline-none focus:ring-2 focus:ring-lime-500/60 transition-shadow'
@@ -129,6 +129,7 @@ export default function Modulo() {
                 {String(i + 1).padStart(2, '0')} — {e.cosa}
               </option>
             ))}
+            <option value={PRIMA_COSA_ALTRO}>{PRIMA_COSA_ALTRO}</option>
           </select>
           <span aria-hidden className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-fog-300">
             ↓

@@ -1,6 +1,6 @@
 'use server'
 
-import { esempi, PAGINA } from '@/components/landing/architetti/dati'
+import { esempi, PAGINA, PRIMA_COSA_ALTRO } from '@/components/landing/architetti/dati'
 
 // Il sito non ha un backend con segreti: la richiesta viene scritta nel database con la chiave
 // pubblica, che per questa tabella può SOLO inserire (RLS: nessuna lettura per anon).
@@ -14,7 +14,7 @@ export type Esito =
 
 const SITUAZIONI = new Set(['solo', 'studio'])
 const ORE = new Set(['0-2', '2-5', '5-10', '10+'])
-const PRIME_COSE = new Set(esempi.map((e) => e.cosa))
+const PRIME_COSE = new Set([...esempi.map((e) => e.cosa), PRIMA_COSA_ALTRO])
 
 function testo(formData: FormData, nome: string, max = 200): string {
   const v = formData.get(nome)
