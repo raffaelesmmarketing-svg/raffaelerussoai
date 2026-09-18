@@ -4,6 +4,7 @@ import Perche from '@/components/landing/architetti/Perche'
 import Esempi from '@/components/landing/architetti/Esempi'
 import ChiSono from '@/components/landing/architetti/ChiSono'
 import Chiamata from '@/components/landing/architetti/Chiamata'
+import Recensioni from '@/components/landing/architetti/Recensioni'
 import Faq from '@/components/landing/architetti/Faq'
 import DueStrade from '@/components/landing/architetti/DueStrade'
 import { faq } from '@/components/landing/architetti/dati'
@@ -45,6 +46,7 @@ export default function AiPerArchitettiPage() {
       <Esempi />
       <ChiSono />
       <Chiamata />
+      <Recensioni />
       <Faq />
       <DueStrade />
     </>

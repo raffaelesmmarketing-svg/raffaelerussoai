@@ -1,9 +1,19 @@
+import Cta from './Cta'
 import Rise from './Rise'
 
 const passi = [
-  { t: 'Capiamo da dove parti.', d: 'Da solo o in studio, cosa rifai ogni settimana, cosa hai già provato. Se non sai niente di AI va benissimo: è il punto di partenza più comune che ci sia.' },
-  { t: 'Ti faccio vedere come si monta una cosa.', d: 'Dal vivo, su un tuo caso. Non teoria: prendo una cosa che rifai e ti mostro come la fa lui, e cosa resta a te.' },
-  { t: 'Ti do la direzione.', d: 'Cosa costruire per primo, quanto ci vuole, cosa serve da parte tua. Che tu lavori con me o no, quella te la porti a casa.' },
+  {
+    t: 'Capiamo da dove parti.',
+    d: 'Cosa sai già dell’intelligenza artificiale, cosa hai provato, cosa fai ogni settimana. Da zero va benissimo: è il punto di partenza più comune che ci sia.',
+  },
+  {
+    t: 'Mappiamo dove ti serve.',
+    d: 'Guardiamo il tuo lavoro e segniamo i punti in cui l’AI ti fa risparmiare ore davvero. Non tutti: quelli giusti per te.',
+  },
+  {
+    t: 'Ti do la direzione.',
+    d: 'Ti mostro esattamente come si montano quelle cose, passo per passo. Poi, se vuoi farle insieme, le fai con me.',
+  },
 ]
 
 export default function Chiamata() {
@@ -36,12 +46,15 @@ export default function Chiamata() {
 
           <Rise delay={0.15}>
             <div className="mt-14 border-t border-white/[0.14] pt-8">
-              <h3 className="font-display font-extrabold text-white text-[22px] leading-[1.15] tracking-[-0.01em]">Quanti posti ci sono?</h3>
+              <h3 className="font-display font-extrabold text-white text-[22px] leading-[1.15] tracking-[-0.01em]">
+                La chiamata la fai con me.
+              </h3>
               <p className="font-body text-[16px] leading-[1.7] text-fog-300 mt-3 max-w-[58ch] text-pretty">
-                Le chiamate le faccio io, non un team: <strong className="text-white font-semibold">cinque a settimana</strong>. Non
-                è «affrettati che scadono fra tre minuti»: è quanto riesco a farne. Quando finiscono, ti metto in lista e ti
-                scrivo appena si libera un posto.
+                Non con un team, non con un assistente. E siccome ho un’azienda da mandare avanti, di chiamate ne posso
+                fare <strong className="text-white font-semibold">tre, al massimo cinque a settimana</strong>. Non è un
+                trucco per farti correre: è quanto riesco a farne. Se i posti sono finiti, ti scrivo appena se ne libera uno.
               </p>
+              <Cta className="mt-8" />
             </div>
           </Rise>
         </div>

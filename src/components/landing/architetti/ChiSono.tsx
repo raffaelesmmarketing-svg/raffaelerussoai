@@ -15,16 +15,6 @@ export default function ChiSono() {
                 loading="lazy"
               />
             </div>
-            <figcaption className="mt-3 grid grid-cols-[1fr_auto] border border-white/[0.14] divide-x divide-white/[0.14]">
-              <div className="px-4 py-2.5">
-                <div className="font-mono text-[10px] tracking-[0.16em] uppercase text-fog-500">Nome</div>
-                <div className="font-display font-extrabold text-white text-[15px]">Raffaele Russo</div>
-              </div>
-              <div className="px-4 py-2.5">
-                <div className="font-mono text-[10px] tracking-[0.16em] uppercase text-fog-500">Programmatore</div>
-                <div className="font-display font-extrabold text-lime-500 text-[15px]">No</div>
-              </div>
-            </figcaption>
           </figure>
         </Rise>
 
@@ -49,10 +39,9 @@ export default function ChiSono() {
 
           <div className="mt-8 border-l-0 border-t border-white/[0.14] pt-6">
             <p>Non ti prometto che l’AI ti fa la pratica da sola.</p>
-            <p className="mt-1">Non ti prometto che risparmi il 70% del tempo.</p>
-            <p className="mt-1">Non ti prometto niente di quello che ti hanno promesso quelli prima di me.</p>
             <p className="mt-5 text-white font-display font-bold text-[19px] leading-[1.35]">
-              Ti prometto una cosa sola: quello che ti insegno lo faccio prima io, tutti i giorni, e te lo faccio vedere.
+              Ti prometto una cosa sola:{' '}
+              <span className="text-lime-500">quello che ti insegno lo faccio prima io, tutti i giorni, e te lo faccio vedere.</span>
             </p>
           </div>
         </Rise>
