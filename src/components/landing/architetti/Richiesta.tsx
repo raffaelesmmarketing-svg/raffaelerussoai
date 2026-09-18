@@ -1,8 +1,9 @@
 import Rise from './Rise'
 import Modulo from './Modulo'
+import type { PaginaRichiesta } from './dati'
 
 // La chiusura: un titolo, una riga, il modulo. Niente biforcazioni.
-export default function Richiesta() {
+export default function Richiesta({ pagina }: { pagina?: PaginaRichiesta }) {
   return (
     <section id="prenota" className="scroll-mt-20 bg-navy-900/60 border-t border-white/[0.08] py-24 sm:py-32">
       <div className="max-w-[1200px] mx-auto px-6 sm:px-8 grid lg:grid-cols-[5fr_7fr] gap-12 lg:gap-16 items-start">
@@ -19,7 +20,7 @@ export default function Richiesta() {
         </Rise>
 
         <Rise delay={0.1}>
-          <Modulo />
+          <Modulo pagina={pagina} />
         </Rise>
       </div>
     </section>

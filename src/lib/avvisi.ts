@@ -9,6 +9,7 @@ const SUPABASE_KEY_PUBBLICA = 'sb_publishable_9Yc0GLvZrQzOV7Ss82kyEQ_jNzTGIpW'
 type Riga = {
   id: string
   creato_il: string
+  pagina: string | null
   nome: string
   email: string
   telefono: string | null
@@ -39,10 +40,10 @@ function escape(s: string) {
 }
 
 function righeAvviso(r: Riga) {
-  const sit = r.situazione === 'studio' ? 'studio con collaboratori' : r.situazione === 'solo' ? 'da solo' : '—'
+  const sit = r.situazione === 'studio' ? (r.pagina === 'chiamata-gratuita' ? 'con collaboratori' : 'studio con collaboratori') : r.situazione === 'solo' ? 'da solo' : '—'
   const quando = new Date(r.creato_il).toLocaleString('it-IT', { timeZone: 'Europe/Rome', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
   return {
-    titolo: `Nuova richiesta — AI per architetti (${quando})`,
+    titolo: `Nuova richiesta — ${r.pagina === 'chiamata-gratuita' ? 'chiamata gratuita (dalle guide)' : 'AI per architetti'} (${quando})`,
     righe: [
       `${r.nome} · ${sit} · ${r.ore_settimana ?? '—'} ore/settimana rifatte`,
       r.prima_cosa ? `Per primo: ${r.prima_cosa}` : null,

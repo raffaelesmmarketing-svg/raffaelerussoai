@@ -46,7 +46,8 @@ function Marchio({ grande = false }: { grande?: boolean }) {
 
 export default function Footer() {
   // Sulle landing di offerta il footer non porta altrove: marchio (verso il sito), la frase, l'anno.
-  const landing = usePathname()?.startsWith('/ai-per-architetti') ?? false
+  const percorso = usePathname() ?? ''
+  const landing = percorso.startsWith('/ai-per-architetti') || percorso.startsWith('/chiamata-gratuita')
 
   if (landing) {
     return (

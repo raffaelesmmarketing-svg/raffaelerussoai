@@ -6,7 +6,9 @@ import { GrigliaTavola } from './Tavola'
 
 const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number]
 
-export default function Hero() {
+// `etichetta` dice a chi parla la pagina: la landing per architetti e la pagina neutra delle guide
+// condividono titolo e promessa, che sono le parole di Raffaele.
+export default function Hero({ etichetta = 'Per architetti' }: { etichetta?: string }) {
   const ridotto = useReducedMotion()
   const su = {
     initial: ridotto ? { opacity: 0 } : { opacity: 0, y: 22 },
@@ -30,7 +32,7 @@ export default function Hero() {
         className="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-8"
       >
         <motion.p variants={su} className="font-mono text-xs font-bold tracking-[0.16em] uppercase text-lime-500">
-          Per architetti
+          {etichetta}
         </motion.p>
 
         <motion.h1

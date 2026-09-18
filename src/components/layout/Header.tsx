@@ -17,7 +17,7 @@ export default function Header() {
   const [open, setOpen] = useState(false)
   // Sulle landing di offerta l'header non distrae: logo e un solo bottone, verso il modulo.
   const percorso = usePathname() ?? ''
-  const landing = percorso.startsWith('/ai-per-architetti')
+  const landing = percorso.startsWith('/ai-per-architetti') || percorso.startsWith('/chiamata-gratuita')
   const grazie = percorso.includes('/grazie')
 
   useEffect(() => {

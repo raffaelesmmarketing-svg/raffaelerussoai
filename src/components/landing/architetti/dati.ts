@@ -3,6 +3,11 @@
 
 export const PAGINA = 'ai-per-architetti'
 
+// Le pagine da cui può partire una richiesta. ⛔ Stesso elenco nel vincolo `richiesta_pagina_check` del
+// database: una pagina nuova va aggiunta PRIMA là, o l'inserimento viene rifiutato.
+export const PAGINE_RICHIESTA = ['ai-per-architetti', 'chiamata-gratuita'] as const
+export type PaginaRichiesta = (typeof PAGINE_RICHIESTA)[number]
+
 export const ANCORA_MODULO = '#prenota'
 
 export const esempi: { cosa: string; esito: string }[] = [
