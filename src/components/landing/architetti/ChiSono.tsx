@@ -43,6 +43,22 @@ export default function ChiSono() {
               Ti prometto una cosa sola:{' '}
               <span className="text-lime-500">quello che ti insegno lo faccio prima io, tutti i giorni, e te lo faccio vedere.</span>
             </p>
+
+            {/* L'altra realtà, a colpo d'occhio: il profilo Instagram di Cantieri Hub, com'è. */}
+            <figure className="mt-8 max-w-[520px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/cantierihub-instagram.png"
+                alt="Il profilo Instagram di Cantieri Hub: account verificato, 1.178 follower"
+                width={1432}
+                height={428}
+                loading="lazy"
+                className="w-full h-auto rounded-lg border border-white/[0.1] bg-white"
+              />
+              <figcaption className="font-mono text-[11px] tracking-[0.14em] uppercase text-fog-500 mt-2.5">
+                Cantieri Hub su Instagram — l’altra azienda che porto avanti ogni giorno
+              </figcaption>
+            </figure>
           </div>
         </Rise>
       </div>
