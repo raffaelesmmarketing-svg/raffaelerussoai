@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react'
 import { inviaRichiesta, type Esito } from '@/app/ai-per-architetti/actions'
-import { esempi, opzioniOre, opzioniSituazione, PRIMA_COSA_ALTRO } from './dati'
+import { opzioniOre, opzioniSituazione } from './dati'
 
 const campoBase =
   'w-full rounded-md bg-navy-950 border px-4 py-3 font-body text-[16px] text-white placeholder:text-fog-500 focus:outline-none focus:ring-2 focus:ring-lime-500/60 transition-shadow'
@@ -119,22 +119,16 @@ export default function Modulo() {
 
       <div className="mt-7">
         <label htmlFor="prima_cosa" className="block font-body text-[14px] font-semibold text-fog-100 mb-1.5">
-          Cosa vorresti fare per primo? <span className="font-normal text-fog-300">(facoltativo)</span>
+          Cosa vorresti automatizzare per prima? <span className="font-normal text-fog-300">(facoltativo)</span>
         </label>
-        <div className="relative">
-          <select id="prima_cosa" name="prima_cosa" defaultValue="" className={`${campoBase} ${bordo('prima_cosa')} appearance-none pr-10`}>
-            <option value="">Scegli dall’elenco…</option>
-            {esempi.map((e, i) => (
-              <option key={e.cosa} value={e.cosa}>
-                {String(i + 1).padStart(2, '0')} — {e.cosa}
-              </option>
-            ))}
-            <option value={PRIMA_COSA_ALTRO}>{PRIMA_COSA_ALTRO}</option>
-          </select>
-          <span aria-hidden className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-fog-300">
-            ↓
-          </span>
-        </div>
+        <textarea
+          id="prima_cosa"
+          name="prima_cosa"
+          rows={3}
+          maxLength={600}
+          placeholder="Scrivilo con parole tue: i preventivi, le relazioni, le risposte ai clienti…"
+          className={`${campoBase} ${bordo('prima_cosa')} resize-y min-h-[96px]`}
+        />
         <Errore id="e-prima" testo={campi.prima_cosa} />
       </div>
 

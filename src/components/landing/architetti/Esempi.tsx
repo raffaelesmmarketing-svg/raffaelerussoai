@@ -2,8 +2,7 @@ import Cta from './Cta'
 import Rise from './Rise'
 import { esempi } from './dati'
 
-// L'elenco è una sequenza vera (cinque cose, numerate perché il modulo chiede «quale per prima»),
-// quindi i numeri portano informazione e non sono decorazione.
+// Cinque cose numerate: una sequenza vera, non decorazione — in chiamata si parte dalla prima che serve.
 export default function Esempi() {
   return (
     <section id="esempi" className="py-24 sm:py-32 border-t border-white/[0.08]">

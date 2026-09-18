@@ -1,7 +1,7 @@
 'use server'
 
 import { randomUUID } from 'node:crypto'
-import { esempi, PAGINA, PRIMA_COSA_ALTRO } from '@/components/landing/architetti/dati'
+import { PAGINA } from '@/components/landing/architetti/dati'
 import { avvisaRichiesta } from '@/lib/avvisi'
 
 // Il sito non ha un backend con segreti: la richiesta viene scritta nel database con la chiave
@@ -16,7 +16,6 @@ export type Esito =
 
 const SITUAZIONI = new Set(['solo', 'studio'])
 const ORE = new Set(['0-2', '2-5', '5-10', '10+'])
-const PRIME_COSE = new Set([...esempi.map((e) => e.cosa), PRIMA_COSA_ALTRO])
 
 function testo(formData: FormData, nome: string, max = 200): string {
   const v = formData.get(nome)
@@ -29,7 +28,7 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
   const telefono = testo(formData, 'telefono', 40)
   const situazione = testo(formData, 'situazione', 20)
   const ore = testo(formData, 'ore_settimana', 10)
-  const primaCosa = testo(formData, 'prima_cosa')
+  const primaCosa = testo(formData, 'prima_cosa', 600)
   const origine = testo(formData, 'origine', 500)
 
   // Due trappole per i bot, entrambe silenziose: un campo che un umano non vede, e un modulo
@@ -45,7 +44,6 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) campi.email = 'Controlla l’indirizzo email.'
   if (!SITUAZIONI.has(situazione)) campi.situazione = 'Scegli una delle due.'
   if (!ORE.has(ore)) campi.ore_settimana = 'Scegli una fascia.'
-  if (primaCosa && !PRIME_COSE.has(primaCosa)) campi.prima_cosa = 'Scegli una voce dall’elenco.'
   if (Object.keys(campi).length) {
     return { stato: 'errore', messaggio: 'Manca qualcosa: controlla i campi segnati.', campi }
   }

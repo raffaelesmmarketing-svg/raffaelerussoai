@@ -13,9 +13,6 @@ export const esempi: { cosa: string; esito: string }[] = [
   { cosa: 'Rispondere ai clienti in autonomia', esito: 'e aggiornarli sullo stato delle commesse, senza che tu scriva ogni mail.' },
 ]
 
-// Nel modulo, oltre ai cinque, si può scegliere «altro»: la lista di sopra non è tutto.
-export const PRIMA_COSA_ALTRO = 'Altro — ne parliamo in chiamata'
-
 export const faq: { q: string; a: string }[] = [
   {
     q: 'Non so niente di intelligenza artificiale. Ha senso che ti chiami?',
