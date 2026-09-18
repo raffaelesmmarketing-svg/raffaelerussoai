@@ -1,5 +1,5 @@
 import Rise from './Rise'
-import InstagramPost from './InstagramPost'
+import InstagramPost from '@/components/ui/InstagramPost'
 
 // Due recensioni vere, pubblicate da Cantieri Hub: sono imprese edili, non studi di architettura,
 // e la pagina lo dice. Il video di YouTube è servito senza cookie finché non parte.
