@@ -36,7 +36,7 @@ export default function Modulo() {
 
   if (esito.stato === 'ok') {
     return (
-      <div ref={riepilogo} tabIndex={-1} className="rounded-lg bg-navy-950 border border-lime-500/40 p-7 sm:p-9 focus:outline-none">
+      <div ref={riepilogo} tabIndex={-1} className="rounded-lg bg-navy-800 border border-lime-500/40 p-7 sm:p-9 focus:outline-none">
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-lime-500">Ricevuto</p>
         <h3 className="font-display font-extrabold text-white text-[26px] leading-[1.15] mt-3 text-balance">
           Grazie{esito.nome ? `, ${esito.nome.split(' ')[0]}` : ''}. Ti scrivo io entro 24 ore.
@@ -52,7 +52,7 @@ export default function Modulo() {
   const bordo = (k: string) => (campi[k] ? 'border-lime-500/70' : 'border-white/[0.14]')
 
   return (
-    <form action={azione} noValidate className="rounded-lg bg-navy-950 border border-white/[0.12] p-6 sm:p-8">
+    <form action={azione} noValidate className="rounded-lg bg-navy-800 border border-white/[0.12] p-6 sm:p-8">
       <input type="hidden" name="origine" defaultValue="" ref={origine} />
       <input type="hidden" name="t" defaultValue="" ref={reso} />
       {/* Trappola per i bot: un umano non la vede e non la compila. */}

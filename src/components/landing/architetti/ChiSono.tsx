@@ -37,10 +37,9 @@ export default function ChiSono() {
           </h2>
           <p className="mt-6 text-fog-100">Piacere, sono Raffaele Russo.</p>
           <p className="mt-4">
-            Ho studiato ingegneria civile e l’ho lasciata a metà. Non sono un programmatore. Oggi co-fondo{' '}
-            <strong className="text-white font-semibold">Cantieri Hub</strong>, software per le imprese edili: ne seguo la
-            parte commerciale, formo chi vende, e costruisco con l’intelligenza artificiale gli strumenti che usiamo ogni
-            giorno.
+            Ho studiato ingegneria civile e l’ho lasciata a metà. Non sono un programmatore. Ho co-fondato{' '}
+            <strong className="text-white font-semibold">Cantieri Hub</strong>, azienda che si occupa di sviluppare software
+            per imprese edili, dove costruiamo con l’intelligenza artificiale gli strumenti che usiamo ogni giorno.
           </p>
           <p className="mt-4">
             Sì, hai letto bene: <strong className="text-white font-semibold">non sono un programmatore e costruisco software con l’AI tutti i giorni.</strong>{' '}

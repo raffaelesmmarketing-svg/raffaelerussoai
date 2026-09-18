@@ -23,17 +23,25 @@ export default function Rise({
     const ridotto = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     el.style.transitionDelay = `${delay}s`
     el.classList.add(ridotto ? 'rise-fade' : 'rise')
+    const mostra = () => {
+      el.classList.add('rise-in')
+      io.disconnect()
+      clearTimeout(rete)
+    }
     const io = new IntersectionObserver(
       (voci) => {
-        if (voci.some((v) => v.isIntersecting)) {
-          el.classList.add('rise-in')
-          io.disconnect()
-        }
+        if (voci.some((v) => v.isIntersecting)) mostra()
       },
       { threshold: 0.05, rootMargin: '0px 0px -8% 0px' }
     )
     io.observe(el)
-    return () => io.disconnect()
+    // Rete di sicurezza: qualunque cosa succeda all'osservatore, dopo quattro secondi il
+    // contenuto è visibile comunque. Fuori schermo non si nota; dentro, evita un blocco vuoto.
+    const rete = window.setTimeout(mostra, 4000)
+    return () => {
+      io.disconnect()
+      clearTimeout(rete)
+    }
   }, [delay])
 
   return (

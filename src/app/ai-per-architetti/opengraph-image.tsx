@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const alt = 'Intelligenza artificiale per architetti — il percorso in 4 incontri'
+export const alt = 'Intelligenza artificiale per architetti — cosa puoi fare davvero nel tuo studio'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -21,14 +21,14 @@ export default function Image() {
         }}
       >
         <div style={{ display: 'flex', fontSize: 22, letterSpacing: 4, color: '#b8ff3d', textTransform: 'uppercase' }}>
-          Per architetti e studi di architettura
+          Per architetti
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div style={{ display: 'flex', fontSize: 68, fontWeight: 800, lineHeight: 1.05, letterSpacing: -2, maxWidth: 1000 }}>
             Intelligenza artificiale per architetti.
           </div>
           <div style={{ display: 'flex', fontSize: 34, color: '#aab6cc', lineHeight: 1.3, maxWidth: 980 }}>
-            4 incontri. Esci con strumenti che usi il giorno dopo — senza diventare un tecnico.
+            Non ti serve un corso. Ti serve qualcuno che ti mostri come montarla nel tuo lavoro.
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontSize: 22, color: '#b8ff3d' }}>

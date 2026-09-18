@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const cols = [
   { title: 'Sito',    links: [{ l: 'Chi sono', href: '/chi-sono' }, { l: 'Blog', href: '/blog' }, { l: 'Risorse', href: '/risorse' }, { l: 'Contatti', href: '/lavoriamo-insieme' }] },
@@ -29,19 +32,46 @@ const socials = [
   },
 ]
 
+function Marchio({ grande = false }: { grande?: boolean }) {
+  return (
+    <Link href="/" className="inline-flex items-center gap-3 no-underline">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/logo-mark.svg" alt="Logo" className={grande ? 'w-9 h-9' : 'w-8 h-8'} />
+      <span className={`font-display font-extrabold text-white tracking-[-0.01em] ${grande ? 'text-lg' : 'text-base'}`}>
+        Raffaele Russo <em className="em-lime">AI</em>
+      </span>
+    </Link>
+  )
+}
+
 export default function Footer() {
+  // Sulle landing di offerta il footer non porta altrove: marchio (verso il sito), la frase, l'anno.
+  const landing = usePathname()?.startsWith('/ai-per-architetti') ?? false
+
+  if (landing) {
+    return (
+      <footer className="border-t border-white/[0.08] py-14 bg-navy-900">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-8">
+          <div>
+            <Marchio />
+            <p className="font-body text-sm leading-[1.6] text-fog-300 max-w-[320px] mt-4">
+              L&apos;AI tradotta per gli imprenditori italiani. Risultati reali, misurabili, senza gergo.
+            </p>
+          </div>
+          <div className="font-mono text-xs text-fog-500">© 2026 Raffaele Russo</div>
+        </div>
+      </footer>
+    )
+  }
+
   return (
     <footer className="border-t border-white/[0.08] pt-20 pb-8 bg-navy-900">
       <div className="max-w-[1200px] mx-auto px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-16">
           <div>
-            <Link href="/" className="inline-flex items-center gap-3 no-underline mb-5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/logo-mark.svg" alt="Logo" className="w-9 h-9" />
-              <span className="font-display font-extrabold text-lg text-white tracking-[-0.01em]">
-                Raffaele Russo <em className="em-lime">AI</em>
-              </span>
-            </Link>
+            <div className="mb-5">
+              <Marchio grande />
+            </div>
             <p className="font-body text-sm leading-[1.6] text-fog-300 max-w-[320px] mb-5">
               L&apos;AI tradotta per gli imprenditori italiani. Risultati reali, misurabili, senza gergo.
             </p>

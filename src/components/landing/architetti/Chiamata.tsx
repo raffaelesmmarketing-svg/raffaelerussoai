@@ -42,9 +42,6 @@ export default function Chiamata() {
                 è «affrettati che scadono fra tre minuti»: è quanto riesco a farne. Quando finiscono, ti metto in lista e ti
                 scrivo appena si libera un posto.
               </p>
-              <p className="font-body text-[16px] leading-[1.7] text-fog-300 mt-3 max-w-[58ch] text-pretty">
-                I primi cinque percorsi partono a prezzo di lancio, in cambio del racconto di com’è andata.
-              </p>
             </div>
           </Rise>
         </div>

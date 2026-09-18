@@ -37,7 +37,7 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: 'È permesso? E cosa dico ai miei clienti?',
-    a: 'Sì: l’intelligenza artificiale nel lavoro del professionista è ammessa come strumento di supporto, e la responsabilità di quello che firmi resta tua, come oggi. Ai clienti va detto: c’è un pezzo del percorso solo per questo, con la frase pronta.',
+    a: 'Sì: l’intelligenza artificiale nel lavoro del professionista è ammessa come strumento di supporto, e la responsabilità di quello che firmi resta tua, come oggi. Ai clienti va detto, e ne parliamo in chiamata: la frase pronta ce l’ho.',
   },
   {
     q: 'E i documenti dei miei clienti?',
@@ -45,15 +45,15 @@ export const faq: { q: string; a: string }[] = [
   },
   {
     q: 'Lavoro da solo. Oppure: ho uno studio con tre persone.',
-    a: 'Va bene in tutti e due i casi. Cambia chi siede agli incontri: da solo sei tu; con lo studio ci sono anche i collaboratori, così quello che montiamo lo usano tutti.',
+    a: 'Va bene in tutti e due i casi. Cambia chi c’è in chiamata: da solo sei tu; con lo studio ci sono anche i collaboratori, così quello che vedi lo usano tutti.',
   },
   {
     q: 'Ho già fatto un corso e non ho concluso niente. Perché stavolta sarebbe diverso?',
-    a: 'Perché dovevi fare tutto da solo, senza scadenze e senza nessuno che ti dicesse se stavi andando bene. Qui il pezzo tecnico lo faccio io, e a ogni incontro esce una cosa finita che usi il giorno dopo.',
+    a: 'Perché dovevi fare tutto da solo, senza scadenze e senza nessuno che ti dicesse se stavi andando bene. Qui il pezzo tecnico lo faccio io, e ogni volta esce una cosa finita che usi il giorno dopo.',
   },
   {
     q: 'Quanto ci vuole per vedere qualcosa?',
-    a: 'La prima cosa gira dopo il primo incontro. Non è una media né una promessa: è come è fatto il percorso.',
+    a: 'Poco: la prima cosa la montiamo insieme, e la usi il giorno dopo. Non è una promessa, è come si lavora.',
   },
   {
     q: 'Cosa succede dopo che compilo il modulo?',
