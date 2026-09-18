@@ -16,7 +16,9 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   // Sulle landing di offerta l'header non distrae: logo e un solo bottone, verso il modulo.
-  const landing = usePathname()?.startsWith('/ai-per-architetti') ?? false
+  const percorso = usePathname() ?? ''
+  const landing = percorso.startsWith('/ai-per-architetti')
+  const grazie = percorso.includes('/grazie')
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -45,6 +47,7 @@ export default function Header() {
         </Link>
 
         {landing ? (
+          grazie ? null : (
           <a
             href="#prenota"
             className="cta-shimmer group inline-flex shrink-0 items-center gap-2 font-display font-extrabold text-[13px] tracking-[0.06em] uppercase bg-lime-500 text-navy-950 px-4 py-2.5 rounded-full no-underline shadow-glow-lime-sm"
@@ -55,6 +58,7 @@ export default function Header() {
             </span>
             <span className="relative z-10 transition-transform duration-200 group-hover:translate-x-1">→</span>
           </a>
+          )
         ) : (
         <>
         <nav className="hidden md:flex gap-8">

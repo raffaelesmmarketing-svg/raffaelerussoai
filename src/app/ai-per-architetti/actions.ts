@@ -1,6 +1,7 @@
 'use server'
 
 import { randomUUID } from 'node:crypto'
+import { redirect } from 'next/navigation'
 import { PAGINA } from '@/components/landing/architetti/dati'
 import { avvisaRichiesta } from '@/lib/avvisi'
 
@@ -36,7 +37,7 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
   const trappola = testo(formData, 'sito_web', 10)
   const reso = Number(testo(formData, 't', 20))
   if (trappola || !Number.isFinite(reso) || Date.now() - reso < 3000) {
-    return { stato: 'ok', nome: nome || '' }
+    redirect('/ai-per-architetti/grazie')
   }
 
   const campi: Record<string, string> = {}
@@ -85,5 +86,6 @@ export async function inviaRichiesta(_prev: Esito, formData: FormData): Promise<
 
   // L'avviso è un di più: se cade, la riga è salvata e il database ci riprova ogni dieci minuti.
   await avvisaRichiesta(id).catch((e) => console.error('[ai-per-architetti] avviso', e))
-  return { stato: 'ok', nome }
+  // La pagina di ringraziamento porta l'id: il questionario si lega alla richiesta.
+  redirect(`/ai-per-architetti/grazie?r=${id}`)
 }

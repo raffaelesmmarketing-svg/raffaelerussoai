@@ -81,7 +81,7 @@ async function telegram(a: { titolo: string; righe: string[] }): Promise<boolean
 
 // Secondo canale: email via Resend, al solo indirizzo di Raffaele (piano gratuito, mittente di
 // Resend finché il dominio non è verificato).
-async function email(a: { titolo: string; righe: string[] }, r: Riga): Promise<boolean> {
+async function email(a: { titolo: string; righe: string[] }, r: { nome: string; email: string }): Promise<boolean> {
   const chiave = process.env.RESEND_API_KEY
   const a_chi = process.env.AVVISI_EMAIL
   if (!chiave || !a_chi) return false
@@ -119,4 +119,10 @@ export async function avvisaRichiesta(id: string) {
   if (tg && mail) return 'avvisata' as const
   if (tg || mail) return 'parziale' as const
   return 'fallita' as const
+}
+
+// Spedizione generica su tutti e due i canali (senza memoria sulla riga): per il questionario.
+export async function spedisci(a: { titolo: string; righe: string[] }, replyTo: { nome: string; email: string }) {
+  const [tg, mail] = await Promise.all([telegram(a), email(a, replyTo)])
+  return { telegram: tg, email: mail }
 }
