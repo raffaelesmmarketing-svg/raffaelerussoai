@@ -9,7 +9,6 @@ const links = [
   { label: 'Chi Sono', href: '/chi-sono' },
   { label: 'Blog', href: '/blog' },
   { label: 'Risorse Gratis', href: '/risorse' },
-  { label: 'Lavoriamo Insieme', href: '/lavoriamo-insieme' },
 ]
 
 export default function Header() {
@@ -75,10 +74,10 @@ export default function Header() {
         </nav>
 
         <Link
-          href="/risorse"
+          href="/chiamata-gratuita"
           className="cta-shimmer hidden md:inline-flex group items-center gap-2 font-display font-extrabold text-[13px] tracking-[0.06em] uppercase bg-lime-500 text-navy-950 px-4 py-2.5 rounded-full no-underline shadow-glow-lime-sm"
         >
-          <span className="relative z-10">Guide gratuite</span>
+          <span className="relative z-10">Consulenza gratuita</span>
           <span className="relative z-10 transition-transform duration-200 group-hover:translate-x-1">→</span>
         </Link>
 
@@ -112,11 +111,11 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="/risorse"
+            href="/chiamata-gratuita"
             className="text-sm font-bold text-lime-500"
             onClick={() => setOpen(false)}
           >
-            Guide gratuite →
+            Consulenza gratuita →
           </Link>
         </div>
       )}

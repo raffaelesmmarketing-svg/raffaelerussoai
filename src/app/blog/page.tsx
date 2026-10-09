@@ -47,9 +47,9 @@ export default function BlogPage() {
               <p className="font-display font-bold text-xl text-white mb-2">
                 I primi articoli sono in arrivo.
               </p>
-              <p className="font-body text-sm text-fog-500">
-                Iscriviti alla newsletter per essere il primo a leggerli.
-              </p>
+              <Link href="/risorse" className="font-body text-sm text-lime-500 no-underline hover:underline">
+                Intanto scarica le guide gratuite →
+              </Link>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">

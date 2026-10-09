@@ -1,17 +1,17 @@
 import Reveal from '@/components/Reveal'
-import { Zap, Clock, TrendingUp, Shield, Users, BookOpen } from 'lucide-react'
+import { Zap, Smartphone, TrendingUp, Shield, Users, Wrench } from 'lucide-react'
 
 const tiles = [
   {
     icon: Zap,
-    title: 'Risultati in 2 settimane',
-    description: 'Non teoria. Piano d\'azione immediato con strumenti già pronti da usare.',
+    title: 'Si parte dal tuo problema',
+    description: 'Prima capiamo dove perdi tempo. Poi si sceglie lo strumento, non il contrario.',
     size: 'large',
   },
   {
-    icon: Clock,
-    title: '3-10 ore risparmiate a settimana',
-    description: 'Il tempo medio recuperato dai miei clienti nel primo mese.',
+    icon: Smartphone,
+    title: 'Niente da installare',
+    description: 'Strumenti che si aprono dal browser o dal telefono, senza configurare niente.',
     size: 'small',
   },
   {
@@ -33,9 +33,9 @@ const tiles = [
     size: 'small',
   },
   {
-    icon: BookOpen,
-    title: 'Aggiornato ogni settimana',
-    description: 'Il settore cambia velocemente. La newsletter ti tiene sempre sul pezzo.',
+    icon: Wrench,
+    title: 'Solo quello che uso io',
+    description: 'Ti porto strumenti che uso ogni giorno nel mio lavoro, non quelli di moda.',
     size: 'small',
   },
 ]

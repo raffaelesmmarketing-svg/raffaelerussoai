@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import NewsletterCTA from '@/components/sections/NewsletterCTA'
+import ChiamataCTA from '@/components/sections/ChiamataCTA'
 import Timeline from '@/components/sections/Timeline'
 import VideoEmbed from '@/components/sections/VideoEmbed'
 
@@ -64,7 +64,7 @@ export default function ChiSonoPage() {
                 {[
                   'Cantieri Hub — Co-founder',
                   "Imprenditori che vogliono usare l'AI nel loro business",
-                  "Aziende che cercano formazione pratica sull'AI",
+                  "Professionisti che vogliono usare l'AI senza diventare tecnici",
                 ].map(item => (
                   <li key={item} className="flex items-start gap-2 font-body text-sm text-fog-300">
                     <span className="text-lime-500 mt-0.5">→</span>
@@ -75,10 +75,10 @@ export default function ChiSonoPage() {
             </div>
 
             <Link
-              href="/lavoriamo-insieme"
+              href="/chiamata-gratuita"
               className="cta-shimmer group inline-flex items-center gap-2 font-display font-extrabold text-sm tracking-[0.06em] uppercase bg-lime-500 text-navy-950 px-6 py-3 rounded-full no-underline shadow-glow-lime-sm"
             >
-              <span className="relative z-10">Lavoriamo insieme</span>
+              <span className="relative z-10">Prenota la consulenza gratuita</span>
               <span className="relative z-10 transition-transform duration-200 group-hover:translate-x-1">→</span>
             </Link>
           </div>
@@ -87,7 +87,7 @@ export default function ChiSonoPage() {
 
       <Timeline />
       <VideoEmbed />
-      <NewsletterCTA />
+      <ChiamataCTA />
     </div>
   )
 }

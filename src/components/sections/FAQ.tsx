@@ -6,28 +6,24 @@ import Reveal from '@/components/Reveal'
 
 const faqs = [
   {
-    q: "Non ho nessuna esperienza con l'AI. Posso partecipare comunque?",
-    a: "Sì, è esattamente per questo che esisto. Non parto da ChatGPT avanzato — parto da zero e arrivo agli strumenti concreti per il tuo settore specifico. Se sai usare WhatsApp, puoi usare l'AI.",
+    q: "Non so niente di intelligenza artificiale. Fa per me?",
+    a: "Sì, è proprio per te. Si parte dal tuo lavoro, non dalla tecnologia. Se sai usare WhatsApp, puoi usare l'AI.",
   },
   {
-    q: "Quanto tempo ci vuole per vedere i primi risultati?",
-    a: "Di solito 1-2 settimane dalla consulenza. Non vendo trasformazioni magiche: identifico 2-3 processi che puoi automatizzare subito con strumenti già esistenti. Il ROI medio dei miei clienti è visibile entro il primo mese.",
+    q: 'Quanto costa la consulenza?',
+    a: "Niente. È una chiamata gratuita di 20 minuti: mi racconti cosa rifai ogni settimana e ti dico da dove conviene cominciare. Se poi vuoi che lo costruiamo, ti dico subito quanto costa.",
   },
   {
-    q: "Quanto costa usare gli strumenti AI che consigli?",
-    a: "La maggior parte dei tool che uso e consiglio costano tra €20 e €100 al mese. Nella consulenza ti mostro esattamente cosa usare, quanto costa, e quanto recuperi in tempo.",
+    q: 'Come si svolge?',
+    a: 'Online, in videochiamata, e la fai direttamente con me.',
   },
   {
-    q: 'La consulenza è online o in presenza?',
-    a: 'Online, via Google Meet o Zoom. 60 minuti, registrazione inclusa così puoi rivedere tutto. Lavoro con imprenditori da tutta Italia e dall\'estero.',
+    q: 'Quanto costano gli strumenti AI che consigli?',
+    a: 'La maggior parte costa fra 20 e 100 € al mese. In chiamata ti dico cosa usare e quanto costa.',
   },
   {
-    q: 'Cosa succede se il mio settore è molto specifico o tradizionale?',
-    a: "Meglio così. Il 90% dei miei clienti viene da settori tradizionali: edilizia, legale, contabilità, manifattura. Sono i settori dove l'AI fa la differenza più grande perché i processi sono ancora manuali.",
-  },
-  {
-    q: 'Posso comprare un corso invece della consulenza?',
-    a: "Presto sì — sto costruendo la scuola online. Per ora il modo più diretto per iniziare è la consulenza 1:1 o la newsletter gratuita. Iscriviti e ti avviso quando la scuola è pronta.",
+    q: 'E se il mio settore è molto tradizionale?',
+    a: "Meglio così. Nei settori tradizionali tanto lavoro si fa ancora a mano, ed è lì che l'AI fa la differenza più grande.",
   },
 ]
 

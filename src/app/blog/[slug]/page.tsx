@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getAllPosts, getPostBySlug } from '@/lib/posts'
-import NewsletterCTA from '@/components/sections/NewsletterCTA'
+import ChiamataCTA from '@/components/sections/ChiamataCTA'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -60,7 +60,7 @@ export default async function BlogPostPage({ params }: Props) {
         </div>
       </article>
 
-      <NewsletterCTA />
+      <ChiamataCTA />
     </div>
   )
 }

@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const cols = [
-  { title: 'Sito',    links: [{ l: 'Chi sono', href: '/chi-sono' }, { l: 'Blog', href: '/blog' }, { l: 'Risorse', href: '/risorse' }, { l: 'Contatti', href: '/lavoriamo-insieme' }] },
-  { title: 'Servizi', links: [{ l: 'Consulenza 1:1', href: '/consulenza' }, { l: 'Formazione', href: '/lavoriamo-insieme#formazione' }, { l: 'Sponsorship', href: '/lavoriamo-insieme#sponsorizzazioni' }] },
+  { title: 'Sito',    links: [{ l: 'Chi sono', href: '/chi-sono' }, { l: 'Blog', href: '/blog' }, { l: 'Risorse', href: '/risorse' }, { l: 'Contatti', href: 'mailto:raffaele.smmarketing@gmail.com' }] },
+  { title: 'Servizi', links: [{ l: 'Consulenza gratuita', href: '/chiamata-gratuita' }] },
   { title: 'Legal',   links: [{ l: 'Privacy Policy', href: '/privacy' }, { l: 'Cookie Policy', href: '/cookie' }] },
 ]
 
