@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gli agenti che scrivono il blog della tua azienda · Raffaele Russo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0A0F1E;
+      --surface:   #0F1525;
+      --surface2:  #141C30;
+      --border:    #1E2940;
+      --border2:   #253350;
+      --text:      #e8e8ec;
+      --muted:     #7a7a88;
+      --accent:    #84E110;
+      --accent2:   #a8f040;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 88px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 420px;
+      background: radial-gradient(ellipse, rgba(132,225,16,0.10) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.28);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 100px);
+      letter-spacing: 0.04em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #d0d0d8 40%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 18px);
+      color: var(--muted); font-weight: 300;
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section-wrap { padding: 64px 24px; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 4.5vw, 48px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-intro {
+      color: var(--muted); font-size: 15px;
+      max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* ── OUTPUT GRID ── */
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-top: 24px;
+    }
+    .output-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .output-card:hover { border-color: rgba(132,225,16,0.3); }
+    .output-icon { font-size: 22px; margin-bottom: 10px; }
+    .output-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .output-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── ERROR LIST ── */
+    .err-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .err-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid #f87171;
+      border-radius: var(--radius); padding: 18px 22px;
+    }
+    .err-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .err-title::before { content: '✗'; color: #f87171; font-weight: 700; }
+    .err-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PART HEADER ── */
+    .part-header { padding: 56px 24px 0; }
+    .part-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── STEP CARDS ── */
+    .steps-wrapper { padding: 28px 24px 52px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .step-card:hover { border-color: var(--border2); }
+    .step-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .step-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--accent);
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 8px; padding: 4px 10px; white-space: nowrap;
+    }
+    .step-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .step-time  { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .step-body  { padding: 22px 24px; }
+    .step-body p { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body strong { color: var(--text); font-weight: 500; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px; margin: 12px 0;
+    }
+    .action-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text); line-height: 1.5;
+    }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-item:first-child { padding-top: 0; }
+    .action-arrow { color: var(--accent); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout.info    { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.22); color: #a8c4fc; }
+    .callout.warning { background: rgba(245,200,66,0.07); border: 1px solid rgba(245,200,66,0.22); color: #f5d98a; }
+    .callout.success { background: rgba(132,225,16,0.07); border: 1px solid rgba(132,225,16,0.22); color: #b4f06a; }
+    .callout.danger  { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: #fca5a5; }
+    .callout strong  { color: inherit; font-weight: 600; }
+
+    /* ── TOOL / ESTENSIONI ── */
+    .ext-list { margin-top: 20px; }
+    .ext-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .ext-item:hover { border-color: rgba(132,225,16,0.3); }
+    .ext-badge {
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.20);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent2);
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .ext-text h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ext-text h4 a { color: var(--accent2); text-decoration: none; }
+    .ext-text h4 a:hover { color: var(--accent); }
+    .ext-text p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── CTA FINALE ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,225,16,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { text-align: center; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .cta-desc {
+      font-size: 16px; color: var(--muted); font-weight: 300;
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0D0D0D;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 36px; border-radius: var(--radius);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px; text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.15em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .footer-handle { font-size: 14px; color: var(--accent2); font-weight: 500; text-decoration: none; }
+    .footer-handle:hover { color: var(--accent); }
+    .footer-keyword {
+      display: inline-block; margin-top: 20px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 13px; font-weight: 600; color: var(--accent2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .step-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .output-grid { grid-template-columns: 1fr; }
+    }
+  
+    /* ── LE DIECI COSE ── */
+    h1 { font-size: clamp(40px, 7vw, 76px); }
+    .cosa {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+    }
+    .cosa-testa {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .cosa-numero {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; letter-spacing: 0.06em; line-height: 1;
+      color: var(--accent); min-width: 34px;
+    }
+    .cosa-titolo { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .cosa-corpo { padding: 8px 24px 22px; }
+    .riga { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .riga:last-child { border-bottom: none; padding-bottom: 0; }
+    .riga-etichetta {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 5px;
+    }
+    .riga p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    .riga p + p { margin-top: 8px; }
+    .prompt {
+      margin-top: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius); padding: 14px 18px;
+      font-size: 14px; color: var(--text); line-height: 1.65;
+    }
+    .prompt-etichetta {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .avviso {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 22px; margin-bottom: 12px;
+    }
+    .avviso h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .avviso p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    @media (max-width: 600px) {
+      .cosa-testa { padding: 16px 18px; gap: 12px; }
+      .cosa-corpo { padding: 6px 18px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><span></span> Guida Pratica &middot; 6 minuti &middot; si comincia dal browser</div>
+      <h1>Gli agenti che scrivono il blog della tua azienda</h1>
+      <p class="hero-sub">Il sistema con cui il sito della mia azienda pubblica articoli tutti i giorni, in quattro passaggi: <strong>uno cerca le notizie, uno scrive, uno controlla, e l'ultima parola resta a te</strong>. Prima lo fai girare a mano, poi lo automatizzi.</p>
+    </div>
+  </header>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Prima di cominciare</div>
+      <div class="section-title">Tre cose da sapere</div>
+
+      <div class="avviso fade-in">
+        <h4>Cos'è un agente, qui</h4>
+        <p>Un'intelligenza artificiale con un lavoro solo e le sue istruzioni fisse. Uno cerca, uno scrive, uno controlla: ognuno fa una cosa, e la fa sempre allo stesso modo.</p>
+      </div>
+
+
+      <div class="avviso fade-in">
+        <h4>Si comincia a mano</h4>
+        <p>Per i primi articoli bastano tre chat con le istruzioni giuste, su ChatGPT o su Claude. Quando il giro funziona, lo fai partire da solo ogni mattina: in fondo trovi come.</p>
+      </div>
+
+
+      <div class="avviso fade-in">
+        <h4>A Google non interessa chi l'ha scritto</h4>
+        <p>Le regole di Google contro lo spam colpiscono le pagine fatte in serie per scalare le ricerche, che non servono a chi legge, «indipendentemente da come sono stati creati». Per questo il quarto passaggio non si salta mai: un articolo in meno è meglio di un articolo inutile.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="part-header container fade-in">
+      <div class="section-label">La guida</div>
+      <div class="section-title">I quattro passaggi</div>
+      <p class="section-intro">Ogni passaggio è un agente, con le sue istruzioni da copiare. Il primo articolo fallo girare a mano, dall'inizio alla fine, prima di automatizzare qualsiasi cosa.</p>
+    </div>
+    <div class="steps-wrapper container">
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">01</div>
+          <div class="cosa-titolo">Cerca: le novità, solo da fonti ufficiali</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa</div>
+            <p>Ogni giorno guarda le fonti del tuo settore e ti porta le novità, ognuna col link alla pagina originale. Poi, sulla novità che scegli, apre il documento e ne tira fuori i fatti: è la scheda da cui partirà lo scrittore.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Le fonti</div>
+            <p>Enti, ministeri, Gazzetta Ufficiale, ordini e associazioni del tuo settore, i produttori che usi. Mai blog, giornali o siti di consulenza: ripetono le notizie, a volte sbagliate. La lista la fai una volta: cinque o dieci siti bastano.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Da copiare</div>
+            <p>Per questo passaggio serve una chat che cerca sul web: ChatGPT e Gemini lo fanno. La prima richiesta trova le novità, la seconda fa la scheda dei fatti.</p><div class="prompt"><span class="prompt-etichetta">Da copiare</span>Sei il cronista del blog di [la tua azienda], che lavora nel settore [il tuo settore]. Cerca le novità degli ultimi sette giorni, solo su questi siti: [la tua lista]. Per ognuna scrivi il titolo, cosa cambia in due righe, la data e il link alla pagina originale. Se non trovi niente di nuovo, scrivi «niente di nuovo». Non usare blog, giornali o siti di consulenza.</div><div class="prompt"><span class="prompt-etichetta">Da copiare</span>Apri questo documento: [link o PDF]. Fammi la scheda dei fatti: una tabella con ogni fatto (numeri, date, scadenze, a chi si applica), la frase esatta del documento da cui lo prendi e dove si trova. In fondo scrivi cosa il documento non dice. Non aggiungere niente che nel documento non c'è.</div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">02</div>
+          <div class="cosa-titolo">Scrive: solo da quei fatti, con le tue istruzioni</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa</div>
+            <p>Scrive l'articolo partendo solo dalla scheda dei fatti, con le istruzioni che hai scritto una volta: per chi scrivi, con che tono, cosa non deve dire mai.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Le istruzioni. Sono il pezzo che fa la differenza: senza, l'intelligenza artificiale scrive articoli tutti uguali. Salvale in un progetto di ChatGPT o di Claude, così ogni articolo parte da lì.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Da copiare</div>
+            <p>Incolla le istruzioni nel progetto una volta sola. Poi, per ogni articolo, ci metti sotto la scheda dei fatti.</p><div class="prompt"><span class="prompt-etichetta">Da copiare</span>Sei lo scrittore del blog di [la tua azienda]. Scrivi per [chi legge: per esempio titolari di piccole imprese che leggono dal telefono]. Tono: [come parli tu: semplice, frasi corte, dai del tu, niente gergo]. Usa solo i fatti della scheda qui sotto: se un'informazione non c'è, non la aggiungi e non la indovini. Non scrivere mai: [la tua lista: superlativi, promesse di risultato, prezzi, nomi di clienti]. Struttura: un titolo che dice cosa cambia, poi chi riguarda, cosa fare e da quando. In fondo, il link alla fonte. Scheda dei fatti: …</div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">03</div>
+          <div class="cosa-titolo">Controlla: ogni frase, sulla fonte</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa</div>
+            <p>Legge l'articolo accanto alla fonte e cerca gli errori di fatto: un numero cambiato, una data sbagliata, una regola che la fonte non dice.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">La regola</div>
+            <p>Chi scrive non si controlla da solo. Usa un'altra chat, nuova, senza la conversazione dello scrittore: così il controllo non parte da quello che lo scrittore ha già deciso.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Da copiare</div>
+            <p>Se trova un errore, l'articolo torna allo scrittore con l'elenco delle frasi da correggere. Poi lo ricontrolli.</p><div class="prompt"><span class="prompt-etichetta">Da copiare</span>Sei il verificatore. Qui sotto trovi un articolo e la sua fonte. Per ogni frase dell'articolo che contiene un fatto (un numero, una data, una regola, un nome) dimmi se c'è nella fonte. Rispondi con una tabella: la frase, dove sta nella fonte, l'esito (ok, non c'è, diversa). Non correggere lo stile: cerco solo errori di fatto. Articolo: … Fonte: …</div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">04</div>
+          <div class="cosa-titolo">Approvi tu: prima che esca</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa</div>
+            <p>Niente va online senza che tu l'abbia letto. Nel mio sistema l'articolo mi arriva su Telegram, e va online solo se rispondo che lo approvo.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa resta a te</div>
+            <p>Leggerlo davvero, con la fonte sotto mano: è la tua firma. Se non ti convince, scartalo.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">A mano</div>
+            <p>Leggi, correggi quello che non ti torna, incolli nel blog e pubblichi.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Quando funziona</div>
+      <div class="section-title">Fallo girare da solo</div>
+      <p class="section-intro">Dopo qualche articolo fatto a mano sai cosa chiedere a ogni agente. A quel punto il giro può partire da solo ogni mattina, e a te arriva solo l'articolo da approvare. Uno strumento per farlo è n8n: un'automazione fatta di blocchi, ognuno fa una cosa.</p>
+    </div>
+    <div class="steps-wrapper container">
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">05</div>
+          <div class="cosa-titolo">Il giro automatico, blocco per blocco</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Ogni mattina</div>
+            <p>Il blocco Schedule Trigger fa partire il giro all'ora che scegli.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Le fonti</div>
+            <p>RSS Read legge i feed delle tue fonti. Molte fonti ufficiali ne hanno uno: la Gazzetta Ufficiale, l'Agenzia delle Entrate, l'INPS.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Gli agenti</div>
+            <p>Un blocco di intelligenza artificiale (OpenAI o Anthropic) fa lo scrittore e un altro il verificatore, ognuno con le istruzioni dei passaggi 2 e 3.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Telegram</div>
+            <p>Il blocco Telegram, con l'operazione Send and Wait for Response, ti manda l'articolo e ferma il giro finché non premi approva o rifiuta.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Il blog</div>
+            <p>Se approvi, il blocco WordPress, con Create a post, lo mette sul blog.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Ti servono</div>
+            <p>Un account n8n, una chiave API di OpenAI o di Anthropic, un bot Telegram (lo crei scrivendo a @BotFather) e l'accesso al tuo WordPress.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Se non te la senti</div>
+            <p>È la parte più tecnica, e si può rimandare. Il giro a mano dei quattro passaggi funziona lo stesso: le istruzioni e il controllo sono quello che conta.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Da dove parti</div>
+      <div class="section-title">Domani, un articolo solo</div>
+      <p class="section-intro">Scegli cinque fonti ufficiali del tuo settore, prendi una novità e falla passare dai quattro passaggi, a mano. Se l'articolo che esce lo pubblicheresti con la tua firma, il sistema c'è: da lì in poi lo ripeti, e poi lo automatizzi.</p>
+      <div class="callout success">
+        <div class="callout-icon">✅</div>
+        <div>Se vuoi farlo insieme, nella chiamata gratuita partiamo dal tuo settore e dalle tue fonti.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Strumenti</div>
+      <div class="section-title">Quello che ti serve</div>
+      <p class="section-intro">Per i quattro passaggi a mano basta il browser.</p>
+      <div class="ext-list">
+
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT ↗</a></h4>
+            <p>Per i passaggi 1, 2 e 3: cerca sul web, legge i PDF, e nei progetti tiene le istruzioni.</p>
+          </div>
+        </div>
+
+
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://claude.ai" target="_blank" rel="noopener">Claude ↗</a></h4>
+            <p>Molto bravo sui testi lunghi: va bene per lo scrittore e per il verificatore.</p>
+          </div>
+        </div>
+
+
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS/PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://n8n.io" target="_blank" rel="noopener">n8n ↗</a></h4>
+            <p>Per far girare tutto da solo, quando il giro a mano funziona.</p>
+          </div>
+        </div>
+
+
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS</div>
+          <div class="ext-text">
+            <h4><a href="https://telegram.org" target="_blank" rel="noopener">Telegram ↗</a></h4>
+            <p>Per ricevere gli articoli da approvare, col bot che crei con @BotFather.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container fade-in">
+      <div class="section-label">Il passo dopo</div>
+      <h2 class="cta-title">Vuoi portare gli agenti nel tuo lavoro, in modo semplice?</h2>
+      <p class="cta-desc">Richiedi una chiamata gratuita con me. In 20 minuti guardiamo il tuo settore, le tue fonti e da dove conviene cominciare nel tuo caso.</p>
+      <a href="https://raffaelerussoai.com/chiamata-gratuita?da=guida-agenti" target="_blank" rel="noopener" class="cta-btn">
+        Richiedi la chiamata gratuita →
+      </a>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 18px; position: relative;">raffaelerussoai.com/chiamata-gratuita</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">Guida di Raffaele Russo AI</div>
+      <a href="https://instagram.com/raffaelerusso.ai" target="_blank" rel="noopener" class="footer-handle">@raffaelerusso.ai</a>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 12px; font-style: italic;">Domande? Scrivimi su Instagram.</p>
+      <p style="font-size: 13px; margin-top: 14px;"><a href="https://raffaelerussoai.com/risorse" class="footer-handle">Le altre guide gratuite: raffaelerussoai.com/risorse</a></p>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      document.getElementById('progressBar').style.width = (window.scrollY / max * 100) + '%';
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

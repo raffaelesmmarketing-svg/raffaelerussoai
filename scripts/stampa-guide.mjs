@@ -22,6 +22,9 @@ export const GUIDE = [
   { html: '2026-05-13-prov-smettila-di-usare-chatgpt-come-un-motore.html', slug: 'chatgpt-non-e-google-usalo-davvero' },
   { html: '2026-05-06-prov-chatgpt-ti-dice-sempre-che-hai-ragione-e.html', slug: 'stop-al-chatgpt-che-ti-da-sempre-ragione' },
   { html: '2026-09-19-dieci-cose-da-automatizzare-senza-installare-niente.html', slug: 'dieci-cose-da-automatizzare-senza-installare-niente' },
+  // Guida che si sblocca con la mail: la sorgente sta fuori da public/ (non si serve) e il PDF ha un nome che non si
+  // indovina. Lo stesso nome sta in src/app/guida/[slug]/actions.ts, che lo dà solo dopo la mail.
+  { html: '2026-10-10-agenti-che-scrivono-il-blog.html', slug: 'agenti-che-scrivono-il-blog', cartella: 'guide-sorgenti', pdf: 'agenti-che-scrivono-il-blog-249536f41207' },
 ]
 
 const CSS_STAMPA = `
@@ -41,6 +44,9 @@ const CSS_STAMPA = `
   .output-grid { grid-template-columns: 1fr 1fr !important; }
   .output-card, .err-item, .ext-item, .callout, .action-item, .step-header, .section-intro, .step-body > p, .cosa, .avviso { break-inside: avoid; }
   .section-label, .section-title, .section-intro, .step-header, .part-header { break-after: avoid; }
+  /* un'etichetta non resta in fondo alla pagina col suo testo sulla pagina dopo */
+  .riga { break-inside: avoid; }
+  .riga-etichetta { break-after: avoid; }
   p { orphans: 3; widows: 3; }
   table.pagina { width: 100%; border-collapse: collapse; }
   table.pagina td { padding: 0; }
@@ -52,7 +58,7 @@ const daFare = scelte.length ? GUIDE.filter((g) => scelte.includes(g.slug)) : GU
 
 const browser = await chromium.launch()
 for (const g of daFare) {
-  const url = pathToFileURL(path.join(radice, g.html)).href
+  const url = pathToFileURL(path.join(g.cartella ? path.resolve(radice, '..', '..', g.cartella) : radice, g.html)).href
 
   // copertina: la testata della guida com'è a schermo
   const schermo = await browser.newPage({ viewport: { width: 1200, height: 675 }, deviceScaleFactor: 1 })
@@ -76,7 +82,7 @@ for (const g of daFare) {
   })
   const invisibili = await pagina.evaluate(() => [...document.querySelectorAll('.fade-in')].filter((e) => getComputedStyle(e).opacity !== '1').length)
   if (invisibili) throw new Error(`${g.slug}: ${invisibili} blocchi ancora invisibili`)
-  await pagina.pdf({ path: path.join(radice, `${g.slug}.pdf`), printBackground: true, preferCSSPageSize: true })
+  await pagina.pdf({ path: path.join(radice, `${g.pdf ?? g.slug}.pdf`), printBackground: true, preferCSSPageSize: true })
   await pagina.close()
   console.log('✓', g.slug)
 }
