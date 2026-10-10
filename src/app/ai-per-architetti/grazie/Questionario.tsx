@@ -29,13 +29,13 @@ export default function Questionario({ richiestaId }: { richiestaId: string }) {
           <ul className="mt-3 space-y-3">
             {guide.map((g) => (
               <li key={g.slug}>
-                <a href={pdfDi(g)} download className="group inline-flex items-start gap-3 no-underline">
+                <a href={pdfDi(g)} download={g.conMail ? undefined : true} className="group inline-flex items-start gap-3 no-underline">
                   <span aria-hidden className="mt-[11px] h-px w-5 shrink-0 bg-lime-500" />
                   <span>
                     <span className="block font-display font-bold text-white text-[17px] leading-[1.3] group-hover:text-lime-500 transition-colors">
                       {g.titolo}
                     </span>
-                    <span className="block font-body text-[14px] text-fog-300 mt-0.5">Guida pratica, {g.minuti} minuti. {g.sotto} <span className="text-fog-500">· PDF</span></span>
+                    <span className="block font-body text-[14px] text-fog-300 mt-0.5">Guida pratica, {g.minuti} minuti. {g.sotto} <span className="text-fog-500">· PDF{g.conMail ? ', con la mail' : ''}</span></span>
                   </span>
                 </a>
               </li>

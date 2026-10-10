@@ -38,6 +38,20 @@ export default function SchedaGuida({ guida, livello = 'h2' }: { guida: Guida; l
 }
 
 export function BottoneScarica({ guida, etichetta = 'Scarica la guida' }: { guida: Guida; etichetta?: string }) {
+  // La guida con la mail non si scarica da qui: si va alla sua pagina, dove si sblocca.
+  if (guida.conMail) {
+    return (
+      <Link
+        href={`/guida/${guida.slug}`}
+        className="cta-shimmer group inline-flex w-full sm:w-auto items-center justify-center gap-2.5 font-display font-extrabold text-sm tracking-[0.06em] uppercase bg-lime-500 text-navy-950 px-7 py-4 rounded-full no-underline shadow-glow-lime-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-lime-500/40"
+      >
+        <span className="relative z-10">Sblocca la guida</span>
+        <span className="relative z-10 transition-transform duration-200 group-hover:translate-x-1" aria-hidden>
+          →
+        </span>
+      </Link>
+    )
+  }
   return (
     <a
       href={pdfDi(guida)}

@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { BottoneScarica } from '@/components/guide/SchedaGuida'
+import SbloccaGuida from '@/components/guide/SbloccaGuida'
 import { copertinaDi, guidaPerSlug, guide } from '@/lib/guide'
 
 interface Props {
@@ -70,7 +71,7 @@ export default async function GuidaPage({ params }: Props) {
             </ul>
 
             <div className="mt-9">
-              <BottoneScarica guida={guida} />
+              {guida.conMail ? <SbloccaGuida slug={guida.slug} /> : <BottoneScarica guida={guida} />}
             </div>
             <p className="font-body text-[14px] text-fog-300 mt-5">
               <Link href="/risorse" className="text-fog-100 underline underline-offset-4 decoration-white/30 hover:text-lime-500 hover:decoration-lime-500 transition-colors">

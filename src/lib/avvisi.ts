@@ -103,6 +103,17 @@ async function email(a: { titolo: string; righe: string[] }, r: { nome: string; 
   )
 }
 
+// Avviso a Raffaele quando qualcuno sblocca una guida con la mail: solo Telegram, poche righe.
+// Se il database non ha salvato la mail, l'avviso lo dice: la mail resta qui da copiare.
+export async function avvisaGuida(a: { titolo: string; email: string; origine?: string; salvata: boolean }) {
+  return telegram({
+    titolo: `Guida sbloccata — ${a.titolo}`,
+    righe: [a.email, a.origine ? `Da: ${a.origine}` : null, a.salvata ? null : '⚠ Non salvata nel database: copiala da qui.'].filter(
+      (x): x is string => Boolean(x)
+    ),
+  })
+}
+
 // Torna: 'avvisata' | 'parziale' | 'gia_avvisata' | 'non_trovata' | 'fallita'.
 // I due canali partono insieme, ognuno solo se non ha già consegnato; la richiesta è «avvisata»
 // quando hanno consegnato tutti e due. Se ne manca uno, il giro dei dieci minuti ritenta solo quello.

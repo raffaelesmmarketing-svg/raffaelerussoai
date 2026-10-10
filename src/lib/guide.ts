@@ -12,9 +12,27 @@ export type Guida = {
   descrizione: string
   /** cosa c'è dentro, preso dai passi della guida */
   dentro: string[]
+  /** si scarica solo dopo aver lasciato la mail: il PDF non ha un indirizzo pubblico
+   *  (lo dà `src/app/guida/[slug]/actions.ts` dopo la mail) */
+  conMail?: true
 }
 
 export const guide: Guida[] = [
+  {
+    slug: 'agenti-che-scrivono-il-blog',
+    titolo: 'Gli agenti che scrivono il blog della tua azienda',
+    minuti: 6,
+    sotto: 'Quattro passaggi per un articolo al giorno: uno cerca, uno scrive, uno controlla, tu approvi.',
+    descrizione:
+      'Il sistema con cui il sito della mia azienda pubblica articoli tutti i giorni. Per ogni passaggio trovi cosa fa l’agente e le istruzioni da copiare; in fondo, come farlo girare da solo, con l’articolo che ti arriva su Telegram da approvare.',
+    dentro: [
+      'Le fonti giuste e la scheda dei fatti, da cui parte ogni articolo',
+      'Le istruzioni dello scrittore: per chi, con che tono, cosa non dire mai',
+      'Il controllo frase per frase, fatto da un agente diverso',
+      'Il giro automatico con n8n, con l’approvazione su Telegram',
+    ],
+    conMail: true,
+  },
   {
     slug: 'dieci-cose-da-automatizzare-senza-installare-niente',
     titolo: 'Dieci cose che puoi automatizzare da domani, senza installare niente',
@@ -59,6 +77,7 @@ export const guide: Guida[] = [
   },
 ]
 
-export const pdfDi = (g: Guida) => `/guide/${g.slug}.pdf`
+// Per una guida con la mail non c'è un PDF da linkare: si porta alla sua pagina, dove si sblocca.
+export const pdfDi = (g: Guida) => (g.conMail ? `/guida/${g.slug}` : `/guide/${g.slug}.pdf`)
 export const copertinaDi = (g: Guida) => `/guide/copertine/${g.slug}.jpg`
 export const guidaPerSlug = (slug: string) => guide.find((g) => g.slug === slug)
