@@ -25,6 +25,7 @@ export const GUIDE = [
   // Guida che si sblocca con la mail: la sorgente sta fuori da public/ (non si serve) e il PDF ha un nome che non si
   // indovina. Lo stesso nome sta in src/app/guida/[slug]/actions.ts, che lo dà solo dopo la mail.
   { html: '2026-10-10-agenti-che-scrivono-il-blog.html', slug: 'agenti-che-scrivono-il-blog', cartella: 'guide-sorgenti', pdf: 'agenti-che-scrivono-il-blog-249536f41207' },
+  { html: '2026-10-12-claude-su-whatsapp.html', slug: 'claude-su-whatsapp-senza-rischiare-il-numero', cartella: 'guide-sorgenti', pdf: 'claude-su-whatsapp-senza-rischiare-il-numero-ccc4b37c423f' },
 ]
 
 const CSS_STAMPA = `

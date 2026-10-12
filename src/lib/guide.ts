@@ -19,6 +19,21 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'claude-su-whatsapp-senza-rischiare-il-numero',
+    titolo: 'Claude sul tuo WhatsApp, senza rischiare il numero',
+    minuti: 7,
+    sotto: 'WhatsApp Web in Chrome, Claude che prepara le risposte e niente parte senza il tuo ok.',
+    descrizione:
+      'Come ho collegato Claude al mio WhatsApp senza programmi non ufficiali: WhatsApp Web aperto in Chrome e l’estensione ufficiale di Claude. Ti spiego come funziona, i quattro passaggi per collegarlo e le cinque regole da dargli, perché non faccia casini e agisca solo quando glielo chiedi tu.',
+    dentro: [
+      'Perché i «ponti» presi da internet ti fanno rischiare il numero',
+      'I quattro passaggi: Claude in Chrome, WhatsApp Web, «Manually approve», le regole',
+      'Le cinque regole da copiare',
+      'Tre richieste pronte e la prova sulla chat con te stesso',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'agenti-che-scrivono-il-blog',
     titolo: 'Gli agenti che scrivono il blog della tua azienda',
     minuti: 6,
