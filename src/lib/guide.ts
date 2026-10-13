@@ -22,6 +22,102 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'mirofish-il-pubblico-finto',
+    parole: ['simulazione', 'mirofish'],
+    titolo: 'MiroFish: il pubblico finto per provare le tue idee',
+    minuti: 9,
+    sotto: 'Persone finte che discutono la tua idea prima che la veda un cliente vero, e la prova da fare prima di fidarti.',
+    descrizione:
+      'Come uso MiroFish e la sua versione leggera con Claude: gli dai un documento e una domanda, crea tante persone finte, le fa discutere e ti scrive un rapporto. Serve a trovare gli errori evidenti prima di spendere, non a indovinare il futuro: per questo prima si prova su qualcosa di cui sai già com’è andata.',
+    dentro: [
+      'Cosa fa davvero, e cosa non fa (l’ho misurato)',
+      'Come si installa MiroFish, passo per passo',
+      'La versione leggera: la prova generale con Claude, senza installare niente',
+      'La controprova sul passato e tre esempi di domande',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'agenti-sull-abbonamento-di-claude',
+    parole: ['abbonamento', 'status'],
+    titolo: 'I tuoi agenti sull’abbonamento di Claude, senza pagare le API',
+    minuti: 6,
+    sotto: 'Un comando per vedere come paghi, la chiave da togliere e claude -p per far partire gli agenti.',
+    descrizione:
+      'Come ho smesso di pagare le API per i miei agenti: con /status vedi se Claude Code usa una chiave API e paghi a consumo anche con l’abbonamento, la togli, rientri nel piano e fai partire gli agenti con claude -p. Con i limiti da tenere d’occhio.',
+    dentro: [
+      'Perché puoi pagare due volte senza accorgertene',
+      'I cinque passaggi: /status, la chiave, il login, claude -p, i limiti',
+      'La frase da dire a Claude per far girare un agente',
+      'Gli agenti che partono da soli: il token dell’abbonamento',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'il-mio-manychat-con-claude-code',
+    parole: ['manychat', 'centralino'],
+    titolo: 'Il tuo ManyChat fatto con Claude Code',
+    minuti: 10,
+    sotto: 'Chi commenta una parola riceve il messaggio in privato, e chi lascia il numero ti arriva come avviso.',
+    descrizione:
+      'Come ho costruito il mio risponditore per Instagram con Claude Code, al posto di ManyChat: un’app su Meta for Developers, il programma scritto da Claude, messo online e provato da un altro profilo prima di accenderlo. Con le regole di Meta da rispettare e quello che costa davvero.',
+    dentro: [
+      'Cosa fa e le regole di Meta (7 giorni, 24 ore)',
+      'I cinque passaggi: profilo, app su Meta, programma, online, prova',
+      'La richiesta da dare a Claude Code per scrivere il programma',
+      'Le parole e i messaggi: come li scrivo io',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'humanizer-testi-umani',
+    parole: ['umano', 'humanizer'],
+    titolo: 'Humanizer: testi che non sembrano scritti da ChatGPT',
+    minuti: 6,
+    sotto: 'La skill gratuita che toglie i segni della scrittura AI, e la regola che le ho dato.',
+    descrizione:
+      'Humanizer è una skill gratuita su GitHub che riscrive i testi fatti con l’AI senza cambiare quello che dicono: parte dalla pagina di Wikipedia sui segni della scrittura AI. Come si installa in Claude Code e su Claude.ai, la regola che le ho dato e come usarla anche se scrivi con ChatGPT.',
+    dentro: [
+      'I cinque segni che tradiscono un testo scritto con l’AI',
+      'Come si installa in Claude Code e su Claude.ai',
+      'La regola da dare a Claude, da copiare',
+      'Come usarla se scrivi con ChatGPT',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'second-brain-con-claude',
+    parole: ['brain', 'buongiorno'],
+    titolo: 'Il tuo second brain con Claude: scrivi buongiorno e sa da dove ripartire',
+    minuti: 8,
+    sotto: 'Una cartella su Obsidian, un file di istruzioni e due parole al giorno: buongiorno e buonanotte.',
+    descrizione:
+      'Come ho costruito il mio second brain: una cartella su Obsidian con un file su di me e uno per ogni giorno, un file di istruzioni che legge Claude Code, e due rituali. La mattina scrivo buongiorno e sa cosa è rimasto a metà ieri; la sera scrivo buonanotte, rispondo a cinque domande e aggiorna tutto lui. Con il prompt e il file di istruzioni da copiare.',
+    dentro: [
+      'I tre pezzi: la cartella, il file di istruzioni, i due rituali',
+      'La richiesta da dare a Claude Code per montarlo',
+      'Il file di istruzioni da copiare (buongiorno e buonanotte)',
+      'Le cinque domande della sera',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'granola-e-claude-code',
+    parole: ['granola', 'riassunto'],
+    titolo: 'Finisci la call, il riassunto è già pronto: Granola e Claude Code',
+    minuti: 6,
+    sotto: 'Granola ascolta la call dal computer, Claude tira fuori decisioni e prossimi passi.',
+    descrizione:
+      'Come uso Granola con Claude Code: Granola ascolta le call dal computer, senza un robot che entra nella riunione, e lascia note e riassunto. Collegato a Claude Code, a fine call gli chiedo decisioni, argomenti e prossimi passi, anche come lista di cose da fare. Passo passo, con tre consigli per usarlo bene.',
+    dentro: [
+      'Cosa fa Granola, e perché nessun robot entra nella call',
+      'I quattro passaggi: installa, registra, collega, chiedi',
+      'La richiesta da dare a Claude a fine call',
+      'Tre consigli per usarlo bene',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'claude-su-instagram-senza-rischiare-l-account',
     parole: ['instagram', 'chrome'],
     titolo: 'Claude sul tuo Instagram, senza rischiare l’account',

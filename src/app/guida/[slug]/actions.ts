@@ -15,6 +15,12 @@ const PDF_CON_MAIL: Record<string, string> = {
   'claude-su-whatsapp-senza-rischiare-il-numero': '/guide/claude-su-whatsapp-senza-rischiare-il-numero-ccc4b37c423f.pdf',
   'il-cervello-della-squadra-con-claude': '/guide/il-cervello-della-squadra-con-claude-3bd02955db1a.pdf',
   'claude-su-instagram-senza-rischiare-l-account': '/guide/claude-su-instagram-senza-rischiare-l-account-a51397e173b4.pdf',
+  'mirofish-il-pubblico-finto': '/guide/mirofish-il-pubblico-finto-4aab8cfc46b1.pdf',
+  'agenti-sull-abbonamento-di-claude': '/guide/agenti-sull-abbonamento-di-claude-d2042c4b3a6a.pdf',
+  'il-mio-manychat-con-claude-code': '/guide/il-mio-manychat-con-claude-code-7d7effa2da08.pdf',
+  'humanizer-testi-umani': '/guide/humanizer-testi-umani-4f260eba4507.pdf',
+  'second-brain-con-claude': '/guide/second-brain-con-claude-6e2539306af2.pdf',
+  'granola-e-claude-code': '/guide/granola-e-claude-code-3d07829fab6a.pdf',
 }
 
 export type EsitoGuida =

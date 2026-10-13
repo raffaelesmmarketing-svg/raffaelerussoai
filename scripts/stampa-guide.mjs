@@ -28,6 +28,12 @@ export const GUIDE = [
   { html: '2026-10-12-claude-su-whatsapp.html', slug: 'claude-su-whatsapp-senza-rischiare-il-numero', cartella: 'guide-sorgenti', pdf: 'claude-su-whatsapp-senza-rischiare-il-numero-ccc4b37c423f' },
   { html: '2026-10-13-cervello-della-squadra.html', slug: 'il-cervello-della-squadra-con-claude', cartella: 'guide-sorgenti', pdf: 'il-cervello-della-squadra-con-claude-3bd02955db1a' },
   { html: '2026-10-13-claude-su-instagram.html', slug: 'claude-su-instagram-senza-rischiare-l-account', cartella: 'guide-sorgenti', pdf: 'claude-su-instagram-senza-rischiare-l-account-a51397e173b4' },
+  { html: '2026-10-14-mirofish-pubblico-finto.html', slug: 'mirofish-il-pubblico-finto', cartella: 'guide-sorgenti', pdf: 'mirofish-il-pubblico-finto-4aab8cfc46b1' },
+  { html: '2026-10-14-agenti-sull-abbonamento.html', slug: 'agenti-sull-abbonamento-di-claude', cartella: 'guide-sorgenti', pdf: 'agenti-sull-abbonamento-di-claude-d2042c4b3a6a' },
+  { html: '2026-10-14-manychat-con-claude-code.html', slug: 'il-mio-manychat-con-claude-code', cartella: 'guide-sorgenti', pdf: 'il-mio-manychat-con-claude-code-7d7effa2da08' },
+  { html: '2026-10-14-humanizer-testi-umani.html', slug: 'humanizer-testi-umani', cartella: 'guide-sorgenti', pdf: 'humanizer-testi-umani-4f260eba4507' },
+  { html: '2026-10-14-second-brain-con-claude.html', slug: 'second-brain-con-claude', cartella: 'guide-sorgenti', pdf: 'second-brain-con-claude-6e2539306af2' },
+  { html: '2026-10-14-granola-e-claude-code.html', slug: 'granola-e-claude-code', cartella: 'guide-sorgenti', pdf: 'granola-e-claude-code-3d07829fab6a' },
 ]
 
 const CSS_STAMPA = `
