@@ -23,7 +23,7 @@ export type Guida = {
 export const guide: Guida[] = [
   {
     slug: 'claude-su-instagram-senza-rischiare-l-account',
-    parole: ['instagram'],
+    parole: ['instagram', 'chrome'],
     titolo: 'Claude sul tuo Instagram, senza rischiare l’account',
     minuti: 8,
     sotto: 'Instagram in Chrome, Claude che prepara e invia i messaggi, e niente parte senza il tuo ok.',
@@ -117,7 +117,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'stop-al-chatgpt-che-ti-da-sempre-ragione',
-    parole: ['critico'],
+    parole: ['critico', 'parere'],
     titolo: 'Stop al ChatGPT che ti dà sempre ragione',
     minuti: 8,
     sotto: 'Come farti dire quello che non torna, invece di quello che vuoi sentire.',
