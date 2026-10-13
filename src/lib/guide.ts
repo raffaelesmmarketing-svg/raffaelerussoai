@@ -15,11 +15,15 @@ export type Guida = {
   /** si scarica solo dopo aver lasciato la mail: il PDF non ha un indirizzo pubblico
    *  (lo dà `src/app/guida/[slug]/actions.ts` dopo la mail) */
   conMail?: true
+  /** le parole del Centralino di Instagram che portano qui: il messaggio in privato dà il link corto
+   *  raffaelerussoai.com/g/<parola> (in minuscolo), che rimanda alla guida con ?da=instagram (next.config.ts) */
+  parole?: string[]
 }
 
 export const guide: Guida[] = [
   {
     slug: 'claude-su-instagram-senza-rischiare-l-account',
+    parole: ['instagram'],
     titolo: 'Claude sul tuo Instagram, senza rischiare l’account',
     minuti: 8,
     sotto: 'Instagram in Chrome, Claude che prepara e invia i messaggi, e niente parte senza il tuo ok.',
@@ -35,6 +39,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'il-cervello-della-squadra-con-claude',
+    parole: ['cervello', 'squadra'],
     titolo: 'Il cervello della squadra: le stesse skill di Claude per tutti',
     minuti: 8,
     sotto: 'Le skill in un archivio privato su GitHub: correggi una volta, e alla prossima apertura le usano tutti.',
@@ -50,6 +55,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'claude-su-whatsapp-senza-rischiare-il-numero',
+    parole: ['whatsapp'],
     titolo: 'Claude sul tuo WhatsApp, senza rischiare il numero',
     minuti: 7,
     sotto: 'WhatsApp Web in Chrome, Claude che prepara le risposte e niente parte senza il tuo ok.',
@@ -65,6 +71,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'agenti-che-scrivono-il-blog',
+    parole: ['agenti'],
     titolo: 'Gli agenti che scrivono il blog della tua azienda',
     minuti: 6,
     sotto: 'Quattro passaggi per un articolo al giorno: uno cerca, uno scrive, uno controlla, tu approvi.',
@@ -80,6 +87,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'dieci-cose-da-automatizzare-senza-installare-niente',
+    parole: ['automatizza'],
     titolo: 'Dieci cose che puoi automatizzare da domani, senza installare niente',
     minuti: 9,
     sotto: 'Dieci lavori che rifai ogni settimana, con il prompt da copiare per ognuno.',
@@ -94,6 +102,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'chatgpt-non-e-google-usalo-davvero',
+    parole: ['google'],
     titolo: 'ChatGPT non è Google: usalo davvero',
     minuti: 12,
     sotto: 'Da domande generiche a un collaboratore che conosce il tuo lavoro.',
@@ -108,6 +117,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'stop-al-chatgpt-che-ti-da-sempre-ragione',
+    parole: ['critico'],
     titolo: 'Stop al ChatGPT che ti dà sempre ragione',
     minuti: 8,
     sotto: 'Come farti dire quello che non torna, invece di quello che vuoi sentire.',
@@ -126,3 +136,7 @@ export const guide: Guida[] = [
 export const pdfDi = (g: Guida) => (g.conMail ? `/guida/${g.slug}` : `/guide/${g.slug}.pdf`)
 export const copertinaDi = (g: Guida) => `/guide/copertine/${g.slug}.jpg`
 export const guidaPerSlug = (slug: string) => guide.find((g) => g.slug === slug)
+
+// I link corti del Centralino: /g/instagram → la guida (pagina con la mail o PDF), col ?da=instagram di prima.
+export const linkCorti = () =>
+  guide.flatMap((g) => (g.parole ?? []).map((parola) => ({ parola, destinazione: `${pdfDi(g)}?da=instagram` })))

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { linkCorti } from "./src/lib/guide";
 
 const nextConfig: NextConfig = {
   // Le offerte vecchie (consulenza a 199 €, formazione, sponsorizzazioni) sono spente per ora:
@@ -8,6 +9,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/consulenza", destination: "/chiamata-gratuita", permanent: false },
       { source: "/lavoriamo-insieme", destination: "/chiamata-gratuita", permanent: false },
+      // I link corti dei messaggi in privato del Centralino (raffaelerussoai.com/g/instagram): temporanei, così
+      // una parola può cambiare guida. Una parola che non c'è (o non c'è più) porta a tutte le guide.
+      ...linkCorti().map(({ parola, destinazione }) => ({ source: `/g/${parola}`, destination: destinazione, permanent: false })),
+      { source: "/g/:resto*", destination: "/risorse?da=instagram", permanent: false },
     ];
   },
 };
