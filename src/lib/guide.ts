@@ -19,6 +19,21 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'il-cervello-della-squadra-con-claude',
+    titolo: 'Il cervello della squadra: le stesse skill di Claude per tutti',
+    minuti: 8,
+    sotto: 'Le skill in un archivio privato su GitHub: correggi una volta, e alla prossima apertura le usano tutti.',
+    descrizione:
+      'Come lavoro con la mia collaboratrice: le istruzioni che insegno al mio Claude stanno in un archivio privato su GitHub, e il suo Claude, ogni volta che parte, scarica l’ultima versione. I sei passaggi per montarlo, l’hook che lo aggiorna da solo e le regole su chi modifica cosa.',
+    dentro: [
+      'Cos’è una skill e che problema risolve in una squadra',
+      'I sei passaggi: l’archivio privato, l’elenco, la pubblicazione, il collegamento',
+      'L’hook che a ogni avvio scarica l’ultima versione, da copiare',
+      'Chi modifica cosa, e le tre regole per non litigare',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'claude-su-whatsapp-senza-rischiare-il-numero',
     titolo: 'Claude sul tuo WhatsApp, senza rischiare il numero',
     minuti: 7,
