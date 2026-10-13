@@ -27,6 +27,7 @@ export const GUIDE = [
   { html: '2026-10-10-agenti-che-scrivono-il-blog.html', slug: 'agenti-che-scrivono-il-blog', cartella: 'guide-sorgenti', pdf: 'agenti-che-scrivono-il-blog-249536f41207' },
   { html: '2026-10-12-claude-su-whatsapp.html', slug: 'claude-su-whatsapp-senza-rischiare-il-numero', cartella: 'guide-sorgenti', pdf: 'claude-su-whatsapp-senza-rischiare-il-numero-ccc4b37c423f' },
   { html: '2026-10-13-cervello-della-squadra.html', slug: 'il-cervello-della-squadra-con-claude', cartella: 'guide-sorgenti', pdf: 'il-cervello-della-squadra-con-claude-3bd02955db1a' },
+  { html: '2026-10-13-claude-su-instagram.html', slug: 'claude-su-instagram-senza-rischiare-l-account', cartella: 'guide-sorgenti', pdf: 'claude-su-instagram-senza-rischiare-l-account-a51397e173b4' },
 ]
 
 const CSS_STAMPA = `

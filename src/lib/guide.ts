@@ -19,6 +19,21 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'claude-su-instagram-senza-rischiare-l-account',
+    titolo: 'Claude sul tuo Instagram, senza rischiare l’account',
+    minuti: 8,
+    sotto: 'Instagram in Chrome, Claude che prepara e invia i messaggi, e niente parte senza il tuo ok.',
+    descrizione:
+      'Come uso Claude sul mio Instagram dal browser: apre il profilo o la chat che gli chiedi, prepara il messaggio e lo invia solo dopo il tuo sì. I quattro passaggi per collegarlo, cosa dicono le regole di Instagram e le cinque regole da dargli, per tenere basso il rischio sull’account.',
+    dentro: [
+      'Cosa dicono le condizioni d’uso di Instagram, e come si tiene basso il rischio',
+      'I quattro passaggi: Claude in Chrome, l’accesso, «Manually approve», le regole',
+      'Le cinque regole da copiare',
+      'Tre richieste pronte: rispondere, scrivere a un’azienda, riprendere una chat',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'il-cervello-della-squadra-con-claude',
     titolo: 'Il cervello della squadra: le stesse skill di Claude per tutti',
     minuti: 8,
