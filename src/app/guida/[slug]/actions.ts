@@ -12,6 +12,7 @@ const SUPABASE_KEY_PUBBLICA = 'sb_publishable_9Yc0GLvZrQzOV7Ss82kyEQ_jNzTGIpW'
 // compare in nessuna pagina: lo riceve solo chi ha lasciato la mail.
 const PDF_CON_MAIL: Record<string, string> = {
   'agenti-che-scrivono-il-blog': '/guide/agenti-che-scrivono-il-blog-249536f41207.pdf',
+  'montaggio-video-con-claude': '/guide/montaggio-video-con-claude-401b6fe11a7b.pdf',
   'claude-su-whatsapp-senza-rischiare-il-numero': '/guide/claude-su-whatsapp-senza-rischiare-il-numero-ccc4b37c423f.pdf',
   'il-cervello-della-squadra-con-claude': '/guide/il-cervello-della-squadra-con-claude-3bd02955db1a.pdf',
   'claude-su-instagram-senza-rischiare-l-account': '/guide/claude-su-instagram-senza-rischiare-l-account-a51397e173b4.pdf',

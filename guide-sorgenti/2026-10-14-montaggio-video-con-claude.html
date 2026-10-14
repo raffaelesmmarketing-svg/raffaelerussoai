@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I tuoi video montati da Claude, come i miei · Raffaele Russo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0A0F1E;
+      --surface:   #0F1525;
+      --surface2:  #141C30;
+      --border:    #1E2940;
+      --border2:   #253350;
+      --text:      #e8e8ec;
+      --muted:     #7a7a88;
+      --accent:    #84E110;
+      --accent2:   #a8f040;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 88px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 420px;
+      background: radial-gradient(ellipse, rgba(132,225,16,0.10) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.28);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 100px);
+      letter-spacing: 0.04em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #d0d0d8 40%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 18px);
+      color: #b9bcc8; font-weight: 400;
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section-wrap { padding: 64px 24px; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 4.5vw, 48px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-intro {
+      color: #b9bcc8; font-size: 15px;
+      max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* ── OUTPUT GRID ── */
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-top: 24px;
+    }
+    .output-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .output-card:hover { border-color: rgba(132,225,16,0.3); }
+    .output-icon { font-size: 22px; margin-bottom: 10px; }
+    .output-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .output-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── ERROR LIST ── */
+    .err-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .err-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid #f87171;
+      border-radius: var(--radius); padding: 18px 22px;
+    }
+    .err-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .err-title::before { content: '✗'; color: #f87171; font-weight: 700; }
+    .err-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PART HEADER ── */
+    .part-header { padding: 56px 24px 0; }
+    .part-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── STEP CARDS ── */
+    .steps-wrapper { padding: 28px 24px 52px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .step-card:hover { border-color: var(--border2); }
+    .step-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .step-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--accent);
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 8px; padding: 4px 10px; white-space: nowrap;
+    }
+    .step-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .step-time  { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .step-body  { padding: 22px 24px; }
+    .step-body p { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body strong { color: var(--text); font-weight: 500; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px; margin: 12px 0;
+    }
+    .action-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text); line-height: 1.5;
+    }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-item:first-child { padding-top: 0; }
+    .action-arrow { color: var(--accent); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout.info    { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.22); color: #a8c4fc; }
+    .callout.warning { background: rgba(245,200,66,0.07); border: 1px solid rgba(245,200,66,0.22); color: #f5d98a; }
+    .callout.success { background: rgba(132,225,16,0.07); border: 1px solid rgba(132,225,16,0.22); color: #b4f06a; }
+    .callout.danger  { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: #fca5a5; }
+    .callout strong  { color: inherit; font-weight: 600; }
+
+    /* ── TOOL / ESTENSIONI ── */
+    .ext-list { margin-top: 20px; }
+    .ext-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .ext-item:hover { border-color: rgba(132,225,16,0.3); }
+    .ext-badge {
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.20);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent2);
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .ext-text h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ext-text h4 a { color: var(--accent2); text-decoration: none; }
+    .ext-text h4 a:hover { color: var(--accent); }
+    .ext-text p  { font-size: 14px; color: #b9bcc8; line-height: 1.6; }
+
+    /* ── CTA FINALE ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,225,16,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { text-align: center; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .cta-desc {
+      font-size: 16px; color: #b9bcc8; font-weight: 400;
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0D0D0D;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 36px; border-radius: var(--radius);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px; text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.15em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .footer-handle { font-size: 14px; color: var(--accent2); font-weight: 500; text-decoration: none; }
+    .footer-handle:hover { color: var(--accent); }
+    .footer-keyword {
+      display: inline-block; margin-top: 20px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 13px; font-weight: 600; color: var(--accent2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .step-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .output-grid { grid-template-columns: 1fr; }
+    }
+  
+    /* ── LE DIECI COSE ── */
+    h1 { font-size: clamp(40px, 7vw, 76px); }
+    .cosa {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+    }
+    .cosa-testa {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .cosa-numero {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; letter-spacing: 0.06em; line-height: 1;
+      color: var(--accent); min-width: 34px;
+    }
+    .cosa-titolo { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .cosa-corpo { padding: 8px 24px 22px; }
+    .riga { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .riga:last-child { border-bottom: none; padding-bottom: 0; }
+    .riga-etichetta {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 5px;
+    }
+    .riga p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    .riga p + p { margin-top: 8px; }
+    .prompt {
+      margin-top: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius); padding: 14px 18px;
+      font-size: 14px; color: var(--text); line-height: 1.65;
+    }
+    .prompt-etichetta {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .avviso {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 22px; margin-bottom: 12px;
+    }
+    .avviso h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .avviso p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    @media (max-width: 600px) {
+      .cosa-testa { padding: 16px 18px; gap: 12px; }
+      .cosa-corpo { padding: 6px 18px 20px; }
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><span></span> Guida Pratica &middot; 7 minuti di lettura &middot; aprila dal computer: i messaggi li copi da qui</div>
+      <h1>I tuoi video montati da Claude, come i miei</h1>
+      <p class="hero-sub">Il mio ultimo video non l&#x27;ho montato io: l&#x27;ha montato Claude. In questa guida trovi la skill che uso, pronta da installare, e i passaggi da fare insieme a lui. <strong>Tu registri, al montaggio ci pensa lui.</strong></p>
+    </div>
+  </header>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Prima di cominciare</div>
+      <div class="section-title">Tre cose da sapere</div>
+
+      <div class="avviso fade-in">
+        <h4>Cosa fa</h4>
+        <p>Prende il video in cui parli e lo monta: toglie le pause e le frasi sbagliate, lo accelera un po&#x27;, cambia lo zoom a ogni taglio, mette le scritte con la parola chiave, i sottotitoli e la musica sotto la voce. Vale per i video verticali (Reel, TikTok, Shorts) e per quelli lunghi di YouTube, dove ti prepara anche i capitoli. Un reel di un minuto è pronto in una decina di minuti.</p>
+      </div>
+
+      <div class="avviso fade-in">
+        <h4>Cosa ti serve</h4>
+        <p>L&#x27;abbonamento a Claude a pagamento: il piano Pro costa 20 dollari al mese (17 con l&#x27;abbonamento annuale) e comprende Claude Code. Poi un Mac o un PC Windows con almeno 10 GB liberi. Gli altri programmi sono gratuiti e li installa Claude. La prima volta, fra installazione e programmi da scaricare, mettiti mezz&#x27;ora da parte; poi basta un messaggio per ogni video.</p>
+      </div>
+
+      <div class="avviso fade-in">
+        <h4>Cosa non fa</h4>
+        <p>Non indovina al primo colpo come vuoi tu i tuoi video: le prime volte servono più giri, e ogni correzione che gli dai diventa una regola scritta. Tagli, zoom, scritte, sottotitoli e musica li fa come nei miei video; le grafiche animate dei miei video lunghi sono un passo in più.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="part-header container fade-in">
+      <div class="section-label">La guida</div>
+      <div class="section-title">Dall&#x27;installazione al primo video</div>
+      <p class="section-intro">Cinque passaggi. I primi due si fanno una volta sola; dal terzo in poi è quello che fai per ogni video.</p>
+    </div>
+    <div class="steps-wrapper container">
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">01</div>
+          <div class="cosa-titolo">Apri Claude Code sul computer</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Dove</div>
+            <p>Scarica l&#x27;app di Claude da <code>claude.com/download</code>, aprila ed entra col tuo account. In alto trovi tre sezioni, Chat, Cowork e Code: apri <strong>Code</strong>. La chat normale non può aprire i file del tuo computer, Code sì.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">La cartella</div>
+            <p>Se ti chiede in che cartella lavorare, scegli quella dove metterai i tuoi video (va benissimo la Scrivania).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">02</div>
+          <div class="cosa-titolo">Installa la skill</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Scrivi in Claude Code</div>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Installa la skill di montaggio video di Raffaele Russo: scarica https://raffaelerussoai.com/guide/skill-montaggio-video-6f6e8594cc27.zip, scompattala nella cartella delle mie skill di Claude Code e poi segui il file INSTALLA.md che c&#x27;è dentro. Spiegami ogni passaggio con parole semplici.</div>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Incollalo così com&#x27;è</div>
+            <p>Non devi cambiare niente: le cartelle le trova Claude. Dentro ci sono solo istruzioni e piccoli programmi per il montaggio; se vuoi, prima chiedigli «dimmi cosa c&#x27;è dentro».</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">I permessi</div>
+            <p>Mentre installa, Claude ti chiederà più volte il permesso di fare una cosa (scaricare un file, installare un programma). È normale. Se non capisci cosa ti chiede, scrivigli «cosa fa, in parole semplici?», poi rispondi di sì.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Se sei su Mac</div>
+            <p>Quasi sicuramente Claude ti chiederà di installare Homebrew, un programma gratuito che serve a scaricare gli altri, e ti darà una riga da copiare. Apri il Terminale (premi Cmd e la barra spaziatrice, scrivi Terminale, premi Invio), incolla la riga con Cmd e V e premi Invio. Quando ti chiede la password del Mac, scrivila: mentre la scrivi non compare niente, nemmeno i puntini, ed è normale. Premi Invio, aspetta che finisca, poi torna in Claude e scrivi «fatto».</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Se sei su Windows</div>
+            <p>Ti compariranno finestre che chiedono «Vuoi consentire a questa app di apportare modifiche al dispositivo?»: rispondi Sì. Alla fine Claude può chiederti di chiudere e riaprire l&#x27;app.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Le sei domande</div>
+            <p>Poi ti chiede, una alla volta: che video fai, la velocità, il colore del tuo marchio, il carattere delle scritte, i nomi che dici spesso (il tuo, quello della tua azienda) e se vuoi una musica di sottofondo. Se non sai cosa rispondere, scrivi «scegli tu».</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">03</div>
+          <div class="cosa-titolo">Registra e porta il video sul computer</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Il telefono</div>
+            <p>In verticale per Reel, TikTok e Shorts, in orizzontale per YouTube. La luce davanti a te, il microfono vicino alla bocca: va benissimo un microfono a clip.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Se sbagli una frase</div>
+            <p>Fermati un secondo e ridilla da capo: Claude tiene l&#x27;ultima. Non serve rifare tutto il video.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Su iPhone</div>
+            <p>Spegni l&#x27;HDR: Impostazioni › Fotocamera › Registra video › Video HDR. Se lo lasci acceso, sul Mac Claude lo converte da solo; con l&#x27;HDR spento i colori escono giusti su ogni computer.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Sul computer</div>
+            <p>Dall&#x27;iPhone al Mac con AirDrop; sul PC Windows col cavo, oppure da Google Drive. Non mandarlo su WhatsApp: lo comprime e perde qualità.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">04</div>
+          <div class="cosa-titolo">Fattelo montare</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Scrivi in Claude Code</div>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Montami questo video in verticale: [trascina qui il file]</div>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa fa</div>
+            <p>Trascrive quello che dici e prepara una bozza, che guarda prima di dartela: le scritte dentro lo schermo, la faccia libera. Poi ti dà il video finito, con l&#x27;audio al livello giusto per le piattaforme, e ti dice cosa ha tolto (le pause, le frasi ripetute, il «ok, parto» all&#x27;inizio). Se qualcosa doveva restare, diglielo.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Quanto ci mette</div>
+            <p>Per un reel di un minuto una decina di minuti. Lascia il computer acceso, col coperchio aperto, finché non ti dice che ha finito.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Dove lo trovi</div>
+            <p>Nella cartella accanto al tuo video, col nome <code>finale.mp4</code>. Scrivigli «aprimi la cartella» e te la apre lui.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Per YouTube</div>
+            <p>Scrivi «in orizzontale per YouTube»: oltre al video ti dà i capitoli, da incollare nella descrizione.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">05</div>
+          <div class="cosa-titolo">Guardalo e correggi</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Scrivi in Claude Code</div>
+            <div class="prompt"><span class="prompt-etichetta">Per esempio</span>La scritta a 0:12 copre la faccia e la musica è troppo alta. Correggi, e scrivilo nelle regole così non lo rifai.</div>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Perché conta</div>
+            <p>Claude sistema il video e scrive la correzione nel file <code>REGOLE.md</code>, che rilegge prima di ogni montaggio. È così che impara a montare come vuoi tu: una correzione alla volta.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Se qualcosa va storto</div>
+      <div class="section-title">Non chiudere niente</div>
+      <p class="section-intro">Se si ferma o compare un messaggio di errore, scrivi a Claude: «cosa è successo? Spiegamelo in parole semplici e sistemalo». Spesso lo risolve da solo. Se non si sblocca, mandami una foto dello schermo su Instagram, a @raffaelerusso.ai.</p>
+      <p class="section-intro">Se ti dice che hai raggiunto il limite del tuo piano, non è rotto: riparte dopo qualche ora.</p>
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Da dove parti</div>
+      <div class="section-title">Domani, un minuto di video</div>
+      <p class="section-intro">Registra un minuto su una cosa che spieghi spesso ai tuoi clienti. Fattelo montare, guardalo e digli una cosa da cambiare. Dal secondo video riparte già dalle regole che gli hai dato.</p>
+      <div class="callout success">
+        <div class="callout-icon">✅</div>
+        <div>Se vuoi una mano a partire, richiedi la chiamata gratuita qui sotto: guardiamo il tuo caso e da dove conviene cominciare.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Strumenti</div>
+      <div class="section-title">Quello che ti serve</div>
+      <p class="section-intro">Gli strumenti che usa la skill, con quello che costano.</p>
+      <div class="ext-list">
+
+        <div class="ext-item fade-in">
+          <div class="ext-badge">PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://claude.com/pricing" target="_blank" rel="noopener">Claude Pro, con Claude Code ↗</a></h4>
+            <p>20 dollari al mese, 17 con l&#x27;abbonamento annuale (prezzi di claude.com/pricing, letti il 14/10/2026). È Claude che monta.</p>
+          </div>
+        </div>
+
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS</div>
+          <div class="ext-text">
+            <h4><a href="https://raffaelerussoai.com/guide/skill-montaggio-video-6f6e8594cc27.zip" target="_blank" rel="noopener">La skill di montaggio ↗</a></h4>
+            <p>Quella di questa guida: la installi con il messaggio del passaggio 2.</p>
+          </div>
+        </div>
+
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS</div>
+          <div class="ext-text">
+            <h4>ffmpeg, Python, Node.js, faster-whisper, HyperFrames</h4>
+            <p>I programmi che trascrivono e lavorano il video. Li installa Claude al passaggio 2: non devi aprire niente.</p>
+          </div>
+        </div>
+
+        <div class="ext-item fade-in">
+          <div class="ext-badge">GRATIS</div>
+          <div class="ext-text">
+            <h4>Musica senza diritti</h4>
+            <p>La Libreria audio di YouTube Studio o Pixabay Music: scarichi il brano e lo trascini nella chat quando Claude te lo chiede. Mai una canzone presa da Spotify o dal video di qualcun altro.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container fade-in">
+      <div class="section-label">Il passo dopo</div>
+      <h2 class="cta-title">Vuoi portare l'intelligenza artificiale nel tuo lavoro, in modo semplice?</h2>
+      <p class="cta-desc">Richiedi una chiamata gratuita con me. In 20 minuti guardiamo come lavori oggi e da dove conviene cominciare nel tuo caso.</p>
+      <a href="https://raffaelerussoai.com/chiamata-gratuita?da=guida-montaggio-video" target="_blank" rel="noopener" class="cta-btn">
+        Richiedi la chiamata gratuita →
+      </a>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 18px; position: relative;">raffaelerussoai.com/chiamata-gratuita</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">Guida di Raffaele Russo AI</div>
+      <a href="https://instagram.com/raffaelerusso.ai" target="_blank" rel="noopener" class="footer-handle">@raffaelerusso.ai</a>
+      <p style="font-size: 13px; color: #b9bcc8; margin-top: 12px; font-style: italic;">Domande? Scrivimi su Instagram.</p>
+      <p style="font-size: 13px; color: #b9bcc8; margin-top: 12px;">La skill è stata provata il 14/10/2026 su un Mac, con un reel girato con l&#x27;iPhone in HDR e un video lungo in 4K (faster-whisper 1.2.1, HyperFrames 0.8.157), e da un Claude Code installato da zero che ha seguito solo questa guida. I passaggi per Windows ci sono, ma su Windows non l&#x27;ho ancora provata.</p>
+      <p style="font-size: 13px; margin-top: 14px;"><a href="https://raffaelerussoai.com/risorse" class="footer-handle">Le altre guide gratuite: raffaelerussoai.com/risorse</a></p>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      document.getElementById('progressBar').style.width = (window.scrollY / max * 100) + '%';
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

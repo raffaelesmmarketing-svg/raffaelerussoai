@@ -34,6 +34,7 @@ export const GUIDE = [
   { html: '2026-10-14-humanizer-testi-umani.html', slug: 'humanizer-testi-umani', cartella: 'guide-sorgenti', pdf: 'humanizer-testi-umani-4f260eba4507' },
   { html: '2026-10-14-second-brain-con-claude.html', slug: 'second-brain-con-claude', cartella: 'guide-sorgenti', pdf: 'second-brain-con-claude-6e2539306af2' },
   { html: '2026-10-14-granola-e-claude-code.html', slug: 'granola-e-claude-code', cartella: 'guide-sorgenti', pdf: 'granola-e-claude-code-3d07829fab6a' },
+  { html: '2026-10-14-montaggio-video-con-claude.html', slug: 'montaggio-video-con-claude', cartella: 'guide-sorgenti', pdf: 'montaggio-video-con-claude-401b6fe11a7b' },
 ]
 
 const CSS_STAMPA = `

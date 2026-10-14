@@ -22,6 +22,22 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'montaggio-video-con-claude',
+    parole: ['montaggio', 'editing'],
+    titolo: 'I tuoi video montati da Claude, come i miei',
+    minuti: 7,
+    sotto: 'La skill gratuita che monta i video in cui parli: tagli, zoom, scritte, sottotitoli e musica, con Claude Code.',
+    descrizione:
+      'La skill che uso per farmi montare i video da Claude, pronta da installare in Claude Code. Tu registri; lui toglie le pause e le frasi sbagliate, mette zoom, scritte, sottotitoli e musica, e ogni correzione che gli dai diventa una regola. Per i video verticali e per quelli lunghi di YouTube.',
+    dentro: [
+      'Cosa fa, cosa ti serve e cosa non fa',
+      'Il messaggio da incollare in Claude Code per installare la skill',
+      'Come registrare perché il montaggio venga bene',
+      'Come fartelo montare e come correggerlo',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'mirofish-il-pubblico-finto',
     parole: ['simulazione', 'mirofish'],
     titolo: 'MiroFish: il pubblico finto per provare le tue idee',
