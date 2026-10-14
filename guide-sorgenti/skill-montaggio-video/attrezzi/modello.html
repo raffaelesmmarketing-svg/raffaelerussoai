@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=__LARGHEZZA__, height=__ALTEZZA__" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      /* il modello del montaggio: lo riempie componi.py, i colori e il carattere vengono da PREFERENZE.json */
+      :root {
+        --testo: __COLORE_TESTO__;
+        --accento: __COLORE_ACCENTO__;
+        --fondo: __COLORE_FONDO__;
+      }
+      html, body { margin: 0; padding: 0; background: #000000; }
+      #root { position: relative; width: __LARGHEZZA__px; height: __ALTEZZA__px; overflow: hidden; background: #000000;
+        font-family: "__CARATTERE__", sans-serif; color: var(--testo); }
+      #camwrap { position: absolute; inset: 0; transform-origin: __ORIGINE__; }
+      #cam { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      /* ⛔ 14/10: senza width:max-content un riquadro messo a metà schermo può usare solo metà larghezza (540 px su 1080)
+         e la scritta andava su tre righe, sopra la testa */
+      .scritta { position: absolute; left: 50%; transform: translateX(-50%); width: max-content; max-width: __LARGHEZZA_SCRITTE__px;
+        text-align: center; font-weight: 800; line-height: 1.12; padding: 18px 30px 22px; border-radius: 18px;
+        background: var(--fondo); opacity: 0; letter-spacing: -0.01em; z-index: 5; }
+      .scritta .w { display: inline-block; }
+      .acc { color: var(--accento); }
+      .sotto { position: absolute; left: 50%; transform: translateX(-50%); width: __LARGHEZZA_SCRITTE__px; text-align: center;
+        font-weight: 800; line-height: 1.1; opacity: 0; z-index: 6;
+        text-shadow: 0 3px 0 rgba(0, 0, 0, 0.9), 0 0 18px rgba(0, 0, 0, 0.75); }
+      .sotto span { display: inline-block; margin: 0 0.12em; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-width="__LARGHEZZA__" data-height="__ALTEZZA__" data-start="0" data-duration="__DURATA__">
+      <div id="camwrap">
+        <video id="cam" src="media/video.mp4" data-start="0" data-duration="__DURATA__" data-track-index="0" muted playsinline></video>
+      </div>
+      <div id="scritte"></div>
+      <div id="sottotitoli"></div>
+      <audio id="voce" src="media/voce.wav" data-start="0" data-duration="__DURATA__" data-track-index="1" data-volume="1"></audio>
+      <!--MUSICA-->
+    </div>
+    <script>
+      var COPIONE = /*COPIONE*/;
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      // ── gli zoom: un livello diverso a ogni taglio (copre il salto della faccia) e una spinta lenta finché dura ──
+      COPIONE.zoom.forEach(function (z) {
+        tl.fromTo("#camwrap", { scale: z[2] }, { scale: z[3], duration: Math.max(0.05, z[1] - z[0]), ease: "none", immediateRender: false }, z[0]);
+      });
+
+      // ── le scritte: la frase entra parola per parola, la parola che conta nel colore d'accento ──
+      COPIONE.scritte.forEach(function (s, i) {
+        var d = document.createElement("div");
+        d.className = "scritta";
+        d.id = "sc" + i;
+        d.style.top = s.y + "px";
+        d.style.fontSize = s.corpo + "px";
+        d.innerHTML = s.html;
+        document.getElementById("scritte").appendChild(d);
+        tl.fromTo(d, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out", immediateRender: false }, s.t);
+        d.querySelectorAll(".w").forEach(function (w, k) {
+          tl.fromTo(w, { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.28, ease: "power2.out", immediateRender: false }, s.t + 0.08 + k * 0.06);
+        });
+        tl.to(d, { opacity: 0, duration: 0.22, ease: "power2.in" }, s.t + s.durata - 0.22);
+      });
+
+      // ── i sottotitoli: due-tre parole alla volta, quella che si sta dicendo nel colore d'accento ──
+      COPIONE.sottotitoli.forEach(function (g, i) {
+        var d = document.createElement("div");
+        d.className = "sotto";
+        d.id = "st" + i;
+        d.style.top = g.y + "px";
+        d.style.fontSize = g.corpo + "px";
+        d.innerHTML = g.parole.map(function (p, k) { return '<span id="st' + i + "w" + k + '">' + p[2] + "</span>"; }).join(" ");
+        document.getElementById("sottotitoli").appendChild(d);
+        tl.set(d, { opacity: 1 }, g.da);
+        tl.set(d, { opacity: 0 }, g.a);
+        g.parole.forEach(function (p, k) {
+          tl.set("#st" + i + "w" + k, { color: COPIONE.colori.accento }, p[0]);
+          tl.set("#st" + i + "w" + k, { color: COPIONE.colori.testo }, Math.min(p[1], g.a));
+        });
+      });
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

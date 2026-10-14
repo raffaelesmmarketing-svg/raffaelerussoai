@@ -1,0 +1,14 @@
+{
+  "formato": "verticale",
+  "velocita_verticale": 1.2,
+  "velocita_orizzontale": 1.1,
+  "colore_accento": "#FFD400",
+  "colore_testo": "#FFFFFF",
+  "colore_fondo_scritte": "rgba(0, 0, 0, 0.55)",
+  "carattere": "Inter",
+  "volto": "50% 40%",
+  "posizione_scritte": "alto",
+  "parole": "",
+  "musica": "",
+  "volume_musica": 0.12
+}
