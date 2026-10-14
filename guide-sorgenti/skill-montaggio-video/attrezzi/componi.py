@@ -5,7 +5,7 @@
 
 Legge dalla cartella i file di taglia.py e scelte.json, che scrive Claude dopo aver letto la trascrizione:
   {
-    "scritte":     [{"t": 3.2, "testo": "Il *preventivo* giusto", "durata": 2.5}],   tempi del MONTATO; *parola* = colore
+    "scritte":     [{"t": 3.2, "testo": "Tre *errori* da evitare", "durata": 2.5}],   tempi del MONTATO; *parola* = colore
     "zoom_secchi": [12.4, 33.0],          facoltativo: uno zoom di colpo sulle parole forti
     "sottotitoli": true,                  di solito sì per i video verticali, no per i lunghi
     "musica":      "/percorso/brano.mp3", facoltativo: senza, niente musica
@@ -29,7 +29,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-HYPERFRAMES = "hyperframes@0.8.157"      # la versione provata con questa skill
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from comune import prepara  # noqa: E402
+
+HYPERFRAMES = "hyperframes@0.8.157"      # la versione provata con questa skill (vuole Node.js 22 o più nuovo)
 SKILL = Path(__file__).resolve().parent.parent
 PREDEFINITE = {"carattere": "Inter", "colore_testo": "#FFFFFF", "colore_accento": "#FFD400",
                "colore_fondo_scritte": "rgba(0, 0, 0, 0.55)", "volto": "50% 40%", "volume_musica": 0.12,
@@ -91,8 +94,10 @@ def html_scritta(testo):
 def pezzi_zoom(tagli, punti_forti, durata, verticale=False):
     """[inizio, fine, scala_iniziale, scala_finale]: un livello diverso a ogni taglio (mai due uguali di fila), al massimo
     un cambio ogni 0,6 s, e uno zoom secco dove Claude l'ha chiesto. Nei verticali più morbido: la faccia è già vicina e
-    uno zoom forte spinge la testa sotto le scritte."""
+    uno zoom forte spinge la testa sotto le scritte. Lo zoom secco parte dal livello del pezzo, mai da quello di prima:
+    due nello stesso pezzo vanno dentro e poi tornano fuori. ⛔ 14/10: si moltiplicavano, 1,16 → 1,33 → 1,53."""
     livelli = [1.0, 1.08, 1.16] if verticale else [1.0, 1.12, 1.24]
+    tetto = 1.27 if verticale else 1.45
     cambi, ultimo = [], -9.0
     for t in sorted(set([0.0] + [float(x) for x in tagli])):
         if t - ultimo >= 0.6 and t < durata - 0.3:
@@ -100,16 +105,16 @@ def pezzi_zoom(tagli, punti_forti, durata, verticale=False):
             ultimo = t
     forti = sorted(float(p) for p in punti_forti if 0 < float(p) < durata - 0.5)
     eventi = sorted([(t, "taglio") for t in cambi] + [(p, "forte") for p in forti])
-    pezzi, i_liv, scala = [], 0, 1.0
+    pezzi, i_liv, base, scala = [], 0, 1.0, 1.0
     for k, (t, tipo) in enumerate(eventi):
         fine = eventi[k + 1][0] if k + 1 < len(eventi) else durata
         if fine - t < 0.05:
             continue
         if tipo == "taglio":
-            scala = livelli[i_liv % len(livelli)]
+            base = scala = livelli[i_liv % len(livelli)]
             i_liv += 1
         else:
-            scala = round(scala * 1.15, 3)
+            scala = base if scala > base else round(min(base * 1.15, tetto), 3)
         pezzi.append([round(t, 3), round(fine, 3), scala, round(scala * 1.03, 3)])
     return pezzi
 
@@ -165,7 +170,38 @@ def npx():
     return shutil.which("npx") or shutil.which("npx.cmd") or sys.exit("Manca Node.js (npx): esegui INSTALLA.md.")
 
 
+def controlla_node():
+    """HyperFrames 0.8.157 non parte sotto Node.js 22: meglio dirlo subito che a metà render."""
+    node = shutil.which("node") or shutil.which("node.exe")
+    if not node:
+        sys.exit("Manca Node.js: esegui INSTALLA.md.")
+    r = subprocess.run([node, "--version"], capture_output=True, text=True)
+    m = re.match(r"v(\d+)", r.stdout.strip())
+    if m and int(m.group(1)) < 22:
+        sys.exit(f"HyperFrames vuole Node.js 22 o più nuovo, qui c'è la {r.stdout.strip()}: aggiornalo (INSTALLA.md, passo 1).")
+
+
+def tempo_youtube(s):
+    s = int(s)
+    return f"{s // 3600}:{s % 3600 // 60:02d}:{s % 60:02d}" if s >= 3600 else f"{s // 60}:{s % 60:02d}"
+
+
+def righe_capitoli(capitoli, durata):
+    """YouTube mostra i capitoli solo se il primo è a 0:00, sono almeno 3 e ognuno dura almeno 10 secondi."""
+    tenuti = []
+    for tc, titolo in sorted(capitoli, key=lambda c: float(c[0])):
+        tc = 0 if not tenuti else int(float(tc))
+        if tenuti and (tc - tenuti[-1][0] < 10 or tc > durata - 10):
+            print(f"⚠️ tolgo il capitolo «{titolo}»: troppo vicino al capitolo prima o alla fine del video")
+            continue
+        tenuti.append((tc, titolo))
+    if len(tenuti) < 3:
+        print("⚠️ YouTube mostra i capitoli solo se sono almeno 3: aggiungine in scelte.json")
+    return [f"{tempo_youtube(tc)} {titolo}" for tc, titolo in tenuti]
+
+
 def main():
+    prepara()
     a = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     a.add_argument("cartella")
     a.add_argument("--bozza", action="store_true")
@@ -251,15 +287,12 @@ def main():
     (prog / "index.html").write_text(t, encoding="utf-8")
 
     if scelte.get("capitoli"):
-        righe = []
-        for i, (tc, titolo) in enumerate(sorted(scelte["capitoli"], key=lambda c: float(c[0]))):
-            tc = 0 if i == 0 else int(float(tc))
-            righe.append(f"{tc // 60}:{tc % 60:02d} {titolo}")
-        (cart / "capitoli.txt").write_text("\n".join(righe) + "\n", encoding="utf-8")
+        (cart / "capitoli.txt").write_text("\n".join(righe_capitoli(scelte["capitoli"], durata)) + "\n", encoding="utf-8")
 
     if x.alta and min(tagli["dimensioni"]) < 2160:
         print("⚠️ --alta non ha effetto: il montato è sotto il 4K. Per un master in 4K da una sorgente 4K rifai il taglio "
               "con `taglia.py … --alta`.")
+    controlla_node()
     env = dict(os.environ, HF_CAPTURE_PARALLEL_STREAM="true", FFMPEG_PROCESS_TIMEOUT_MS="3600000")
     subprocess.run([npx(), "--yes", HYPERFRAMES, "lint"], cwd=prog, env=env)
     cmd = [npx(), "--yes", HYPERFRAMES, "render", "--sdr", "--workers", "2", "--output", str(cart / "finale_grezzo.mp4"),

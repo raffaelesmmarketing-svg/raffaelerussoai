@@ -15,15 +15,25 @@ Scrive nella cartella:
   tagli_montato.json   i punti in cui c'è un taglio, nei secondi del montato (lì cambia lo zoom)
   tagli.json           cosa si è tenuto, nei secondi dell'originale
 
-⛔ Video e audio si uniscono insieme pezzo per pezzo: unendo solo il video, a ogni taglio si perde una frazione di
-fotogramma e dopo qualche minuto le labbra non vanno più con la voce.
+⛔ Video e audio si uniscono insieme pezzo per pezzo, e ogni taglio cade a metà fra due fotogrammi: così ogni pezzo di
+video dura esattamente quanto il suo audio. (14/10: coi tagli dove capitava, a ogni taglio si aggiungeva una frazione di
+fotogramma, e dopo 150 tagli scritte e sottotitoli arrivavano 0,75 s prima della voce.)
+⛔ Oltre i 40 pezzi si monta a blocchi: con un grafo solo il lavoro cresce col quadrato dei pezzi (14/10: 400 pezzi, 24
+minuti solo per il grafo).
 """
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
+import wave
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from comune import SENZA_AUDIO, fotogrammi_al_secondo, ha_audio, prepara  # noqa: E402
+
+BLOCCO = 40     # pezzi per ogni passata di ffmpeg
 
 
 def sonda(video):
@@ -40,6 +50,16 @@ def sonda(video):
     if rot in (90, 270):
         w, h = h, w
     return w, h, s.get("color_transfer", ""), float(d["format"]["duration"])
+
+
+def durata_audio(video):
+    """Quanto dura la voce: spesso l'audio finisce qualche decimo prima del video, e oltre non c'è niente da tenere."""
+    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_entries", "stream=duration", "-of",
+                        "csv=p=0", str(video)], capture_output=True, text=True)
+    try:
+        return float(r.stdout.strip().splitlines()[0].strip(","))
+    except (ValueError, IndexError):
+        return None
 
 
 def ha_filtro(nome):
@@ -97,6 +117,23 @@ def pezzi_da_tenere(muti, durata, margine, togli):
     return [[round(s, 3), round(e, 3)] for s, e in fusi if e - s >= 0.25]
 
 
+def allinea(tenere, fps):
+    """Ogni taglio a metà fra due fotogrammi: un pezzo tiene un numero intero di fotogrammi e il suo audio dura uguale,
+    così concat non aggiunge niente e i tempi del montato sono la somma dei pezzi. Mai prima del fotogramma 1: un pezzo
+    che parte da 0 avrebbe mezzo fotogramma di video in più dell'audio."""
+    a_meta = lambda b: (max(1, round(b * fps)) - 0.5) / fps
+    out = []
+    for s, e in tenere:
+        s, e = round(a_meta(s), 6), round(a_meta(e), 6)
+        if e - s < 1.5 / fps:
+            continue
+        if out and s <= out[-1][1]:
+            out[-1][1] = max(out[-1][1], e)
+        else:
+            out.append([s, e])
+    return out
+
+
 def sdr_con_apple(video, cartella, alta, lato_corto):
     """Su Mac: la conversione HDR → SDR di Apple (la stessa di Foto), con gli stessi tempi del video. Senza Mac: None."""
     if sys.platform != "darwin" or not shutil.which("avconvert"):
@@ -106,11 +143,14 @@ def sdr_con_apple(video, cartella, alta, lato_corto):
     out = Path(cartella) / f"sorgente_sdr_{'2160' if quattro_k else '1080'}.mp4"
     if not out.exists():
         print("il video è in HDR (iPhone): lo porto in colori normali con la conversione di Apple…", flush=True)
-        r = subprocess.run(["avconvert", "-s", str(video), "-p", preset, "-o", str(out), "--replace"],
+        # su un file a parte, rinominato solo alla fine: una conversione interrotta non si riusa la volta dopo
+        parziale = out.with_name(out.stem + "_in_corso.mp4")
+        r = subprocess.run(["avconvert", "-s", str(video), "-p", preset, "-o", str(parziale), "--replace"],
                            capture_output=True, text=True)
-        if r.returncode != 0 or not out.exists():
+        if r.returncode != 0 or not parziale.exists():
             print(r.stdout + r.stderr)
             return None
+        os.replace(parziale, out)
     return out
 
 
@@ -131,7 +171,44 @@ def filtro_formato(formato, w, h, centro_x, alta):
     return f"scale={ow}:{oh}:flags=lanczos", (ow, oh)
 
 
+def grafo(pezzi, origine, dopo_video, dopo_audio):
+    """Un trim e un atrim per pezzo (tempi meno `origine`, dove comincia la lettura), uniti insieme, poi i filtri dopo."""
+    parti, ingressi = [], []
+    for i, (s, e) in enumerate(pezzi):
+        s, e = round(s - origine, 6), round(e - origine, 6)
+        parti.append(f"[0:v]trim=start={s}:end={e},setpts=PTS-STARTPTS[v{i}]")
+        parti.append(f"[0:a]atrim=start={s}:end={e},asetpts=PTS-STARTPTS,"
+                     f"afade=t=in:st=0:d=0.01,afade=t=out:st={max(0, e - s - 0.01):.4f}:d=0.01[a{i}]")
+        ingressi.append(f"[v{i}][a{i}]")
+    parti.append(f"{''.join(ingressi)}concat=n={len(pezzi)}:v=1:a=1[vc][ac]")
+    parti.append(f"[vc]{dopo_video}[vout]")
+    parti.append(f"[ac]{dopo_audio}[aout]")
+    return ";".join(parti)
+
+
+def ffmpeg(argomenti, avanzamento=False):
+    # l'avanzamento ogni 15 s: con -stats e basta sono centinaia di righe nella conversazione
+    attese = ["-stats", "-stats_period", "15"] if avanzamento else ["-nostats"]
+    subprocess.run(["ffmpeg", "-nostdin", "-hide_banner", "-v", "error", *attese, "-y", *argomenti], check=True)
+
+
+def unisci_wav(pezzi, uscita):
+    with wave.open(str(pezzi[0]), "rb") as f:
+        parametri = f.getparams()
+    with wave.open(str(uscita), "wb") as out:
+        out.setparams(parametri)
+        for p in pezzi:
+            with wave.open(str(p), "rb") as f:
+                out.writeframes(f.readframes(f.getnframes()))
+
+
+def durata_wav(f):
+    with wave.open(str(f), "rb") as w:
+        return w.getnframes() / w.getframerate()
+
+
 def main():
+    prepara()
     a = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     a.add_argument("video")
     a.add_argument("cartella")
@@ -145,16 +222,20 @@ def main():
     a.add_argument("--alta", action="store_true", help="tiene la risoluzione della sorgente (fino al 4K)")
     x = a.parse_args()
 
-    if not shutil.which("ffmpeg"):
+    if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
         sys.exit("Manca ffmpeg: esegui INSTALLA.md.")
     if not 0.5 <= x.velocita <= 2.0:
         sys.exit("La velocità va fra 0,5 e 2.")
+    if not Path(x.video).expanduser().exists():
+        sys.exit(f"Non trovo il video: {x.video}")
+    if not ha_audio(Path(x.video).expanduser()):
+        sys.exit(SENZA_AUDIO)
     cart = Path(x.cartella).expanduser()
     parole = json.loads((cart / "parole.json").read_text(encoding="utf-8"))
     togli = json.loads(Path(x.togli).read_text(encoding="utf-8")) if x.togli else []
     if not x.togli and (cart / "togli.json").exists():
         togli = json.loads((cart / "togli.json").read_text(encoding="utf-8"))
-    video = x.video
+    video = str(Path(x.video).expanduser())
     w, h, transfer, durata = sonda(video)
     tono = ""
     if transfer in ("arib-std-b67", "smpte2084"):
@@ -171,40 +252,59 @@ def main():
             print("⚠️ il video è in HDR e su questo computer non c'è una conversione affidabile: i colori potrebbero uscire "
                   "sbiaditi. La prossima volta registra con l'HDR spento (iPhone: Impostazioni › Fotocamera › Registra video "
                   "› Video HDR).")
+    durata = min(durata, durata_audio(video) or durata)
     muti = silenzi(video, x.soglia, x.pausa)
-    tenere = pezzi_da_tenere(muti, durata, x.margine, togli)
+    tenere = allinea(pezzi_da_tenere(muti, durata, x.margine, togli), fotogrammi_al_secondo(video))
     if not tenere:
         sys.exit("Non resta niente da tenere: controlla parole.json e togli.json.")
+    if not muti:
+        print(f"⚠️ non ho trovato pause sotto {x.soglia:.0f} dB: se nella stanza c'è rumore di fondo, rifai con --soglia -32 "
+              "(o -28), altrimenti si tolgono solo i pezzi di togli.json.", flush=True)
 
     vf_formato, (ow, oh) = filtro_formato(x.formato, w, h, x.centro_x, x.alta)
-
-    parti, ingressi = [], []
-    for i, (s, e) in enumerate(tenere):
-        d = e - s
-        parti.append(f"[0:v]trim=start={s}:end={e},setpts=PTS-STARTPTS[v{i}]")
-        parti.append(f"[0:a]atrim=start={s}:end={e},asetpts=PTS-STARTPTS,"
-                     f"afade=t=in:st=0:d=0.01,afade=t=out:st={max(0, d - 0.01):.3f}:d=0.01[a{i}]")
-        ingressi.append(f"[v{i}][a{i}]")
-    parti.append(f"{''.join(ingressi)}concat=n={len(tenere)}:v=1:a=1[vc][ac]")
-    parti.append(f"[vc]setpts=PTS/{x.velocita},fps=30,{tono}{vf_formato},format=yuv420p[vout]")
-    parti.append(f"[ac]atempo={x.velocita},aresample=48000[aout]")
-    grafo = cart / "taglio_filtro.txt"
-    grafo.write_text(";\n".join(parti), encoding="utf-8")
-
-    print(f"monto {len(tenere)} pezzi a {x.velocita}× in {ow}×{oh}…", flush=True)
-    subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-stats", "-y", "-i", video, "-filter_complex_script", str(grafo),
-                    "-map", "[vout]", "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "16", "-g", "15",
-                    "-movflags", "+faststart", str(cart / "montato_video.mp4"),
-                    "-map", "[aout]", "-c:a", "pcm_s16le", str(cart / "voce.wav")], check=True)
-    subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-i", str(cart / "montato_video.mp4"), "-i", str(cart / "voce.wav"),
-                    "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart",
-                    str(cart / "montato.mp4")], check=True)
+    v = x.velocita
+    uscita_video = ["-c:v", "libx264", "-preset", "medium", "-crf", "16", "-g", "15", "-movflags", "+faststart"]
+    blocchi = [tenere[i:i + BLOCCO] for i in range(0, len(tenere), BLOCCO)]
+    print(f"monto {len(tenere)} {'pezzo' if len(tenere) == 1 else 'pezzi'} a {v}× in {ow}×{oh}…", flush=True)
+    if len(blocchi) == 1:
+        ffmpeg(["-t", f"{tenere[-1][1] + 1:.3f}", "-i", video, "-filter_complex",
+                grafo(tenere, 0.0, f"setpts=PTS/{v},fps=30,{tono}{vf_formato},format=yuv420p", f"atempo={v},aresample=48000"),
+                "-map", "[vout]", "-an", *uscita_video, str(cart / "montato_video.mp4"),
+                "-map", "[aout]", "-c:a", "pcm_s16le", str(cart / "voce.wav")], avanzamento=True)
+    else:
+        # a blocchi: ogni blocco legge solo il suo pezzo di video e tiene i fotogrammi com'erano; velocità e 30 fps si
+        # danno una volta sola, sull'insieme, così ai bordi dei blocchi non si perde e non si aggiunge niente
+        lav = cart / "blocchi"
+        shutil.rmtree(lav, ignore_errors=True)
+        lav.mkdir(parents=True)
+        voci, lista = [], ["ffconcat version 1.0"]
+        for b, pezzi in enumerate(blocchi):
+            print(f"  blocco {b + 1} di {len(blocchi)}…", flush=True)
+            da, a = pezzi[0][0], pezzi[-1][1]
+            fv, fa = lav / f"b{b:03d}.mp4", lav / f"b{b:03d}.wav"
+            ffmpeg(["-ss", f"{da:.6f}", "-t", f"{a - da + 1:.3f}", "-i", video, "-filter_complex",
+                    grafo(pezzi, da, f"{tono}{vf_formato},format=yuv420p", "anull"),
+                    "-map", "[vout]", "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "14", str(fv),
+                    "-map", "[aout]", "-c:a", "pcm_s16le", str(fa)])
+            # il blocco dura quanto la sua voce: è da lì che parte il blocco dopo
+            lista += [f"file '{fv.name}'", f"duration {durata_wav(fa):.6f}"]
+            voci.append(fa)
+        (lav / "video.txt").write_text("\n".join(lista) + "\n", encoding="utf-8")
+        unisci_wav(voci, lav / "voce_intera.wav")
+        print("  unisco i blocchi…", flush=True)
+        ffmpeg(["-f", "concat", "-safe", "0", "-i", str(lav / "video.txt"), "-i", str(lav / "voce_intera.wav"),
+                "-filter_complex", f"[0:v]setpts=PTS/{v},fps=30,format=yuv420p[vout];[1:a]atempo={v},aresample=48000[aout]",
+                "-map", "[vout]", "-an", *uscita_video, str(cart / "montato_video.mp4"),
+                "-map", "[aout]", "-c:a", "pcm_s16le", str(cart / "voce.wav")], avanzamento=True)
+        shutil.rmtree(lav, ignore_errors=True)
+    ffmpeg(["-i", str(cart / "montato_video.mp4"), "-i", str(cart / "voce.wav"), "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
+            "-shortest", "-movflags", "+faststart", str(cart / "montato.mp4")])
 
     # i tempi nel montato: ogni pezzo dura quanto il suo audio, diviso la velocità
     inizio_pezzo, t, parole_m, tagli_m = [], 0.0, [], []
     for s, e in tenere:
         inizio_pezzo.append(t)
-        tagli_m.append(round(t / x.velocita, 3))
+        tagli_m.append(round(t / v, 3))
         t += e - s
     # una parola va nel pezzo che contiene la sua metà, tagliata ai bordi del pezzo; se la metà cade in un taglio ma la
     # parola tocca un pezzo tenuto (si sente ancora), va nel pezzo più vicino. ⛔ 14/10: le parole a cavallo di un taglio
@@ -220,15 +320,19 @@ def main():
             scartate += 1
             continue
         (s, e), t0 = tenere[scelto], inizio_pezzo[scelto]
-        parole_m.append([round((t0 + max(ws, s) - s) / x.velocita, 3), round((t0 + min(we, e) - s) / x.velocita, 3), testo])
-    durata_m = round(t / x.velocita, 3)
+        parole_m.append([round((t0 + max(ws, s) - s) / v, 3), round((t0 + min(we, e) - s) / v, 3), testo])
+    durata_m = round(t / v, 3)
     (cart / "tagli.json").write_text(json.dumps({"tenere": tenere, "velocita": x.velocita, "formato": x.formato,
                                                  "dimensioni": [ow, oh], "durata_montato": durata_m}, indent=1), encoding="utf-8")
     (cart / "parole_montato.json").write_text(json.dumps(parole_m, ensure_ascii=False), encoding="utf-8")
     (cart / "tagli_montato.json").write_text(json.dumps(tagli_m), encoding="utf-8")
-    grafo.unlink(missing_ok=True)
-    print(f"fatto: da {durata:.0f} s a {durata_m:.0f} s · {len(tenere) - 1} tagli · {cart / 'montato.mp4'}"
+    print(f"fatto: da {durata:.0f} s a {durata_m:.0f} s · {len(tenere) - 1} {'taglio' if len(tenere) == 2 else 'tagli'} · "
+          f"{cart / 'montato.mp4'}"
           + (f" · {scartate} parole stanno nei pezzi tolti" if scartate else ""))
+    scarto = durata_wav(cart / "voce.wav") - durata_m
+    if abs(scarto) > 0.1:
+        print(f"⚠️ la voce dura {scarto:+.2f} s rispetto ai tempi calcolati: guarda bene che scritte e sottotitoli cadano "
+              "sulle parole, soprattutto verso la fine.")
 
 
 if __name__ == "__main__":
