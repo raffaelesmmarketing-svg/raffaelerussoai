@@ -22,6 +22,21 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'il-primo-agente-con-claude',
+    titolo: 'Il tuo primo agente con Claude, senza programmare',
+    minuti: 9,
+    sotto: 'Scarichi l’app, la sistemi in pochi minuti e gli dai il primo lavoro vero, con le schermate.',
+    descrizione:
+      'La guida del video «Cos’è un agente AI»: scarichi l’app di Claude, gli dai una cartella sola, scegli quanto ti chiede il permesso, gli scrivi le regole una volta e fai partire il primo lavoro con il comando in quattro parti. Con il risultato vero di un esempio e la regola per capire quando ti serve un agente.',
+    dentro: [
+      'Cosa ti serve e quanto costa: l’abbonamento, niente a consumo',
+      'I sei passaggi, con le schermate vere dell’app',
+      'Il comando in quattro parti da copiare, e cosa ti consegna',
+      'Agente, automazione o chat: la regola in tre righe',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'montaggio-video-con-claude',
     parole: ['montaggio', 'editing'],
     titolo: 'I tuoi video montati da Claude, come i miei',

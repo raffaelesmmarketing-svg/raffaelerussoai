@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Il tuo primo agente con Claude, senza programmare · Raffaele Russo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0A0F1E;
+      --surface:   #0F1525;
+      --surface2:  #141C30;
+      --border:    #1E2940;
+      --border2:   #253350;
+      --text:      #e8e8ec;
+      --muted:     #7a7a88;
+      --accent:    #84E110;
+      --accent2:   #a8f040;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 88px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 420px;
+      background: radial-gradient(ellipse, rgba(132,225,16,0.10) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.28);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 7vw, 76px);
+      letter-spacing: 0.04em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #d0d0d8 40%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 18px);
+      color: var(--muted); font-weight: 300;
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section-wrap { padding: 64px 24px; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 4.5vw, 48px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-intro {
+      color: var(--muted); font-size: 15px;
+      max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    }
+    .section-intro strong { color: var(--text); font-weight: 500; }
+
+    /* ── PART HEADER ── */
+    .part-header { padding: 56px 24px 0; }
+    .steps-wrapper { padding: 28px 24px 52px; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout.info    { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.22); color: #a8c4fc; }
+    .callout.warning { background: rgba(245,200,66,0.07); border: 1px solid rgba(245,200,66,0.22); color: #f5d98a; }
+    .callout.success { background: rgba(132,225,16,0.07); border: 1px solid rgba(132,225,16,0.22); color: #b4f06a; }
+    .callout strong  { color: inherit; font-weight: 600; }
+
+    /* ── TOOL ── */
+    .ext-list { margin-top: 20px; }
+    .ext-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .ext-badge {
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.20);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent2);
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .ext-text h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ext-text h4 a { color: var(--accent2); text-decoration: none; }
+    .ext-text p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── CTA FINALE ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,225,16,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { text-align: center; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .cta-desc {
+      font-size: 16px; color: var(--muted); font-weight: 300;
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0D0D0D;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 36px; border-radius: var(--radius);
+      text-decoration: none; letter-spacing: 0.02em;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px; text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.15em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .footer-handle { font-size: 14px; color: var(--accent2); font-weight: 500; text-decoration: none; }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── I PASSAGGI ── */
+    .cosa {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+    }
+    .cosa-testa {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .cosa-numero {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; letter-spacing: 0.06em; line-height: 1;
+      color: var(--accent); min-width: 34px;
+    }
+    .cosa-titolo { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .cosa-corpo { padding: 8px 24px 22px; }
+    .riga { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .riga:last-child { border-bottom: none; padding-bottom: 0; }
+    .riga-etichetta {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 5px;
+    }
+    .riga p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    .riga p + p { margin-top: 8px; }
+    .riga strong, .avviso strong { color: var(--text); font-weight: 600; }
+    .prompt {
+      margin-top: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius); padding: 14px 18px;
+      font-size: 14px; color: var(--text); line-height: 1.65;
+    }
+    .prompt-etichetta {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .avviso {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 22px; margin-bottom: 12px;
+    }
+    .avviso h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .avviso p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    .avviso p + p { margin-top: 8px; }
+
+    /* ── LE SCHERMATE (vere, fatte il 16/10/2026) ── */
+    .schermata {
+      margin: 14px 0 0;
+      border: 1px solid var(--border2); border-radius: var(--radius);
+      overflow: hidden; background: #131313;
+      break-inside: avoid;
+    }
+    .schermata img { display: block; width: 100%; height: auto; }
+    .didascalia { font-size: 12px; color: var(--muted); line-height: 1.55; margin-top: 8px; }
+
+    /* ── LA REGOLA ── */
+    .regola { display: grid; gap: 10px; margin-top: 8px; }
+    .regola-voce {
+      display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: start;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px;
+      break-inside: avoid;
+    }
+    .regola-chi {
+      font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.05em;
+      color: var(--accent); line-height: 1.1;
+    }
+    .regola-voce p { font-size: 14px; color: #b9bcc8; line-height: 1.6; }
+    .regola-voce strong { color: var(--text); font-weight: 600; }
+
+    /* in stampa un passaggio con le schermate è più alto di una pagina: si spezza fra le righe, mai dentro una riga o una schermata */
+    @media print {
+      .cosa { break-inside: auto !important; }
+      .riga, .schermata, .avviso, .regola-voce, .prompt { break-inside: avoid !important; }
+      .cosa-testa { break-after: avoid !important; }
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .cosa-testa { padding: 16px 18px; gap: 12px; }
+      .cosa-corpo { padding: 6px 18px 20px; }
+      .regola-voce { grid-template-columns: 1fr; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><span></span> Guida Pratica &middot; 9 minuti &middot; ti servono un abbonamento a Claude e un computer</div>
+      <h1>Il tuo primo agente con Claude, senza programmare</h1>
+      <p class="hero-sub">Nel video ti ho spiegato cos&#x27;è un agente. Qui lo fai partire: scarichi l&#x27;app di Claude, la sistemi in pochi minuti e gli dai il primo lavoro vero. <strong>Niente codice: solo l&#x27;app e una frase scritta bene.</strong></p>
+    </div>
+  </header>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Prima di cominciare</div>
+      <div class="section-title">Tre cose da sapere</div>
+
+      <div class="avviso fade-in">
+        <h4>Cosa ti serve</h4>
+        <p>Un <strong>abbonamento a pagamento a Claude</strong> (Pro, Max, Team o Enterprise): con il piano gratuito l&#x27;agente non c&#x27;è. Il piano Pro costa 20 dollari al mese, 17 se paghi l&#x27;anno intero; il prezzo aggiornato lo trovi su claude.com/pricing.</p>
+        <p>E un <strong>computer</strong>: un Mac (macOS 13 o più recente) o un PC con Windows 10 o più recente.</p>
+      </div>
+
+      <div class="avviso fade-in">
+        <h4>Quanto costa l&#x27;agente</h4>
+        <p><strong>Niente in più dell&#x27;abbonamento</strong>: non paghi a consumo. Però ogni piano ha un tetto di utilizzo, uno ogni cinque ore e uno settimanale: se lo raggiungi, Claude si ferma finché il tetto non si azzera. Un lavoro lungo (cerca in rete, legge tanti file, crea documenti) ne consuma di più di una domanda veloce. Quanto ti resta lo vedi in Impostazioni › Utilizzo.</p>
+      </div>
+
+      <div class="avviso fade-in">
+        <h4>Cowork, oppure Claude e basta</h4>
+        <p>L&#x27;agente di Claude si chiama <strong>Cowork</strong>. In queste settimane Anthropic lo sta unendo alla chat: su molti account non c&#x27;è più niente da scegliere, scrivi cosa ti serve e Claude capisce da solo se basta una risposta o se è un lavoro da agente.</p>
+        <p>Se sotto la casella dei messaggi vedi ancora i due bottoni <strong>«Chat»</strong> e <strong>«Cowork»</strong>, scegli Cowork. Se non li vedi, hai già la versione nuova: vai avanti senza scegliere niente.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="part-header container fade-in">
+      <div class="section-label">La guida</div>
+      <div class="section-title">I sei passaggi</div>
+      <p class="section-intro">I primi cinque si fanno una volta sola. Il sesto è il primo lavoro vero. <strong>Le schermate sono quelle del mio account</strong>: la tua app potrebbe avere qualche parola diversa, ma i posti sono gli stessi.</p>
+    </div>
+    <div class="steps-wrapper container">
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">01</div>
+          <div class="cosa-titolo">Scarica l&#x27;app di Claude sul computer</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Come</div>
+            <p>Vai su <strong>claude.com/download</strong> e scarica la versione per il tuo computer (macOS o Windows). Apri il file scaricato e completa l&#x27;installazione. Poi apri Claude dalla cartella Applicazioni (Mac) o dal menu Start (Windows) ed entra con il tuo account.</p>
+          </div>
+          <div class="riga">
+            <div class="schermata"><img src="immagini/primo-agente/01-scarica.jpg" alt="La pagina claude.com/download con il bottone Scarica per macOS" /></div>
+            <p class="didascalia">La pagina ufficiale. Da un PC con Windows, il bottone ti propone la versione per Windows.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Perché l&#x27;app e non il sito</div>
+            <p>L&#x27;agente lavora anche dal sito claude.ai e dal telefono, ma <strong>solo l&#x27;app sul computer può lavorare dentro le tue cartelle</strong>. Ed è lì che sta il lavoro vero: preventivi, listini, fatture, documenti.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">02</div>
+          <div class="cosa-titolo">Trova dove gli dai il lavoro</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Come</div>
+            <p>È la casella dei messaggi, la stessa della chat. Sotto, a destra, vedi due cose: il modello (lascia quello che c&#x27;è) e <strong>«Manuale»</strong>, che è il permesso: lo vediamo al passaggio 04.</p>
+          </div>
+          <div class="riga">
+            <div class="schermata"><img src="immagini/primo-agente/02-casella.jpg" alt="La casella dei messaggi di Claude con il più, il modello e Manuale" /></div>
+            <p class="didascalia">Nella versione nuova non c&#x27;è niente da scegliere: si scrive qui. Se tu vedi «Chat» e «Cowork», tocca «Cowork».</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">03</div>
+          <div class="cosa-titolo">Dagli una cartella sola, non tutto il computer</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Come</div>
+            <p>Prima crea sul computer una <strong>cartella nuova per questo lavoro</strong> (per esempio «Preventivi pulizie») e mettici dentro solo i file che servono. Vanno bene anche le <strong>foto fatte col telefono</strong>: un preventivo fotografato, un foglio di misure. Poi, nell&#x27;app, tocca il <strong>+</strong> nella casella e scegli <strong>«Aggiungi una cartella»</strong>.</p>
+            <p>Claude lavora solo nelle cartelle che gli dai, e solo finché l&#x27;app resta aperta. Prima di cancellare un file ti chiede sempre il permesso.</p>
+          </div>
+          <div class="riga">
+            <div class="schermata"><img src="immagini/primo-agente/03-dispositivi.jpg" alt="Il menu più di Claude con Dispositivi e Claude Desktop" /></div>
+            <p class="didascalia">Dal + vedi anche «Dispositivi»: sono i computer dove hai l&#x27;app di Claude (se ne hai uno solo, vedi solo quello). È lì che l&#x27;agente può lavorare sui tuoi file.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Cosa non dargli</div>
+            <p>Le cartelle con documenti delicati: conti, buste paga, contratti personali. Lo consiglia anche Anthropic. Si comincia da lavori a basso rischio, come con un collaboratore appena arrivato.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Se lavori dal sito o dal telefono</div>
+            <p>Lì le cartelle non ci sono: i file li carichi dal + con <strong>«Carica o aggiungi file»</strong>. È quello che ho fatto io per l&#x27;esempio del passaggio 06.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">04</div>
+          <div class="cosa-titolo">Decidi quanto ti chiede il permesso</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Come</div>
+            <p>Tocca <strong>«Manuale»</strong> sotto la casella. Le scelte sono due: <strong>Manuale</strong>, dove Claude chiede il permesso prima di usare nuovi strumenti (un sito, la tua posta, un programma collegato), e <strong>Auto</strong>, dove lavora da solo e si ferma a chiederti solo se qualcosa gli sembra non sicuro. Se vedi anche una terza scelta che salta tutte le approvazioni, lasciala stare.</p>
+            <p>In Manuale non ti ferma a ogni riga: te lo chiede per le cose nuove, come aprire un sito o usare uno strumento che non ha ancora usato.</p>
+          </div>
+          <div class="riga">
+            <div class="schermata"><img src="immagini/primo-agente/04-permessi.jpg" alt="Il menu Modalità autorizzazione con Manuale e Auto" /></div>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Il mio consiglio</div>
+            <p>Per i primi giri <strong>lascia Manuale</strong>. Passi ad Auto quando ti fidi di come lavora. Auto consuma anche un po&#x27; di più dei tuoi limiti, perché ogni azione viene controllata prima.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Può mandare una mail a un cliente?</div>
+            <p>Solo se gli colleghi la tua posta (dal + › Connettori). Se non la colleghi, non può. Il primo lavoro fallo senza collegare niente: quando lo colleghi, con Manuale ti chiede il permesso prima di usarla.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">05</div>
+          <div class="cosa-titolo">Scrivigli le regole una volta sola</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Come</div>
+            <p>Apri le <strong>Impostazioni</strong> (in basso a sinistra, sul tuo nome) e scrivi <strong>«istruzioni»</strong> nella ricerca in alto: trovi il campo <strong>«Istruzioni per Claude»</strong>. Sul mio account sta in Account, su altri in Generale. Quello che scrivi lì vale per tutte le conversazioni.</p>
+          </div>
+          <div class="riga">
+            <div class="schermata"><img src="immagini/primo-agente/05-istruzioni.jpg" alt="Il campo Istruzioni per Claude nelle impostazioni" /></div>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Da incollare, cambiando la prima frase</div>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare</span>Sono il titolare di [la tua attività]. Scrivimi in italiano semplice, senza termini tecnici. Prima di mandare un messaggio a qualcuno, pubblicare qualcosa o spendere soldi, fermati e chiedimi l&#x27;ok. Se ti manca un&#x27;informazione, chiedimela invece di inventarla.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cosa fade-in">
+        <div class="cosa-testa">
+          <div class="cosa-numero">06</div>
+          <div class="cosa-titolo">Il primo lavoro: quattro cose nel comando</div>
+        </div>
+        <div class="cosa-corpo">
+          <div class="riga">
+            <div class="riga-etichetta">Le quattro cose</div>
+            <p><strong>L&#x27;obiettivo</strong> (dove deve arrivare) · <strong>i file</strong> che può usare · <strong>cosa ti deve consegnare</strong> · <strong>quando si deve fermare</strong>. Se ne manca una, l&#x27;agente se la inventa.</p>
+          </div>
+          <div class="riga">
+            <div class="riga-etichetta">Il mio esempio</div>
+            <p>Tre preventivi di ditte di pulizie (inventati, per la guida), dati a Claude con questo comando:</p>
+            <div class="prompt"><span class="prompt-etichetta">Da copiare e adattare</span>Obiettivo: scegliere la ditta delle pulizie per l&#x27;ufficio. Leggi i tre preventivi che ti ho dato e consegnami una tabella che li mette a confronto (prezzo al mese con e senza IVA, frequenza, cosa è incluso, durata del contratto). Sotto la tabella scrivimi cosa manca in ognuno. Non scrivere e non mandare niente a nessuno: se ti manca un&#x27;informazione, fermati e chiedimela.</div>
+          </div>
+          <div class="riga">
+            <div class="schermata"><img src="immagini/primo-agente/06-comando.jpg" alt="Il comando scritto nella casella di Claude con tre preventivi in PDF" /></div>
+            <p class="didascalia">I tre PDF caricati e il comando, prima di premere invio.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Cosa ti consegna</div>
+      <div class="section-title">Il risultato vero, in un minuto</div>
+      <p class="section-intro">Questo è quello che Claude mi ha consegnato con il comando del passaggio 06. <strong>Guarda la fine:</strong> un preventivo non diceva se l&#x27;IVA era inclusa, e invece di tirare a indovinare si è fermato a chiedermelo. È quello che gli avevo detto di fare.</p>
+      <div class="schermata"><img src="immagini/primo-agente/07-tabella.jpg" alt="La tabella di confronto dei tre preventivi fatta da Claude" /></div>
+      <p class="didascalia">La tabella: prezzi con e senza IVA calcolati da lui, frequenza, cosa è incluso, durata.</p>
+      <div class="schermata"><img src="immagini/primo-agente/08-cosa-manca.jpg" alt="Cosa manca in ogni preventivo e la domanda finale di Claude" /></div>
+      <p class="didascalia">Cosa manca in ognuno, e la domanda finale invece di un&#x27;informazione inventata.</p>
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Il segreto</div>
+      <div class="section-title">Il primo giro guardalo tutto</div>
+      <p class="section-intro">La prima volta segui il lavoro dall&#x27;inizio alla fine e segnati ogni errore. <strong>Ogni errore diventa una regola scritta</strong>: la metti nelle istruzioni del passaggio 05, oppure la scrivi nella conversazione («da ora in poi…»). Il giro dopo parte già corretto.</p>
+      <div class="callout success">
+        <div class="callout-icon">✅</div>
+        <div>È come con un collaboratore nuovo: all&#x27;inizio non lavora esattamente come vuoi tu. Lo correggi, e la volta dopo non rifà lo stesso errore.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Il tuo lavoro vero</div>
+      <div class="section-title">E quando i file arrivano da WhatsApp e dalla mail?</div>
+      <p class="section-intro">Il lavoro vero non arriva in una cartella ordinata. Tre modi per cominciare lo stesso, <strong>sempre con l&#x27;ultima parola tua</strong>:</p>
+      <div class="avviso fade-in">
+        <h4>Le foto e i PDF da WhatsApp</h4>
+        <p>Per cominciare non serve collegare WhatsApp. Salva nella cartella del lavoro le foto e i PDF che ti arrivano (misure, preventivi, bolle), così come sono, e chiedigli di metterli in ordine: una tabella, un riepilogo, cosa manca. Se poi vuoi Claude dentro WhatsApp, c&#x27;è la mia guida «Claude sul tuo WhatsApp, senza rischiare il numero».</p>
+      </div>
+      <div class="avviso fade-in">
+        <h4>Le mail dei clienti</h4>
+        <p>Collega la tua posta dal + › Connettori e chiedigli di preparare le <strong>bozze</strong> delle risposte. Le leggi e le mandi tu: è il modo giusto di cominciare.</p>
+      </div>
+      <div class="avviso fade-in">
+        <h4>Un preventivo nuovo</h4>
+        <p>Metti nella cartella le misure, il tuo listino e un preventivo vecchio fatto bene, e chiedigli una bozza nello stesso formato. Prezzi e conti li controlli tu prima di mandarlo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Prima di farne un altro</div>
+      <div class="section-title">Agente, automazione o chat?</div>
+      <p class="section-intro">Non tutto merita un agente. La domanda da farti è una: <strong>il lavoro è sempre uguale, o cambia ogni volta?</strong></p>
+      <div class="regola">
+        <div class="regola-voce"><div class="regola-chi">Automazione</div><p>Se fai <strong>sempre la stessa cosa nello stesso modo</strong>, senza niente da decidere. Qui un agente è sprecato: costa di più e può sbagliare, mentre un&#x27;automazione fa sempre la stessa cosa.</p></div>
+        <div class="regola-voce"><div class="regola-chi">Chat</div><p>Se ti serve <strong>solo una risposta o una bozza</strong>, che poi usi tu da qualche parte.</p></div>
+        <div class="regola-voce"><div class="regola-chi">Agente</div><p>Se il lavoro <strong>cambia ogni volta</strong>: c&#x27;è da cercare, leggere, capire e decidere di conseguenza.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Se qualcosa non va</div>
+      <div class="section-title">I quattro intoppi più comuni</div>
+
+      <div class="avviso fade-in">
+        <h4>Non trovo Cowork</h4>
+        <p>Controlla di avere un piano a pagamento: con quello gratuito l&#x27;agente non c&#x27;è. Se il piano è giusto e non vedi «Chat» e «Cowork», hai la versione nuova: scrivi direttamente il lavoro nella casella.</p>
+      </div>
+      <div class="avviso fade-in">
+        <h4>Non vede i miei file</h4>
+        <p>L&#x27;app di Claude deve restare aperta sul computer, e la cartella deve essere tra quelle che gli hai dato (passaggio 03). Se chiudi l&#x27;app, il lavoro continua ma non arriva più ai tuoi file: riapri l&#x27;app e, se si è fermato, scrivigli di continuare. Il lavoro fatto fino a lì lo ritrovi nella conversazione.</p>
+      </div>
+      <div class="avviso fade-in">
+        <h4>Esce «Configurazione dell&#x27;area di lavoro di Claude in corso»</h4>
+        <p>È normale: l&#x27;app si sta aggiornando prima di cominciare. Aspetta qualche secondo.</p>
+      </div>
+      <div class="avviso fade-in">
+        <h4>Arrivo subito al limite</h4>
+        <p>Metti i lavori collegati in una conversazione sola (per esempio tutti i preventivi della stessa commessa), apri una conversazione nuova per le cose che non c&#x27;entrano, e se ti basta una risposta veloce diglielo. Quanto ti resta lo vedi in Impostazioni › Utilizzo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-wrap">
+    <div class="container fade-in">
+      <div class="section-label">Strumenti</div>
+      <div class="section-title">Quello che ti serve</div>
+      <div class="ext-list">
+        <div class="ext-item fade-in">
+          <div class="ext-badge">PRO</div>
+          <div class="ext-text">
+            <h4><a href="https://claude.com/download" target="_blank" rel="noopener">L&#x27;app di Claude ↗</a></h4>
+            <p>Per Mac e Windows. L&#x27;app è gratuita, l&#x27;agente no: serve un abbonamento Pro (20 dollari al mese, 17 con l&#x27;annuale) o superiore.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container fade-in">
+      <div class="section-label">Il passo dopo</div>
+      <h2 class="cta-title">Vuoi capire cosa dare al tuo primo agente?</h2>
+      <p class="cta-desc">Richiedi una chiamata gratuita con me. In 20 minuti mi racconti cosa rifai ogni settimana e ti dico da dove conviene cominciare.</p>
+      <a href="https://raffaelerussoai.com/chiamata-gratuita?da=guida-primo-agente" target="_blank" rel="noopener" class="cta-btn">
+        Richiedi la chiamata gratuita →
+      </a>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 18px; position: relative;">raffaelerussoai.com/chiamata-gratuita</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-brand">Guida di Raffaele Russo AI</div>
+      <a href="https://instagram.com/raffaelerusso.ai" target="_blank" rel="noopener" class="footer-handle">@raffaelerusso.ai</a>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 12px; font-style: italic;">Domande? Scrivimi su Instagram.</p>
+      <p style="font-size: 13px; color: var(--muted); margin-top: 12px;">Fonti, lette il 16/10/2026: «Get started with Claude Cowork», «Claude Cowork and chat are one Claude», «Install Claude Desktop», «Use Claude Cowork safely» (support.claude.com) e claude.com/pricing. Le schermate sono del mio account, fatte lo stesso giorno; i preventivi dell&#x27;esempio sono inventati.</p>
+      <p style="font-size: 13px; margin-top: 14px;"><a href="https://raffaelerussoai.com/risorse" class="footer-handle">Le altre guide gratuite: raffaelerussoai.com/risorse</a></p>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      document.getElementById('progressBar').style.width = (window.scrollY / max * 100) + '%';
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
