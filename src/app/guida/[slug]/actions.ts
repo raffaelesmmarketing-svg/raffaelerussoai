@@ -2,9 +2,11 @@
 
 import { guidaPerSlug } from '@/lib/guide'
 import { avvisaGuida } from '@/lib/avvisi'
+import { mandaGuida } from '@/lib/mail-guida'
 
 // La mail che sblocca una guida. Si scrive nel database con la chiave pubblica, che su questa
-// tabella può SOLO inserire (RLS: nessuna lettura per anon); solo dopo si dà l'indirizzo del PDF.
+// tabella può SOLO inserire (RLS: nessuna lettura per anon). Dal 18/10 la guida si manda PER MAIL
+// (Raffaele: chi la vuole apre la mail, e il dominio si scalda): il PDF dal sito resta solo se la mail non parte.
 const SUPABASE_URL = 'https://wvfazhoklpmcifimvooo.supabase.co'
 const SUPABASE_KEY_PUBBLICA = 'sb_publishable_9Yc0GLvZrQzOV7Ss82kyEQ_jNzTGIpW'
 
@@ -28,6 +30,8 @@ const PDF_CON_MAIL: Record<string, string> = {
 export type EsitoGuida =
   | { stato: 'inizio' }
   | { stato: 'ok'; pdf: string }
+  // La guida è partita per mail: la pagina dice dove guardare, il PDF non si mostra.
+  | { stato: 'mandata'; email: string }
   // ⛔ `email` torna indietro con l'errore: dopo un'azione React rimette il modulo com'era all'inizio.
   | { stato: 'errore'; messaggio: string; email: string }
 
@@ -48,30 +52,36 @@ export async function sbloccaGuida(_prev: EsitoGuida, formData: FormData): Promi
   const origine = testo(formData, 'origine', 500)
 
   // Le stesse due trappole del modulo della chiamata: un campo che un umano non vede, e un invio
-  // in meno di tre secondi. Al bot si dà la guida e non si scrive niente.
+  // in meno di tre secondi. Al bot si risponde «mandata» e non si scrive né si manda niente.
   const trappola = testo(formData, 'sito_web', 10)
   const reso = Number(testo(formData, 't', 20))
-  if (trappola || !Number.isFinite(reso) || Date.now() - reso < 3000) return { stato: 'ok', pdf }
+  if (trappola || !Number.isFinite(reso) || Date.now() - reso < 3000) return { stato: 'mandata', email }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     return { stato: 'errore', messaggio: 'Controlla l’indirizzo email.', email }
   }
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/contatto_guida`, {
-    method: 'POST',
-    headers: {
-      apikey: SUPABASE_KEY_PUBBLICA,
-      'Content-Type': 'application/json',
-      Prefer: 'return=minimal',
-    },
-    body: JSON.stringify({ guida: slug, email, origine: origine || null }),
-    cache: 'no-store',
-  }).catch(() => null)
+  // Il salvataggio e la mail partono insieme: nessuno dei due aspetta l'altro.
+  const [res, mail] = await Promise.all([
+    fetch(`${SUPABASE_URL}/rest/v1/contatto_guida`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_KEY_PUBBLICA,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({ guida: slug, email, origine: origine || null }),
+      cache: 'no-store',
+    }).catch(() => null),
+    mandaGuida({ email, titolo: guida.titolo, pdf }),
+  ])
   const salvata = Boolean(res?.ok)
   if (!salvata) console.error('[guida] mail non salvata', res?.status, await res?.text().catch(() => ''))
+  if (!mail.ok) console.error('[guida] guida non mandata per mail', mail.errore)
 
-  // La mail l'ha lasciata: la guida è sua anche se il database non risponde. In quel caso la mail
-  // arriva comunque a Raffaele su Telegram, con l'avviso di copiarla.
-  await avvisaGuida({ titolo: guida.titolo, email, origine, salvata }).catch((e) => console.error('[guida] avviso', e))
-  return { stato: 'ok', pdf }
+  // La mail l'ha lasciata: la guida è sua anche se il database non risponde (la mail arriva comunque a
+  // Raffaele su Telegram, con l'avviso di copiarla) e anche se la mail non parte (allora la scarica dal sito).
+  await avvisaGuida({ titolo: guida.titolo, email, origine, salvata, mandata: mail.ok, erroreMail: mail.ok ? undefined : mail.errore })
+    .catch((e) => console.error('[guida] avviso', e))
+  return mail.ok ? { stato: 'mandata', email } : { stato: 'ok', pdf }
 }

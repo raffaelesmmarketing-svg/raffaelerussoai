@@ -6,13 +6,19 @@ import { sbloccaGuida, type EsitoGuida } from '@/app/guida/[slug]/actions'
 const campo =
   'w-full rounded-md bg-navy-950 border px-4 py-3 font-body text-[16px] text-white placeholder:text-fog-500 focus:outline-none focus:ring-2 focus:ring-lime-500/60 transition-shadow'
 
-// Chi ha già sbloccato la guida su questo browser la ritrova pronta da scaricare.
+// Chi ha già sbloccato la guida su questo browser la ritrova: il PDF, se gliel'abbiamo dato dal sito (prima del 18/10,
+// o quando la mail non è partita), oppure «te l'ho mandata a…» (`mail:<indirizzo>`).
 const chiave = (slug: string) => `guida-sbloccata:${slug}`
+const MANDATA = 'mail:'
 
-// La guida che si scarica dopo la mail: un campo, un pulsante, e al posto del modulo il PDF.
+// La guida dopo la mail: un campo, un pulsante, e al posto del modulo «te l'ho mandata per mail» (dal 18/10).
+// Il PDF dal sito resta solo quando la mail non è partita.
 export default function SbloccaGuida({ slug }: { slug: string }) {
   const [esito, azione, inCorso] = useActionState<EsitoGuida, FormData>(sbloccaGuida, { stato: 'inizio' })
   const [giaSbloccata, setGiaSbloccata] = useState<string | null>(null)
+  // «Hai sbagliato indirizzo? Rimettilo»: si torna al modulo finché non arriva un esito nuovo (l'esito è un oggetto
+  // nuovo a ogni invio), così non serve rimettere a posto niente dopo.
+  const [rifaiDa, setRifaiDa] = useState<EsitoGuida | null>(null)
   // ⛔ Nello stato, non nei campi: dopo un invio React rimette i campi del modulo com'erano all'inizio,
   //    e dopo un errore si perdevano l'origine e l'ora (misurato il 10/10).
   const [origine, setOrigine] = useState('')
@@ -32,16 +38,41 @@ export default function SbloccaGuida({ slug }: { slug: string }) {
   }, [slug])
 
   useEffect(() => {
-    if (esito.stato !== 'ok') return
+    if (esito.stato !== 'ok' && esito.stato !== 'mandata') return
     try {
-      localStorage.setItem(chiave(slug), esito.pdf)
+      localStorage.setItem(chiave(slug), esito.stato === 'ok' ? esito.pdf : MANDATA + esito.email)
     } catch {
       /* idem */
     }
     pronta.current?.focus()
   }, [esito, slug])
 
-  const pdf = esito.stato === 'ok' ? esito.pdf : giaSbloccata
+  const rifai = rifaiDa !== null && rifaiDa === esito
+  const mandataA = rifai ? null : esito.stato === 'mandata' ? esito.email : giaSbloccata?.startsWith(MANDATA) ? giaSbloccata.slice(MANDATA.length) : null
+  if (mandataA !== null) {
+    return (
+      <div ref={pronta} tabIndex={-1} className="rounded-lg bg-navy-800 border border-lime-500/40 p-6 sm:p-7 focus:outline-none">
+        <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-lime-500">Mandata</p>
+        <p className="font-display font-extrabold text-white text-[22px] leading-[1.2] mt-2 text-balance">
+          Fatto! Ti ho mandato la guida{mandataA ? ' a ' : '.'}
+          {mandataA && <span className="text-lime-400 break-all">{mandataA}</span>}
+          {mandataA ? '.' : ''}
+        </p>
+        <p className="font-body text-[15px] leading-[1.6] text-fog-300 mt-2">
+          Controlla la posta: se tra un minuto non la vedi, guarda in Promozioni o Spam.
+        </p>
+        <button
+          type="button"
+          onClick={() => setRifaiDa(esito)}
+          className="mt-2 inline-flex min-h-[44px] items-center font-body text-[14px] text-fog-300 underline underline-offset-2 hover:text-white"
+        >
+          Hai sbagliato indirizzo? Rimettilo
+        </button>
+      </div>
+    )
+  }
+
+  const pdf = rifai ? null : esito.stato === 'ok' ? esito.pdf : giaSbloccata?.startsWith(MANDATA) ? null : giaSbloccata
   if (pdf) {
     return (
       <div ref={pronta} tabIndex={-1} className="rounded-lg bg-navy-800 border border-lime-500/40 p-6 sm:p-7 focus:outline-none">
