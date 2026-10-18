@@ -4,7 +4,7 @@
 // manda 100 al giorno: oltre, Resend rifiuta e lo sblocco torna a dare il PDF dal sito (src/app/guida/[slug]/actions.ts).
 
 const SITO = 'https://raffaelerussoai.com'
-const MITTENTE = 'Raffaele Russo <info@raffaelerussoai.com>'
+const MITTENTE = 'Raffaele Russo AI <info@raffaelerussoai.com>'
 const RISPOSTE = 'info@raffaelerussoai.com'
 
 export type EsitoMail = { ok: true; id: string } | { ok: false; errore: string }
