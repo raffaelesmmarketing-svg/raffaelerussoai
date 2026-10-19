@@ -15,6 +15,7 @@ const SUPABASE_KEY_PUBBLICA = 'sb_publishable_9Yc0GLvZrQzOV7Ss82kyEQ_jNzTGIpW'
 const PDF_CON_MAIL: Record<string, string> = {
   'agenti-che-scrivono-il-blog': '/guide/agenti-che-scrivono-il-blog-249536f41207.pdf',
   'il-primo-agente-con-claude': '/guide/il-primo-agente-con-claude-d5bd04c0adf5.pdf',
+  'le-4-skill-di-claude-per-un-azienda': '/guide/le-4-skill-di-claude-per-un-azienda-21af976f8702.pdf',
   'montaggio-video-con-claude': '/guide/montaggio-video-con-claude-401b6fe11a7b.pdf',
   'claude-su-whatsapp-senza-rischiare-il-numero': '/guide/claude-su-whatsapp-senza-rischiare-il-numero-ccc4b37c423f.pdf',
   'il-cervello-della-squadra-con-claude': '/guide/il-cervello-della-squadra-con-claude-3bd02955db1a.pdf',

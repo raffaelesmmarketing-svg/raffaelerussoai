@@ -22,6 +22,22 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'le-4-skill-di-claude-per-un-azienda',
+    parole: ['skill'],
+    titolo: 'Le 4 skill di Claude che servono a un’azienda',
+    minuti: 8,
+    sotto: 'Humanizer, Scrapling, HyperFrames e watch: cosa fa ognuna, su quale lavoro usarla e come si installa.',
+    descrizione:
+      'Sul mio computer ci sono più di cento skill per Claude: se hai un’azienda te ne servono quattro. Humanizer toglie dai testi i segni dell’AI, Scrapling legge i siti e i profili pubblici dei concorrenti, HyperFrames fa grafiche e video sul tuo computer, watch guarda un video al posto tuo. Per ognuna: cosa fa, come la uso io, come si installa e la richiesta da copiare.',
+    dentro: [
+      'Cos’è una skill e dove funziona',
+      'Le quattro skill: cosa fanno e come le uso io',
+      'I comandi per installarle, una per una',
+      'La richiesta per installarle tutte e quattro in una volta',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'il-primo-agente-con-claude',
     titolo: 'Il tuo primo agente con Claude, senza programmare',
     minuti: 9,
