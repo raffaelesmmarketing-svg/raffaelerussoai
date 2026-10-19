@@ -37,6 +37,7 @@ export const GUIDE = [
   { html: '2026-10-14-montaggio-video-con-claude.html', slug: 'montaggio-video-con-claude', cartella: 'guide-sorgenti', pdf: 'montaggio-video-con-claude-401b6fe11a7b' },
   { html: '2026-10-16-il-primo-agente-con-claude.html', slug: 'il-primo-agente-con-claude', cartella: 'guide-sorgenti', pdf: 'il-primo-agente-con-claude-d5bd04c0adf5' },
   { html: '2026-10-19-le-4-skill-di-claude.html', slug: 'le-4-skill-di-claude-per-un-azienda', cartella: 'guide-sorgenti', pdf: 'le-4-skill-di-claude-per-un-azienda-21af976f8702' },
+  { html: '2026-10-19-le-13-skill-social-media-manager.html', slug: 'le-13-skill-social-media-manager', cartella: 'guide-sorgenti', pdf: 'le-13-skill-social-media-manager-b6f2996d18e0' },
 ]
 
 const CSS_STAMPA = `

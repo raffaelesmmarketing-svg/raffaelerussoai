@@ -26,6 +26,7 @@ const PDF_CON_MAIL: Record<string, string> = {
   'humanizer-testi-umani': '/guide/humanizer-testi-umani-4f260eba4507.pdf',
   'second-brain-con-claude': '/guide/second-brain-con-claude-6e2539306af2.pdf',
   'granola-e-claude-code': '/guide/granola-e-claude-code-3d07829fab6a.pdf',
+  'le-13-skill-social-media-manager': '/guide/le-13-skill-social-media-manager-b6f2996d18e0.pdf',
 }
 
 export type EsitoGuida =

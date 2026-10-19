@@ -22,6 +22,22 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'le-13-skill-social-media-manager',
+    parole: ['social'],
+    titolo: 'Le 13 skill che trasformano Claude nel tuo social media manager',
+    minuti: 8,
+    sotto: 'Reel, didascalie, caroselli, piano della settimana, commenti e profilo: scrivono loro, pubblichi tu.',
+    descrizione:
+      'Tredici skill gratuite per Instagram da installare in Claude: IG Reel scrive il reel con tre ganci e il loro voto, IG Viral trova i reel che funzionano nel tuo settore, IG Plan prepara la settimana, IG Reply divide i commenti, IG Profile dà un voto al tuo profilo e riscrive la bio. Come si installano, il file con la tua voce e cosa fa ognuna, con un esempio.',
+    dentro: [
+      'Come si installano, in un minuto',
+      'Il file con la tua voce, che leggono tutte',
+      'Le tredici, una per una, con un esempio',
+      'Da quale partire',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'le-4-skill-di-claude-per-un-azienda',
     parole: ['skill'],
     titolo: 'Le 4 skill di Claude che servono a un’azienda',
