@@ -22,6 +22,22 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'le-8-skill-di-hormozi',
+    parole: ['hormozi'],
+    titolo: 'Le 8 skill di Hormozi per Claude e ChatGPT',
+    minuti: 8,
+    sotto: 'Offerta, prezzo, obiezioni, ganci, controllo, appuntamenti, cassa e prove: le regole dei suoi manuali, lette prima di rispondere.',
+    descrizione:
+      'Ho fatto studiare all’intelligenza artificiale 13 manuali di Hormozi, 463 pagine: ne sono uscite otto skill che costruiscono l’offerta, fanno il prezzo, allenano chi vende sulle obiezioni, scrivono i ganci e altro. Qui scarichi il pacchetto gratuito, lo metti su Claude Code, sull’app di Claude o su ChatGPT, e trovi il metodo per rifarlo col libro che stai leggendo.',
+    dentro: [
+      'Cosa c’è nel pacchetto, e il passaggio che non salto mai',
+      'Come si mettono su Claude Code, sull’app di Claude e su ChatGPT',
+      'Le otto skill, con una richiesta da copiare per ognuna',
+      'Il metodo per rifarlo col tuo libro',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'farsi-citare-da-chatgpt',
     parole: ['seo'],
     titolo: 'Quando chiedono a ChatGPT il migliore della tua zona, esci tu?',

@@ -44,6 +44,7 @@ export const GUIDE = [
   { html: '2026-10-19-le-parole-dei-tuoi-clienti.html', slug: 'le-parole-dei-tuoi-clienti', cartella: 'guide-sorgenti', pdf: 'le-parole-dei-tuoi-clienti-3f24272c1564' },
   { html: '2026-10-19-la-lista-dei-prossimi-clienti.html', slug: 'la-lista-dei-prossimi-clienti', cartella: 'guide-sorgenti', pdf: 'la-lista-dei-prossimi-clienti-0d1ca6f1f12a' },
   { html: '2026-10-19-farsi-citare-da-chatgpt.html', slug: 'farsi-citare-da-chatgpt', cartella: 'guide-sorgenti', pdf: 'farsi-citare-da-chatgpt-e0637298d560' },
+  { html: '2026-10-19-le-8-skill-di-hormozi.html', slug: 'le-8-skill-di-hormozi', cartella: 'guide-sorgenti', pdf: 'le-8-skill-di-hormozi-7335647fa38a' },
 ]
 
 const CSS_STAMPA = `

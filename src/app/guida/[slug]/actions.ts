@@ -33,6 +33,7 @@ const PDF_CON_MAIL: Record<string, string> = {
   'le-parole-dei-tuoi-clienti': '/guide/le-parole-dei-tuoi-clienti-3f24272c1564.pdf',
   'la-lista-dei-prossimi-clienti': '/guide/la-lista-dei-prossimi-clienti-0d1ca6f1f12a.pdf',
   'farsi-citare-da-chatgpt': '/guide/farsi-citare-da-chatgpt-e0637298d560.pdf',
+  'le-8-skill-di-hormozi': '/guide/le-8-skill-di-hormozi-7335647fa38a.pdf',
 }
 
 export type EsitoGuida =
