@@ -65,6 +65,7 @@ export const guide: Guida[] = [
       'Il messaggio da incollare in Claude Code per installare la skill',
       'Come registrare perché il montaggio venga bene',
       'Come fartelo montare e come correggerlo',
+      'La dashboard: tutti i video in una pagina, da approvare uno alla volta',
     ],
     conMail: true,
   },
