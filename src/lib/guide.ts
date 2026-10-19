@@ -118,7 +118,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'second-brain-con-claude',
-    parole: ['brain', 'buongiorno'],
+    parole: ['brain', 'buongiorno', 'memoria'],
     titolo: 'Il tuo second brain con Claude: scrivi buongiorno e sa da dove ripartire',
     minuti: 8,
     sotto: 'Una cartella su Obsidian, un file di istruzioni e due parole al giorno: buongiorno e buonanotte.',
