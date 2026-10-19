@@ -22,6 +22,102 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'farsi-citare-da-chatgpt',
+    parole: ['seo'],
+    titolo: 'Quando chiedono a ChatGPT il migliore della tua zona, esci tu?',
+    minuti: 6,
+    sotto: 'La skill ai-seo prova le domande dei tuoi clienti su ChatGPT, Perplexity e Google e ti dice chi viene citato.',
+    descrizione:
+      'Sempre più clienti chiedono all’intelligenza artificiale chi è il migliore della zona. La skill ai-seo prepara le domande che farebbe un tuo cliente, segna chi viene citato su ChatGPT, Perplexity e Google, tu o i concorrenti, e ti dice cosa sistemare. Come si installa, la scheda dell’azienda e tre richieste da copiare.',
+    dentro: [
+      'Come controlla chi viene citato',
+      'Come si installa nell’app di Claude e in Claude Code',
+      'La scheda della tua azienda, scritta una volta',
+      'Tre richieste da copiare',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'la-lista-dei-prossimi-clienti',
+    parole: ['lista'],
+    titolo: 'La lista dei tuoi prossimi clienti, nella tua zona, con Claude',
+    minuti: 6,
+    sotto: 'La skill prospecting cerca le attività che somigliano al tuo cliente ideale e le mette in ordine, dalle più calde.',
+    descrizione:
+      'Claude può farti la lista dei tuoi prossimi clienti, nella tua zona. La skill prospecting cerca le attività che somigliano al tuo cliente ideale, controlla sito e social, le divide e dà a ognuna un voto. Come si installa, la scheda dell’azienda, tre richieste da copiare e le regole che rispetta.',
+    dentro: [
+      'Come cerca e come dà i voti',
+      'Come si installa nell’app di Claude e in Claude Code',
+      'La scheda della tua azienda, scritta una volta',
+      'Tre richieste da copiare',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'le-parole-dei-tuoi-clienti',
+    parole: ['clienti'],
+    titolo: 'Le tue recensioni ti dicono cosa scrivere nella pubblicità',
+    minuti: 6,
+    sotto: 'La skill customer-research legge recensioni, mail e appunti delle chiamate e tira fuori cosa vogliono i clienti, con le loro parole.',
+    descrizione:
+      'Le tue recensioni ti stanno già dicendo cosa scrivere nella pubblicità. La skill customer-research legge recensioni, mail dei clienti, appunti delle chiamate e sondaggi, e tira fuori cosa vogliono davvero, cosa li blocca e le parole esatte che usano. Come si installa, la scheda dell’azienda e tre richieste da copiare.',
+    dentro: [
+      'Cosa tira fuori da recensioni, mail e chiamate',
+      'Come si installa nell’app di Claude e in Claude Code',
+      'La scheda della tua azienda, scritta una volta',
+      'Tre richieste da copiare',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'la-pagina-del-sito-che-vende',
+    parole: ['pagina'],
+    titolo: 'La pagina del tuo sito vende? Te lo dice Claude',
+    minuti: 6,
+    sotto: 'La skill cro legge la pagina come un cliente e ti dà le modifiche, dalle più veloci alle più importanti.',
+    descrizione:
+      'Chi arriva sul tuo sito ha cinque secondi per capire cosa fai. La skill cro legge la tua pagina come un cliente, nell’ordine in cui conta, e ti dà le modifiche da fare subito, quelle importanti, le prove da fare e due o tre titoli alternativi. Come si installa, la scheda dell’azienda e tre richieste da copiare.',
+    dentro: [
+      'Cosa guarda, e in che ordine',
+      'Come si installa nell’app di Claude e in Claude Code',
+      'La scheda della tua azienda, scritta una volta',
+      'Tre richieste da copiare',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'offerta-rifatta-con-claude',
+    parole: ['offerta'],
+    titolo: 'Se ti dicono «è caro»: l’offerta rifatta con Claude',
+    minuti: 6,
+    sotto: 'La skill offers dà un voto da 1 a 10 alle quattro leve del valore e ti dice quale sistemare per prima.',
+    descrizione:
+      'Quando i clienti dicono «è caro», quasi sempre il problema non è il prezzo. La skill offers dà un voto da uno a dieci alle quattro leve dell’equazione del valore di Hormozi e controlla i sei pezzi di un’offerta completa. Come si installa, la scheda dell’azienda e tre richieste da copiare.',
+    dentro: [
+      'Le quattro leve del valore e i sei pezzi di un’offerta',
+      'Come si installa nell’app di Claude e in Claude Code',
+      'La scheda della tua azienda, scritta una volta',
+      'Tre richieste da copiare',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'consiglio-dei-grandi-del-marketing',
+    parole: ['consiglio'],
+    titolo: 'Hormozi, Ogilvy e Godin discutono la tua offerta, con Claude',
+    minuti: 6,
+    sotto: 'La skill che riunisce un consiglio di dodici grandi del marketing sulla tua decisione, con un presidente che tira le somme.',
+    descrizione:
+      'Con la skill marketing-council Claude riunisce un consiglio simulato di dodici grandi del marketing e ne fa sedere da tre a cinque sulla tua domanda, scelti perché la pensano in modo diverso. Alla fine un presidente mette in fila dove non sono d’accordo e cosa conviene fare. Come si installa, la scheda dell’azienda e tre richieste da copiare.',
+    dentro: [
+      'Cosa fa e chi siede al tavolo',
+      'Come si installa nell’app di Claude e in Claude Code',
+      'La scheda della tua azienda, scritta una volta',
+      'Tre richieste da copiare',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'le-13-skill-social-media-manager',
     parole: ['social'],
     titolo: 'Le 13 skill che trasformano Claude nel tuo social media manager',

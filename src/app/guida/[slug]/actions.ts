@@ -27,6 +27,12 @@ const PDF_CON_MAIL: Record<string, string> = {
   'second-brain-con-claude': '/guide/second-brain-con-claude-6e2539306af2.pdf',
   'granola-e-claude-code': '/guide/granola-e-claude-code-3d07829fab6a.pdf',
   'le-13-skill-social-media-manager': '/guide/le-13-skill-social-media-manager-b6f2996d18e0.pdf',
+  'consiglio-dei-grandi-del-marketing': '/guide/consiglio-dei-grandi-del-marketing-274c85179f70.pdf',
+  'offerta-rifatta-con-claude': '/guide/offerta-rifatta-con-claude-b0544dba7951.pdf',
+  'la-pagina-del-sito-che-vende': '/guide/la-pagina-del-sito-che-vende-a4ebfabfa09f.pdf',
+  'le-parole-dei-tuoi-clienti': '/guide/le-parole-dei-tuoi-clienti-3f24272c1564.pdf',
+  'la-lista-dei-prossimi-clienti': '/guide/la-lista-dei-prossimi-clienti-0d1ca6f1f12a.pdf',
+  'farsi-citare-da-chatgpt': '/guide/farsi-citare-da-chatgpt-e0637298d560.pdf',
 }
 
 export type EsitoGuida =

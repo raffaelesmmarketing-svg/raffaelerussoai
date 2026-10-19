@@ -38,6 +38,12 @@ export const GUIDE = [
   { html: '2026-10-16-il-primo-agente-con-claude.html', slug: 'il-primo-agente-con-claude', cartella: 'guide-sorgenti', pdf: 'il-primo-agente-con-claude-d5bd04c0adf5' },
   { html: '2026-10-19-le-4-skill-di-claude.html', slug: 'le-4-skill-di-claude-per-un-azienda', cartella: 'guide-sorgenti', pdf: 'le-4-skill-di-claude-per-un-azienda-21af976f8702' },
   { html: '2026-10-19-le-13-skill-social-media-manager.html', slug: 'le-13-skill-social-media-manager', cartella: 'guide-sorgenti', pdf: 'le-13-skill-social-media-manager-b6f2996d18e0' },
+  { html: '2026-10-19-consiglio-dei-grandi-del-marketing.html', slug: 'consiglio-dei-grandi-del-marketing', cartella: 'guide-sorgenti', pdf: 'consiglio-dei-grandi-del-marketing-274c85179f70' },
+  { html: '2026-10-19-offerta-rifatta-con-claude.html', slug: 'offerta-rifatta-con-claude', cartella: 'guide-sorgenti', pdf: 'offerta-rifatta-con-claude-b0544dba7951' },
+  { html: '2026-10-19-la-pagina-del-sito-che-vende.html', slug: 'la-pagina-del-sito-che-vende', cartella: 'guide-sorgenti', pdf: 'la-pagina-del-sito-che-vende-a4ebfabfa09f' },
+  { html: '2026-10-19-le-parole-dei-tuoi-clienti.html', slug: 'le-parole-dei-tuoi-clienti', cartella: 'guide-sorgenti', pdf: 'le-parole-dei-tuoi-clienti-3f24272c1564' },
+  { html: '2026-10-19-la-lista-dei-prossimi-clienti.html', slug: 'la-lista-dei-prossimi-clienti', cartella: 'guide-sorgenti', pdf: 'la-lista-dei-prossimi-clienti-0d1ca6f1f12a' },
+  { html: '2026-10-19-farsi-citare-da-chatgpt.html', slug: 'farsi-citare-da-chatgpt', cartella: 'guide-sorgenti', pdf: 'farsi-citare-da-chatgpt-e0637298d560' },
 ]
 
 const CSS_STAMPA = `
