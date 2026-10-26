@@ -21,7 +21,7 @@ export default function RisorsePage() {
             </h1>
             <p className="font-body text-[17px] leading-[1.6] text-fog-300 max-w-xl mx-auto text-pretty">
               Guide pratiche sull&apos;AI, in PDF. Si leggono in una decina di minuti e si provano mentre le leggi: ti basta
-              avere ChatGPT aperto.
+              avere ChatGPT o Claude aperto.
             </p>
           </div>
 

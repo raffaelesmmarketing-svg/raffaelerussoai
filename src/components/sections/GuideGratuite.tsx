@@ -18,7 +18,7 @@ export default function GuideGratuite() {
               Guide pratiche, da <em className="em-lime">scaricare adesso</em>
             </h2>
             <p className="font-body text-[17px] leading-[1.6] text-fog-300 mt-4 text-pretty">
-              Si leggono in una decina di minuti e si provano mentre le leggi: ti basta avere ChatGPT aperto.
+              Si leggono in una decina di minuti e si provano mentre le leggi: ti basta avere ChatGPT o Claude aperto.
             </p>
           </div>
           <Link href="/risorse" className="group font-display font-bold text-sm text-lime-500 no-underline hidden sm:block">
