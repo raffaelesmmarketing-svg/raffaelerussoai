@@ -1,9 +1,12 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
+import { senzaCornice } from '@/lib/cornice'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export default function BackToTop() {
+  const percorso = usePathname() ?? ''
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -11,6 +14,8 @@ export default function BackToTop() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  if (senzaCornice(percorso)) return null
 
   return (
     <AnimatePresence>

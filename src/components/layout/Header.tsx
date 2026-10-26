@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { senzaCornice } from '@/lib/cornice'
 
 const links = [
   { label: 'Chi Sono', href: '/chi-sono' },
@@ -24,6 +25,8 @@ export default function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  if (senzaCornice(percorso)) return null
 
   return (
     <motion.header

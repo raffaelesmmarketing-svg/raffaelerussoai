@@ -1,8 +1,11 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
+import { senzaCornice } from '@/lib/cornice'
 import { useEffect, useState } from 'react'
 
 export default function ScrollProgress() {
+  const percorso = usePathname() ?? ''
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -15,6 +18,8 @@ export default function ScrollProgress() {
     window.addEventListener('scroll', update, { passive: true })
     return () => window.removeEventListener('scroll', update)
   }, [])
+
+  if (senzaCornice(percorso)) return null
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[60] h-[2px] bg-transparent pointer-events-none">

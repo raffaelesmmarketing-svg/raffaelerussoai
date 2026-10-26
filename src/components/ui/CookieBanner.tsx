@@ -1,10 +1,13 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
+import { senzaCornice } from '@/lib/cornice'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
 export default function CookieBanner() {
+  const percorso = usePathname() ?? ''
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -16,6 +19,8 @@ export default function CookieBanner() {
     localStorage.setItem('cookie-consent', '1')
     setVisible(false)
   }
+
+  if (senzaCornice(percorso)) return null
 
   return (
     <AnimatePresence>

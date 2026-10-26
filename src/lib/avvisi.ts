@@ -82,7 +82,7 @@ async function telegram(a: { titolo: string; righe: string[] }): Promise<boolean
 
 // Secondo canale: email via Resend, al solo indirizzo di Raffaele (piano gratuito, mittente di
 // Resend finché il dominio non è verificato).
-async function email(a: { titolo: string; righe: string[] }, r: { nome: string; email: string }): Promise<boolean> {
+async function email(a: { titolo: string; righe: string[] }, r?: { nome: string; email: string }): Promise<boolean> {
   const chiave = process.env.RESEND_API_KEY
   const a_chi = process.env.AVVISI_EMAIL
   if (!chiave || !a_chi) return false
@@ -95,9 +95,10 @@ async function email(a: { titolo: string; righe: string[] }, r: { nome: string; 
         // poi basta AVVISI_MITTENTE=Raffaele Russo <avvisi@raffaelerussoai.com> su Vercel.
         from: process.env.AVVISI_MITTENTE || 'Sito raffaelerussoai <onboarding@resend.dev>',
         to: [a_chi],
-        reply_to: r.email,
-        subject: `${a.titolo} — ${r.nome}`,
-        text: [a.titolo, '', ...a.righe, '', 'Rispondi a questa email per scrivere direttamente alla persona.'].join('\n'),
+        // Senza la mail di chi scrive (una prenotazione: nome e mail stanno su Calendly) non c'è a chi rispondere.
+        ...(r?.email ? { reply_to: r.email } : {}),
+        subject: r ? `${a.titolo} — ${r.nome}` : a.titolo,
+        text: [a.titolo, '', ...a.righe, ...(r?.email ? ['', 'Rispondi a questa email per scrivere direttamente alla persona.'] : [])].join('\n'),
       }),
     })
   )
@@ -123,6 +124,23 @@ export async function avvisaGuida(a: {
       a.mandata === false ? `⚠ La mail con la guida non è partita (${a.erroreMail || 'errore'}): l'ha scaricata dal sito.` : null,
     ].filter((x): x is string => Boolean(x)),
   })
+}
+
+// Avviso a Raffaele per una prenotazione dalla candidatura di /consulenza (26/10): le risposte date prima del
+// calendario, col conto che a chi prenota non si mostra. Nome, mail e ora stanno nella prenotazione di Calendly, che
+// manda già la sua mail: qui niente database e niente giro dei dieci minuti, ogni canale prova tre volte e basta.
+export async function avvisaPrenotazione(a: { righe: [string, string][]; origine?: string }) {
+  const quando = new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+  const avviso = {
+    titolo: `Nuova prenotazione — candidatura alla consulenza, link in bio (${quando})`,
+    righe: [
+      ...a.righe.map(([k, v]) => `• ${k}\n  ${v}`),
+      a.origine ? `Da: ${a.origine}` : null,
+      'Nome, mail e ora della chiamata: nella prenotazione su Calendly.',
+    ].filter((x): x is string => Boolean(x)),
+  }
+  const [tg, mail] = await Promise.all([telegram(avviso), email(avviso)])
+  return { telegram: tg, email: mail }
 }
 
 // Torna: 'avvisata' | 'parziale' | 'gia_avvisata' | 'non_trovata' | 'fallita'.

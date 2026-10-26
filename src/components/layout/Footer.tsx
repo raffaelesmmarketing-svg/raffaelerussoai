@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { senzaCornice } from '@/lib/cornice'
 
 const cols = [
   { title: 'Sito',    links: [{ l: 'Chi sono', href: '/chi-sono' }, { l: 'Blog', href: '/blog' }, { l: 'Risorse', href: '/risorse' }, { l: 'Contatti', href: 'mailto:raffaele.smmarketing@gmail.com' }] },
@@ -48,6 +49,8 @@ export default function Footer() {
   // Sulle landing di offerta il footer non porta altrove: marchio (verso il sito), la frase, l'anno.
   const percorso = usePathname() ?? ''
   const landing = percorso.startsWith('/ai-per-architetti') || percorso.startsWith('/chiamata-gratuita')
+
+  if (senzaCornice(percorso)) return null
 
   if (landing) {
     return (
