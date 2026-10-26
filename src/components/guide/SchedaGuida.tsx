@@ -3,7 +3,16 @@ import Link from 'next/link'
 import { copertinaDi, pdfDi, type Guida } from '@/lib/guide'
 
 // La scheda di una guida: copertina vera (la testata del PDF), cosa c'è dentro, un solo gesto: scaricarla.
-export default function SchedaGuida({ guida, livello = 'h2' }: { guida: Guida; livello?: 'h2' | 'h3' }) {
+// `breve`: la riga corta al posto della descrizione, per gli elenchi lunghi (/risorse).
+export default function SchedaGuida({
+  guida,
+  livello = 'h2',
+  breve = false,
+}: {
+  guida: Guida
+  livello?: 'h2' | 'h3'
+  breve?: boolean
+}) {
   const Titolo = livello
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-navy-800 border border-white/[0.08]">
@@ -27,9 +36,11 @@ export default function SchedaGuida({ guida, livello = 'h2' }: { guida: Guida; l
             {guida.titolo}
           </Link>
         </Titolo>
-        <p className="font-body text-[15px] leading-[1.6] text-fog-300 mt-3 text-pretty">{guida.descrizione}</p>
+        <p className="font-body text-[15px] leading-[1.6] text-fog-300 mt-3 text-pretty">
+          {breve ? guida.sotto : guida.descrizione}
+        </p>
 
-        <div className="mt-auto pt-7">
+        <div className={`mt-auto ${breve ? 'pt-6' : 'pt-7'}`}>
           <BottoneScarica guida={guida} />
         </div>
       </div>

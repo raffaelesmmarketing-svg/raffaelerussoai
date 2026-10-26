@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import SchedaGuida from '@/components/guide/SchedaGuida'
-import { guide } from '@/lib/guide'
+import ElencoGuide from '@/components/guide/ElencoGuide'
 
 export const metadata: Metadata = {
   title: 'Risorse gratuite',
@@ -13,10 +12,9 @@ export default function RisorsePage() {
     <div className="pt-24">
       <section className="py-16 px-4 sm:px-6">
         <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-12">
-            <div className="eyebrow">Gratis</div>
+          <div className="text-center mb-10">
             <h1
-              className="font-display font-extrabold tracking-[-0.02em] mt-3 mb-4 text-white"
+              className="font-display font-extrabold tracking-[-0.02em] mb-4 text-white"
               style={{ fontSize: 'clamp(36px, 4vw, 56px)' }}
             >
               Risorse <em className="em-lime">gratuite</em>
@@ -27,11 +25,7 @@ export default function RisorsePage() {
             </p>
           </div>
 
-          <div className={`grid md:grid-cols-2 gap-5 mx-auto ${guide.length >= 3 ? 'lg:grid-cols-3' : 'max-w-4xl'}`}>
-            {guide.map((g) => (
-              <SchedaGuida key={g.slug} guida={g} />
-            ))}
-          </div>
+          <ElencoGuide />
         </div>
       </section>
     </div>

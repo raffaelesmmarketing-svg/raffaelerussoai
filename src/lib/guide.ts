@@ -2,8 +2,23 @@
 // una guida nuova è una voce qui, più il PDF e la copertina stampati da `scripts/stampa-guide.mjs`.
 // ⛔ Titolo e minuti sono quelli scritti DENTRO la guida: non si arrotondano qui.
 
+// I temi dei filtri di /risorse (scelti da Raffaele il 26/10). Una guida può stare in più temi; l'ordine qui è
+// l'ordine dei pulsanti. «skill» è il formato: le guide che regalano una skill da installare.
+export const temi = [
+  { id: 'cominciare', nome: 'Per cominciare' },
+  { id: 'marketing', nome: 'Marketing e clienti' },
+  { id: 'social', nome: 'Social e contenuti' },
+  { id: 'agenti', nome: 'Agenti e automazioni' },
+  { id: 'organizzazione', nome: 'Organizzare il lavoro' },
+  { id: 'skill', nome: 'Skill da installare' },
+] as const
+
+export type Tema = (typeof temi)[number]['id']
+
 export type Guida = {
   slug: string
+  /** i temi dei filtri di /risorse: almeno uno */
+  temi: Tema[]
   titolo: string
   minuti: number
   /** una riga, per gli elenchi */
@@ -23,6 +38,7 @@ export type Guida = {
 export const guide: Guida[] = [
   {
     slug: 'le-8-skill-di-hormozi',
+    temi: ['marketing', 'skill'],
     parole: ['hormozi'],
     titolo: 'Le 8 skill di Hormozi per Claude e ChatGPT',
     minuti: 8,
@@ -39,6 +55,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'farsi-citare-da-chatgpt',
+    temi: ['marketing', 'skill'],
     parole: ['seo'],
     titolo: 'Quando chiedono a ChatGPT il migliore della tua zona, esci tu?',
     minuti: 6,
@@ -55,6 +72,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'la-lista-dei-prossimi-clienti',
+    temi: ['marketing', 'skill'],
     parole: ['lista'],
     titolo: 'La lista dei tuoi prossimi clienti, nella tua zona, con Claude',
     minuti: 6,
@@ -71,6 +89,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'le-parole-dei-tuoi-clienti',
+    temi: ['marketing', 'skill'],
     parole: ['clienti'],
     titolo: 'Le tue recensioni ti dicono cosa scrivere nella pubblicità',
     minuti: 6,
@@ -87,6 +106,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'la-pagina-del-sito-che-vende',
+    temi: ['marketing', 'skill'],
     parole: ['pagina'],
     titolo: 'La pagina del tuo sito vende? Te lo dice Claude',
     minuti: 6,
@@ -103,6 +123,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'offerta-rifatta-con-claude',
+    temi: ['marketing', 'skill'],
     parole: ['offerta'],
     titolo: 'Se ti dicono «è caro»: l’offerta rifatta con Claude',
     minuti: 6,
@@ -119,6 +140,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'consiglio-dei-grandi-del-marketing',
+    temi: ['marketing', 'skill'],
     parole: ['consiglio'],
     titolo: 'Hormozi, Ogilvy e Godin discutono la tua offerta, con Claude',
     minuti: 6,
@@ -135,6 +157,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'le-13-skill-social-media-manager',
+    temi: ['social', 'skill'],
     parole: ['social'],
     titolo: 'Le 13 skill che trasformano Claude nel tuo social media manager',
     minuti: 8,
@@ -151,6 +174,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'le-4-skill-di-claude-per-un-azienda',
+    temi: ['cominciare', 'skill'],
     parole: ['skill'],
     titolo: 'Le 4 skill di Claude che servono a un’azienda',
     minuti: 8,
@@ -167,6 +191,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'il-primo-agente-con-claude',
+    temi: ['cominciare', 'agenti'],
     titolo: 'Il tuo primo agente con Claude, senza programmare',
     minuti: 9,
     sotto: 'Scarichi l’app, la sistemi in pochi minuti e gli dai il primo lavoro vero, con le schermate.',
@@ -182,6 +207,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'montaggio-video-con-claude',
+    temi: ['social', 'skill'],
     parole: ['montaggio', 'editing'],
     titolo: 'I tuoi video montati da Claude, come i miei',
     minuti: 7,
@@ -199,6 +225,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'mirofish-il-pubblico-finto',
+    temi: ['marketing', 'agenti'],
     parole: ['simulazione', 'mirofish'],
     titolo: 'MiroFish: il pubblico finto per provare le tue idee',
     minuti: 9,
@@ -215,6 +242,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'agenti-sull-abbonamento-di-claude',
+    temi: ['agenti'],
     parole: ['abbonamento', 'status'],
     titolo: 'I tuoi agenti sull’abbonamento di Claude, senza pagare le API',
     minuti: 6,
@@ -231,6 +259,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'il-mio-manychat-con-claude-code',
+    temi: ['social', 'agenti'],
     parole: ['manychat', 'centralino'],
     titolo: 'Il tuo ManyChat fatto con Claude Code',
     minuti: 10,
@@ -247,6 +276,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'humanizer-testi-umani',
+    temi: ['social', 'skill'],
     parole: ['umano', 'humanizer'],
     titolo: 'Humanizer: testi che non sembrano scritti da ChatGPT',
     minuti: 6,
@@ -263,6 +293,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'second-brain-con-claude',
+    temi: ['organizzazione'],
     parole: ['brain', 'buongiorno', 'memoria'],
     titolo: 'Il tuo second brain con Claude: scrivi buongiorno e sa da dove ripartire',
     minuti: 8,
@@ -279,6 +310,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'granola-e-claude-code',
+    temi: ['organizzazione'],
     parole: ['granola', 'riassunto'],
     titolo: 'Finisci la call, il riassunto è già pronto: Granola e Claude Code',
     minuti: 6,
@@ -295,6 +327,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'claude-su-instagram-senza-rischiare-l-account',
+    temi: ['social', 'agenti'],
     parole: ['instagram', 'chrome'],
     titolo: 'Claude sul tuo Instagram, senza rischiare l’account',
     minuti: 8,
@@ -311,6 +344,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'il-cervello-della-squadra-con-claude',
+    temi: ['organizzazione', 'skill'],
     parole: ['cervello', 'squadra'],
     titolo: 'Il cervello della squadra: le stesse skill di Claude per tutti',
     minuti: 8,
@@ -327,6 +361,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'claude-su-whatsapp-senza-rischiare-il-numero',
+    temi: ['agenti', 'organizzazione'],
     parole: ['whatsapp'],
     titolo: 'Claude sul tuo WhatsApp, senza rischiare il numero',
     minuti: 7,
@@ -343,6 +378,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'agenti-che-scrivono-il-blog',
+    temi: ['social', 'agenti'],
     parole: ['agenti'],
     titolo: 'Gli agenti che scrivono il blog della tua azienda',
     minuti: 6,
@@ -359,6 +395,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'dieci-cose-da-automatizzare-senza-installare-niente',
+    temi: ['cominciare', 'agenti'],
     parole: ['automatizza'],
     titolo: 'Dieci cose che puoi automatizzare da domani, senza installare niente',
     minuti: 9,
@@ -374,6 +411,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'chatgpt-non-e-google-usalo-davvero',
+    temi: ['cominciare'],
     parole: ['google'],
     titolo: 'ChatGPT non è Google: usalo davvero',
     minuti: 12,
@@ -389,6 +427,7 @@ export const guide: Guida[] = [
   },
   {
     slug: 'stop-al-chatgpt-che-ti-da-sempre-ragione',
+    temi: ['cominciare'],
     parole: ['critico', 'parere'],
     titolo: 'Stop al ChatGPT che ti dà sempre ragione',
     minuti: 8,
