@@ -37,6 +37,23 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'claude-motion-per-la-tua-azienda',
+    temi: ['social', 'marketing'],
+    parole: ['motion'],
+    titolo: 'Claude Motion per la tua azienda',
+    minuti: 6,
+    sotto: 'Un report, un listino o i numeri del mese diventano un video animato da mandare su WhatsApp.',
+    descrizione:
+      'Gli dai un report, un listino o i numeri del mese, e Claude ne fa un video animato che scarichi in MP4 e mandi su WhatsApp. Come si apre, le tre cose da dirgli, come lo correggi a parole e quattro richieste già scritte da copiare. Serve Claude col piano Team o Enterprise.',
+    dentro: [
+      'Chi ce l’ha, quanto costa e cosa non fa',
+      'Come si apre e le tre cose da dirgli',
+      'Come lo correggi a parole e lo scarichi in MP4',
+      'Quattro richieste da copiare: report, numeri del mese, listino, clienti nuovi',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'le-8-skill-di-hormozi',
     temi: ['marketing', 'skill'],
     parole: ['hormozi'],
