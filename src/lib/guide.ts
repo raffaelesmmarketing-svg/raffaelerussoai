@@ -37,6 +37,41 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'il-punto-del-lunedi',
+    temi: ['organizzazione', 'skill'],
+    parole: ['lunedi'],
+    titolo: 'Il punto del lunedì con Claude',
+    minuti: 7,
+    sotto: 'Ogni lunedì una pagina sola: cassa, vendite, impegni e la cosa da fare per prima.',
+    descrizione:
+      'monday-brief è una skill gratuita di Anthropic: ogni lunedì ti prepara una pagina con la cassa, le vendite, i clienti in arrivo e gli impegni della settimana, e in fondo la cosa da fare per prima. Come si installa, cosa collegare (anche con un gestionale italiano) e le richieste da copiare. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve e cosa non fa',
+      'Come si installa, con un clic',
+      'Cosa collegare, e come fare se il tuo gestionale non c’è',
+      'Le richieste da copiare, con tutto collegato o con niente',
+      'Cosa ti arriva, riga per riga',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'le-36-skill-per-vendere',
+    temi: ['skill', 'marketing'],
+    parole: ['vendite'],
+    titolo: 'Le 36 skill per vendere con Claude',
+    minuti: 8,
+    sotto: 'Prima della call, le obiezioni, il follow-up e la sera: 36 skill gratuite di Anthropic.',
+    descrizione:
+      'Anthropic ha messo online gratis 36 skill per chi vende. Ne bastano quattro per una giornata con una call: il foglio prima della call, la risposta alle obiezioni, la mail di follow-up con gli aggiornamenti del CRM e le tre cose di domani. Come si installano, cosa collegare e le richieste da copiare. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve e cosa decidi tu',
+      'Come si installano, e quali programmi collegare',
+      'Le richieste da copiare per call-prep, handle-objection, call-summary ed end-of-day',
+      'Le altre 32, per gruppi',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'le-9-skill-legali-di-claude',
     temi: ['skill', 'organizzazione'],
     parole: ['legale'],
