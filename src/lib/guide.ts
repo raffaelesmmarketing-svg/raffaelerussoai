@@ -37,6 +37,24 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'le-9-skill-legali-di-claude',
+    temi: ['skill', 'organizzazione'],
+    parole: ['legale'],
+    titolo: 'Le 9 skill legali di Claude',
+    minuti: 8,
+    sotto: 'Prima di firmare un contratto, fallo leggere a Claude: nove skill gratuite di Anthropic.',
+    descrizione:
+      'Anthropic ha messo online gratis nove skill per il lavoro legale: Claude ti legge il contratto clausola per clausola, smista gli accordi di riservatezza e controlla cosa scade con un fornitore. Come si installano, il foglio con le tue condizioni da scrivere una volta e le richieste da copiare. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve e cosa non fanno',
+      'Come si installano, con un clic',
+      'Il foglio con le tue condizioni, da scrivere una volta sola',
+      'Le richieste da copiare per review-contract, triage-nda e vendor-check',
+      'Le altre sei, per tutto il resto',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'claude-motion-per-la-tua-azienda',
     temi: ['social', 'marketing'],
     parole: ['motion'],

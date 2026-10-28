@@ -46,6 +46,7 @@ export const GUIDE = [
   { html: '2026-10-19-farsi-citare-da-chatgpt.html', slug: 'farsi-citare-da-chatgpt', cartella: 'guide-sorgenti', pdf: 'farsi-citare-da-chatgpt-e0637298d560' },
   { html: '2026-10-19-le-8-skill-di-hormozi.html', slug: 'le-8-skill-di-hormozi', cartella: 'guide-sorgenti', pdf: 'le-8-skill-di-hormozi-7335647fa38a' },
   { html: '2026-10-27-claude-motion.html', slug: 'claude-motion-per-la-tua-azienda', cartella: 'guide-sorgenti', pdf: 'claude-motion-per-la-tua-azienda-e8648c72e0f0' },
+  { html: '2026-10-28-le-9-skill-legali.html', slug: 'le-9-skill-legali-di-claude', cartella: 'guide-sorgenti', pdf: 'le-9-skill-legali-di-claude-ad00531bdfbb' },
 ]
 
 const CSS_STAMPA = `
