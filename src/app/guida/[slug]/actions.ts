@@ -38,6 +38,8 @@ const PDF_CON_MAIL: Record<string, string> = {
   'le-9-skill-legali-di-claude': '/guide/le-9-skill-legali-di-claude-ad00531bdfbb.pdf',
   'le-36-skill-per-vendere': '/guide/le-36-skill-per-vendere-09805c46c65d.pdf',
   'il-punto-del-lunedi': '/guide/il-punto-del-lunedi-cc7cded4eb88.pdf',
+  'il-consulente-per-i-bandi': '/guide/il-consulente-per-i-bandi-7d41c9b2e85a.pdf',
+  'le-8-skill-per-chiudere-il-mese': '/guide/le-8-skill-per-chiudere-il-mese-3f0a6e1d94bc.pdf',
   'il-tuo-analista-dei-dati': '/guide/il-tuo-analista-dei-dati-bd0b52f70302.pdf',
   'il-tuo-responsabile-del-personale': '/guide/il-tuo-responsabile-del-personale-5fbf85fe78cf.pdf',
   'l-assistenza-clienti-con-claude': '/guide/l-assistenza-clienti-con-claude-c0a7414f2e0c.pdf',

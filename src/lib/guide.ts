@@ -37,6 +37,42 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'il-consulente-per-i-bandi',
+    temi: ['skill', 'organizzazione'],
+    parole: ['bandi'],
+    titolo: 'Il consulente per i bandi con Claude',
+    minuti: 7,
+    sotto: 'Si va o non si va, la domanda e le scadenze dopo la vittoria: la skill gratuita di Anthropic per i bandi.',
+    descrizione:
+      'grant-rfp-writer è una skill gratuita di Anthropic: prima di scrivere una riga ti dice se un bando fa per te, requisito per requisito; poi scrive la domanda dalle tue domande passate e dai tuoi numeri, e dopo la vittoria ti tiene le scadenze. Come si installa, dove cercare i bandi italiani e le tre richieste da copiare.',
+    dentro: [
+      'Cosa sono, cosa ti serve e cosa non fa',
+      'Come si installa, con un clic',
+      'Dove cercare i bandi italiani',
+      'Le tre richieste da copiare: si va o non si va, la domanda, le scadenze',
+      'Cosa ti arriva, con un esempio',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'le-8-skill-per-chiudere-il-mese',
+    temi: ['skill', 'organizzazione'],
+    parole: ['chiusura'],
+    titolo: 'Le 8 skill per chiudere il mese con Claude',
+    minuti: 8,
+    sotto: 'La lista di fine mese, la banca contro i conti e la differenza col budget spiegata a parole.',
+    descrizione:
+      'Anthropic ha messo online gratis otto skill per i conti. Per la chiusura del mese ne bastano tre: la lista di quello che va fatto, la banca messa a confronto con i conti e la differenza fra budget e speso spiegata a parole. Come si installano, cosa preparare (anche senza collegare il gestionale) e le tre richieste da copiare.',
+    dentro: [
+      'Cosa sono, cosa ti serve e cosa non fa',
+      'Come si installano, con un clic',
+      'I file da preparare, anche senza collegare il gestionale',
+      'Le tre richieste da copiare: la lista, la banca, la differenza',
+      'Le altre cinque, e quali non ti servono',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'il-tuo-analista-dei-dati',
     temi: ['organizzazione', 'skill'],
     parole: ['dati'],

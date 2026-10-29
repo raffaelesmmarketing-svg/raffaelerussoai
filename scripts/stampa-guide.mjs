@@ -49,6 +49,8 @@ export const GUIDE = [
   { html: '2026-10-28-le-9-skill-legali.html', slug: 'le-9-skill-legali-di-claude', cartella: 'guide-sorgenti', pdf: 'le-9-skill-legali-di-claude-ad00531bdfbb' },
   { html: '2026-10-29-le-36-skill-per-vendere.html', slug: 'le-36-skill-per-vendere', cartella: 'guide-sorgenti', pdf: 'le-36-skill-per-vendere-09805c46c65d' },
   { html: '2026-10-29-il-punto-del-lunedi.html', slug: 'il-punto-del-lunedi', cartella: 'guide-sorgenti', pdf: 'il-punto-del-lunedi-cc7cded4eb88' },
+  { html: '2026-10-29-il-consulente-per-i-bandi.html', slug: 'il-consulente-per-i-bandi', cartella: 'guide-sorgenti', pdf: 'il-consulente-per-i-bandi-7d41c9b2e85a' },
+  { html: '2026-10-29-le-8-skill-per-chiudere-il-mese.html', slug: 'le-8-skill-per-chiudere-il-mese', cartella: 'guide-sorgenti', pdf: 'le-8-skill-per-chiudere-il-mese-3f0a6e1d94bc' },
   { html: '2026-10-29-il-tuo-analista-dei-dati.html', slug: 'il-tuo-analista-dei-dati', cartella: 'guide-sorgenti', pdf: 'il-tuo-analista-dei-dati-bd0b52f70302' },
   { html: '2026-10-29-il-tuo-responsabile-del-personale.html', slug: 'il-tuo-responsabile-del-personale', cartella: 'guide-sorgenti', pdf: 'il-tuo-responsabile-del-personale-5fbf85fe78cf' },
   { html: '2026-10-29-l-assistenza-clienti-con-claude.html', slug: 'l-assistenza-clienti-con-claude', cartella: 'guide-sorgenti', pdf: 'l-assistenza-clienti-con-claude-c0a7414f2e0c' },
