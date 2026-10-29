@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Il tuo analista dei dati, con Claude · Raffaele Russo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0A0F1E;
+      --surface:   #0F1525;
+      --surface2:  #141C30;
+      --border:    #1E2940;
+      --border2:   #253350;
+      --text:      #e8e8ec;
+      --muted:     #7a7a88;
+      --accent:    #84E110;
+      --accent2:   #a8f040;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 88px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 420px;
+      background: radial-gradient(ellipse, rgba(132,225,16,0.10) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.28);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 100px);
+      letter-spacing: 0.04em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #d0d0d8 40%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 18px);
+      color: var(--muted); font-weight: 300;
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section-wrap { padding: 64px 24px; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 4.5vw, 48px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-intro {
+      color: var(--muted); font-size: 15px;
+      max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* ── OUTPUT GRID ── */
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-top: 24px;
+    }
+    .output-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .output-card:hover { border-color: rgba(132,225,16,0.3); }
+    .output-icon { font-size: 22px; margin-bottom: 10px; }
+    .output-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .output-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── ERROR LIST ── */
+    .err-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .err-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid #f87171;
+      border-radius: var(--radius); padding: 18px 22px;
+    }
+    .err-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .err-title::before { content: '✗'; color: #f87171; font-weight: 700; }
+    .err-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PART HEADER ── */
+    .part-header { padding: 56px 24px 0; }
+    .part-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── STEP CARDS ── */
+    .steps-wrapper { padding: 28px 24px 52px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .step-card:hover { border-color: var(--border2); }
+    .step-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .step-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--accent);
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 8px; padding: 4px 10px; white-space: nowrap;
+    }
+    .step-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .step-time  { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .step-body  { padding: 22px 24px; }
+    .step-body p { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body strong { color: var(--text); font-weight: 500; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px; margin: 12px 0;
+    }
+    .action-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text); line-height: 1.5;
+    }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-item:first-child { padding-top: 0; }
+    .action-arrow { color: var(--accent); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout.info    { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.22); color: #a8c4fc; }
+    .callout.warning { background: rgba(245,200,66,0.07); border: 1px solid rgba(245,200,66,0.22); color: #f5d98a; }
+    .callout.success { background: rgba(132,225,16,0.07); border: 1px solid rgba(132,225,16,0.22); color: #b4f06a; }
+    .callout.danger  { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: #fca5a5; }
+    .callout strong  { color: inherit; font-weight: 600; }
+
+    /* ── TOOL / ESTENSIONI ── */
+    .ext-list { margin-top: 20px; }
+    .ext-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .ext-item:hover { border-color: rgba(132,225,16,0.3); }
+    .ext-badge {
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.20);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent2);
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .ext-text h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ext-text h4 a { color: var(--accent2); text-decoration: none; }
+    .ext-text h4 a:hover { color: var(--accent); }
+    .ext-text p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── CTA FINALE ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,225,16,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { text-align: center; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .cta-desc {
+      font-size: 16px; color: var(--muted); font-weight: 300;
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0D0D0D;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 36px; border-radius: var(--radius);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px; text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.15em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .footer-handle { font-size: 14px; color: var(--accent2); font-weight: 500; text-decoration: none; }
+    .footer-handle:hover { color: var(--accent); }
+    .footer-keyword {
+      display: inline-block; margin-top: 20px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 13px; font-weight: 600; color: var(--accent2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .step-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .output-grid { grid-template-columns: 1fr; }
+    }
+  
+    /* ── LE DIECI COSE ── */
+    h1 { font-size: clamp(40px, 7vw, 76px); }
+    .cosa {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+    }
+    .cosa-testa {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .cosa-numero {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; letter-spacing: 0.06em; line-height: 1;
+      color: var(--accent); min-width: 34px;
+    }
+    .cosa-titolo { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .cosa-corpo { padding: 8px 24px 22px; }
+    .riga { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .riga:last-child { border-bottom: none; padding-bottom: 0; }
+    .riga-etichetta {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 5px;
+    }
+    .riga p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    .riga p + p { margin-top: 8px; }
+    .prompt {
+      margin-top: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius); padding: 14px 18px;
+      font-size: 14px; color: var(--text); line-height: 1.65;
+    }
+    .prompt-etichetta {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .avviso {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 22px; margin-bottom: 12px;
+    }
+    .avviso h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .avviso p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    @media (max-width: 600px) {
+      .cosa-testa { padding: 16px 18px; gap: 12px; }
+      .cosa-corpo { padding: 6px 18px 20px; }
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px; }
+
+    /* ── L'IMMAGINE DI ANTHROPIC ── */
+    .schermata {
+      margin: 14px 0 0;
+      border: 1px solid var(--border2); border-radius: var(--radius);
+      overflow: hidden; background: #131313;
+      break-inside: avoid;
+    }
+    .schermata img { display: block; width: 100%; height: auto; }
+    .didascalia { font-size: 12px; color: var(--muted); line-height: 1.55; margin-top: 8px; }
+    @media print {
+      .cosa { break-inside: auto !important; }
+      .riga, .schermata, .avviso, .prompt { break-inside: avoid !important; }
+      .cosa-testa { break-after: avoid !important; }
+    }
+  </style>
+
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+<header class="hero">
+  <div class="container">
+    <div class="hero-badge"><span></span> Guida Pratica &middot; 7 minuti di lettura &middot; ti serve Claude, con un piano a pagamento</div>
+    <h1>Il tuo analista dei dati, con Claude</h1>
+    <p class="hero-sub">Gli dai il file Excel delle vendite e gli fai le domande come a un collaboratore: com’è fatto il file, perché un mese è andato peggio, una pagina coi grafici da girare ai soci. Lo fanno le 10 skill del pacchetto <strong>Data</strong>, che Anthropic, l’azienda che ha creato Claude, ha messo online <strong>gratis</strong>: il pacchetto non costa niente, per usarlo ti serve un piano a pagamento di Claude. Qui trovi come si installa, quali skill ti servono se hai solo Excel e cosa chiedergli.</p>
+  </div>
+</header>
+
+<section class="section-wrap">
+  <div class="container fade-in">
+    <div class="section-label">Prima di cominciare</div>
+    <div class="section-title">Quattro cose da sapere</div>
+
+    <div class="avviso fade-in">
+      <h4>Cosa sono</h4>
+      <p>Sono dieci istruzioni già scritte da Anthropic che insegnano a Claude a lavorare sui numeri come un analista: per esempio controllare il file prima di fare i conti, e ricontrollare il metodo prima che tu giri un risultato. Si chiamano «skill», e arrivano tutte insieme in un pacchetto che si chiama <strong>Data</strong> (nei menu di Claude i pacchetti si chiamano «Plugins»): installi il pacchetto e hai tutte e dieci le skill. ChatGPT un Excel lo legge anche lui; la differenza è che qui il metodo dell’analista è già scritto, e Claude lo segue ogni volta che usi una di queste skill.</p>
+    </div>
+
+    <div class="avviso fade-in">
+      <h4>Cosa ti serve</h4>
+      <p>Un piano a pagamento di Claude. Per una persona basta <strong>Pro</strong>: 20 $ al mese, che diventano circa 17 $ al mese se paghi l’anno in una volta (200 $). Se in azienda lo usate in più di uno, c’è <strong>Team</strong>, da 2 persone in su: 25 $ al mese a persona, 20 $ al mese se paghi l’anno. Lo paga solo chi lo usa: se lo usi solo tu, basta il tuo Pro, e quello che ti prepara lo giri agli altri. Col piano gratuito i pacchetti non si possono aggiungere. I prezzi sono in dollari, come li indica Anthropic. Se oggi usi ChatGPT non devi lasciarlo: ti iscrivi su claude.ai con la tua mail e scegli il piano. Il pacchetto lo aggiungi dal computer, una volta sola: se stai leggendo dal telefono, mandati il link e riapri la guida dal computer.</p>
+    </div>
+
+    <div class="avviso fade-in">
+      <h4>Se hai solo Excel</h4>
+      <p>Va bene così: il pacchetto lavora sui file Excel che alleghi alla chat, e il gestionale non lo devi collegare. Nel gestionale apri l’elenco delle fatture di vendita e cerca il tasto «Esporta» o «Excel»; se non lo trovi, chiedilo a chi te l’ha installato. Esporta quest’anno e l’anno scorso, così può fare i confronti; più colonne ci sono (la data, il cliente, il prodotto, l’importo), più domande puoi fargli. Tre skill del pacchetto servono solo a chi interroga il database dell’azienda nel suo linguaggio, l’SQL (sql-queries, write-query e data-context-extractor): se lavori sul file Excel, le ignori.</p>
+    </div>
+
+    <div class="avviso fade-in">
+      <h4>Cosa non fa, e la privacy</h4>
+      <p>Lavora sul file che gli dai: se una vendita non è nel file, per lui non esiste. Ti segnala le righe doppie e le celle vuote, ma non sa cosa è successo davvero in azienda: il perché te lo propone, la conferma la dai tu, che l’azienda la conosci. Prima di girare un numero ai soci o al commercialista, guardalo sul file: validate-data ti aiuta a rifare i conti, la firma resta tua. E prima di dargli i tuoi conti: nei piani Free, Pro e Max c’è una voce che permette ad Anthropic di usare le tue chat per migliorare Claude. Per trovarla clicca sul tuo nome in basso a sinistra, apri «Settings» e poi «Privacy» (oppure vai su claude.ai/settings/data-privacy-controls): si chiama «Help improve our AI models». Se non vuoi che le tue chat servano a questo, spegnila. Nei piani Team ed Enterprise, se non cambi niente, i tuoi contenuti non si usano.</p>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="part-header container fade-in">
+    <div class="section-label">La guida</div>
+    <div class="section-title">Installalo, una volta sola</div>
+    <p class="section-intro">Tre passaggi, dal computer: aggiungi il pacchetto, guardi quali skill userai, e impari a fargli le domande.</p>
+  </div>
+
+  <div class="steps-wrapper container">
+
+    <div class="cosa fade-in">
+      <div class="cosa-testa">
+        <div class="cosa-numero">01</div>
+        <div class="cosa-titolo">Aggiungi il pacchetto Data</div>
+      </div>
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">Da Claude</div>
+          <p>Su claude.ai o nell’app di Claude per computer: nella colonna a sinistra apri «Customize», poi la scheda «Plugins» e la scheda «Discover». Cerca «Data» e premi «Add».</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Oppure dal link</div>
+          <p>Sulla pagina del pacchetto sul sito di Anthropic, <strong>claude.com/plugins/data</strong>, c’è anche il tasto per installarlo da lì («Install»): fa la stessa cosa. claude.com è il sito dove Anthropic presenta i pacchetti; Claude lo usi su claude.ai.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Dove lo ritrovi</div>
+          <p>Il pacchetto resta sul tuo account, non sul computer: lo trovi in tutte le chat su claude.ai e nell’app per computer.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cosa fade-in">
+      <div class="cosa-testa">
+        <div class="cosa-numero">02</div>
+        <div class="cosa-titolo">Le skill che userai</div>
+      </div>
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">Non devi scegliere</div>
+          <p>Col pacchetto le hai già tutte e dieci. Queste sono quelle che chiamerai tu, una per lavoro.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">explore-data</div>
+          <p>Ti dice se il file è pulito: quante righe e colonne ci sono, cosa c’è in ogni colonna, dove ci sono righe doppie e dove mancano dei numeri. È la prima da usare: un conto fatto su un file sporco è sbagliato.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">analyze</div>
+          <p>Risponde alle domande sui tuoi numeri: da quella secca («quanto ho venduto a settembre?») al perché di un calo, confrontando i mesi, i prodotti e i clienti.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">build-dashboard</div>
+          <p>Ti fa una pagina coi grafici, i filtri e le tabelle, in un file che scarichi dalla chat. Lo mandi ai soci o al commercialista come un normale allegato: è un file .html, si apre con un doppio clic come una pagina internet, anche senza Claude.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">create-viz</div>
+          <p>Un grafico solo, come immagine, da mettere in una presentazione o in un report.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">validate-data</div>
+          <p>Ricontrolla i conti e il metodo di un’analisi prima che tu la giri a qualcuno.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Le altre cinque</div>
+          <p>statistical-analysis e data-visualization le usa Claude da solo quando servono, tu non le chiami. sql-queries, write-query e data-context-extractor servono a chi ha i dati in un database.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cosa fade-in">
+      <div class="cosa-testa">
+        <div class="cosa-numero">03</div>
+        <div class="cosa-titolo">Come gli fai le domande</div>
+      </div>
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">Come si fa</div>
+          <p>Apri una chat nuova. Copia il testo di un riquadro qui sotto (senza la scritta «Da copiare»), incollalo nella casella dei messaggi, cambia le parti fra parentesi quadre con i tuoi dati (le parentesi le togli) e premi invio. Per andare a capo dentro la casella, senza mandare il messaggio, tieni premuto Maiusc e premi Invio. Il testo comincia col nome della skill, per esempio <code>/explore-data</code>: così Claude sa quale usare, non devi sceglierla da nessun elenco. Le skill sono scritte in inglese, ma tu gli scrivi in italiano: per stare sicuro, le richieste finiscono con «rispondimi in italiano». Il file lo alleghi col <code>+</code> nella casella, e le domande dopo le fai nella stessa chat.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Com’è fatto il file</div>
+          <div class="prompt"><span class="prompt-etichetta">Da copiare</span>/explore-data Ti allego il file delle vendite. Dimmi com’è fatto: quante righe, quali colonne, dove ci sono righe doppie o celle vuote. Rispondimi in italiano.</div>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Il perché di un calo</div>
+          <div class="prompt"><span class="prompt-etichetta">Da copiare</span>/analyze Perché a [settembre] ho venduto di meno che a [settembre dell’anno scorso]? Guarda i prodotti e i clienti, e dimmi da cosa dipende il calo. Rispondimi in italiano.</div>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">La dashboard</div>
+          <div class="prompt"><span class="prompt-etichetta">Da copiare</span>/build-dashboard Fammi una dashboard delle vendite di quest’anno: i totali in alto, le vendite mese per mese, i filtri per prodotto e per cliente. Rispondimi in italiano.</div>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Prima di girarla</div>
+          <div class="prompt"><span class="prompt-etichetta">Da copiare</span>/validate-data Ricontrolla i conti e il metodo dell’analisi che mi hai appena fatto, prima che la giri al commercialista. Rispondimi in italiano.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="part-header container fade-in">
+    <div class="section-label">Cosa ti arriva</div>
+    <div class="section-title">Risposte in chat, la dashboard in un file</div>
+    <p class="section-intro">Le risposte te le scrive nella chat, coi numeri presi dal tuo file. La dashboard te la dà come un file da aprire nel browser.</p>
+  </div>
+
+  <div class="steps-wrapper container">
+
+    <div class="cosa fade-in">
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">Com’è fatto il file</div>
+          <p>Le righe, le colonne e cosa c’è dentro, con i problemi chiamati per nome: le righe doppie, le celle vuote, i valori strani. Prima di un conto sai se il file è pulito.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Il perché</div>
+          <p>Il numero che hai chiesto, messo a confronto, e da cosa dipende: quale prodotto, quale cliente, quale mese.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">La dashboard</div>
+          <p>Una pagina sola con i totali in alto, i grafici e i filtri: scegli il prodotto o il mese e i grafici cambiano. È un file .html: lo scarichi dalla chat e lo mandi come un allegato.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Un esempio</div>
+          <p>«A settembre hai venduto 31.200 €, il 18% in meno di settembre dell’anno scorso. Il calo viene quasi tutto dal Prodotto B (−38%) e da due clienti, Rossi e Conti, che quest’anno a settembre non hanno ordinato. Gli altri prodotti sono stabili.» I numeri sono inventati: è per farti vedere com’è fatta una risposta.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section-wrap">
+  <div class="container fade-in">
+    <div class="section-label">Da dove parti</div>
+    <div class="section-title">Il file delle vendite e una domanda</div>
+    <p class="section-intro">Installa il pacchetto. Poi dal gestionale scarica in Excel le fatture di vendita di quest’anno e dell’anno scorso, allega il file e fagli la prima richiesta: com’è fatto il file. Dopo chiedigli il perché del mese andato peggio, e guarda se la risposta è quella che pensavi tu.</p>
+
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div><strong>Se «Data» non c’è fra i pacchetti:</strong> controlla il piano (serve un piano a pagamento). Se la tua azienda è su un piano Enterprise, chiedi a chi amministra l’account: può aver limitato i pacchetti che si possono aggiungere.</div>
+    </div>
+
+    <div class="callout success">
+      <div class="callout-icon">✅</div>
+      <div>Se vuoi farlo insieme, nella chiamata gratuita lo installiamo e facciamo le prime domande sul tuo file.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-wrap">
+  <div class="container fade-in">
+    <div class="section-label">Strumenti</div>
+    <div class="section-title">Quello che ti serve</div>
+    <p class="section-intro">Il pacchetto è gratuito. Per usarlo ti serve un piano a pagamento di Claude.</p>
+
+    <div class="ext-list">
+      <div class="ext-item fade-in">
+        <div class="ext-badge">GRATIS</div>
+        <div class="ext-text">
+          <h4><a href="https://claude.com/plugins/data" target="_blank" rel="noopener">Il pacchetto Data ↗</a></h4>
+          <p>La pagina di Anthropic con il tasto per installarlo. In inglese.</p>
+        </div>
+      </div>
+      <div class="ext-item fade-in">
+        <div class="ext-badge">PRO</div>
+        <div class="ext-text">
+          <h4><a href="https://claude.com/pricing" target="_blank" rel="noopener">Claude, i piani ↗</a></h4>
+          <p>I pacchetti si aggiungono da Pro in su: 20 $ al mese, o 200 $ per tutto l’anno. Per più persone, Team.</p>
+        </div>
+      </div>
+      <div class="ext-item fade-in">
+        <div class="ext-badge">GRATIS</div>
+        <div class="ext-text">
+          <h4><a href="https://support.claude.com/en/articles/13837440" target="_blank" rel="noopener">La guida di Anthropic sui pacchetti ↗</a></h4>
+          <p>Come si aggiungono, si usano e si tolgono. In inglese.</p>
+        </div>
+      </div>
+      <div class="ext-item fade-in">
+        <div class="ext-badge">GRATIS</div>
+        <div class="ext-text">
+          <h4><a href="https://github.com/anthropics/knowledge-work-plugins/tree/main/data/skills" target="_blank" rel="noopener">Le 10 skill, le istruzioni complete ↗</a></h4>
+          <p>Cosa fa ogni skill, passo per passo, sul GitHub di Anthropic. In inglese.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container fade-in">
+    <div class="section-label">Il passo dopo</div>
+    <h2 class="cta-title">Vuoi portare l'intelligenza artificiale nel tuo lavoro, in modo semplice?</h2>
+    <p class="cta-desc">Richiedi una chiamata gratuita con me. In 20 minuti guardiamo come lavori oggi e da dove conviene cominciare nel tuo caso.</p>
+    <a href="https://raffaelerussoai.com/consulenza?da=guida-dati" target="_blank" rel="noopener" class="cta-btn">
+      Richiedi la chiamata gratuita →
+    </a>
+    <p style="font-size: 13px; color: var(--muted); margin-top: 18px; position: relative;">raffaelerussoai.com/consulenza</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-brand">Guida di Raffaele Russo AI</div>
+    <a href="https://instagram.com/raffaelerusso.ai" target="_blank" rel="noopener" class="footer-handle">@raffaelerusso.ai</a>
+    <p style="font-size: 13px; color: var(--muted); margin-top: 12px; font-style: italic;">Domande? Scrivimi su Instagram.</p>
+    <div class="footer-keyword">Hai ricevuto questa guida commentando DATI</div>
+    <p style="font-size: 13px; color: var(--muted); margin-top: 12px;">Fonti, lette il 29/10/2026: il pacchetto «data» di Anthropic su GitHub (github.com/anthropics/knowledge-work-plugins, licenza Apache 2.0: il README e le istruzioni delle 10 skill), la pagina del pacchetto (claude.com/plugins/data), la guida di supporto «Use plugins in Claude» (support.claude.com/en/articles/13837440), la pagina dei prezzi (claude.com/pricing) e la pagina sulla privacy «How do I change my model improvement privacy settings?» (privacy.claude.com).</p>
+    <p style="font-size: 13px; margin-top: 14px;"><a href="https://raffaelerussoai.com/risorse" class="footer-handle">Le altre guide gratuite: raffaelerussoai.com/risorse</a></p>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const max = document.body.scrollHeight - window.innerHeight;
+    document.getElementById('progressBar').style.width = (window.scrollY / max * 100) + '%';
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

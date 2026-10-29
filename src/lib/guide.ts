@@ -37,6 +37,74 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'il-tuo-analista-dei-dati',
+    temi: ['organizzazione', 'skill'],
+    parole: ['dati'],
+    titolo: 'Il tuo analista dei dati, con Claude',
+    minuti: 7,
+    sotto: 'Il tuo Excel letto da Claude: com’è fatto il file, il perché di un calo, la dashboard per i soci.',
+    descrizione:
+      'Le 10 skill gratuite del pacchetto Data di Anthropic fanno di Claude il tuo analista: gli dai il file Excel delle vendite e gli fai le domande come a un collaboratore. Quali ti servono se hai solo Excel, come si installano e le richieste da copiare. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve, cosa non fa',
+      'Come si installa, e cosa fare se hai solo Excel',
+      'Le cinque skill che userai, una per lavoro',
+      'Le richieste da copiare: il file, il perché di un calo, la dashboard, il controllo',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'il-tuo-responsabile-del-personale',
+    temi: ['organizzazione', 'skill'],
+    parole: ['hr'],
+    titolo: 'Il tuo responsabile del personale, con Claude',
+    minuti: 7,
+    sotto: 'Le domande del colloquio, la scheda dei voti, la lettera dell’offerta e la prima settimana.',
+    descrizione:
+      'Le 9 skill gratuite del pacchetto Human Resources di Anthropic: quando assumi qualcuno, Claude prepara le domande e la scheda per dare un voto a ogni candidato, scrive la bozza della lettera dell’offerta e organizza la prima settimana. Il contratto resta al consulente del lavoro. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve, e il contratto',
+      'Come si installa',
+      'Le tre skill di un’assunzione, e le altre sei',
+      'Le richieste da copiare: il colloquio, la lettera, il primo giorno',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'l-assistenza-clienti-con-claude',
+    temi: ['marketing', 'skill'],
+    parole: ['assistenza'],
+    titolo: 'L’assistenza clienti con Claude',
+    minuti: 7,
+    sotto: 'Le richieste in fila per urgenza, la risposta difficile, il cliente arrabbiato in una pagina.',
+    descrizione:
+      'Le 5 skill gratuite del pacchetto Customer Support di Anthropic: le richieste dei clienti in fila per urgenza con chi se ne occupa, la risposta difficile col tono giusto, cosa avevi già detto a quel cliente e la sua storia in una pagina. Anche se le richieste ti arrivano su WhatsApp. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve, da dove arrivano le richieste',
+      'Come si installa',
+      'Le cinque skill, una per pezzo di lavoro',
+      'Le richieste da copiare, dalla fila del mattino alle domande di sempre',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'le-procedure-con-claude',
+    temi: ['organizzazione', 'skill'],
+    parole: ['procedure'],
+    titolo: 'Le procedure della tua azienda, con Claude',
+    minuti: 6,
+    sotto: 'La procedura che sta nella tua testa, scritta passo per passo con chi fa cosa, poi accorciata.',
+    descrizione:
+      'process-doc e process-optimization, dal pacchetto gratuito Operations di Anthropic: gli racconti come si fa un lavoro e Claude scrive la procedura passo per passo, con chi fa che cosa; poi trova dove si blocca e cosa si può togliere. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve, quale procedura per prima',
+      'Come si installa',
+      'La prima procedura, con la richiesta da copiare',
+      'Come accorciarla',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'il-punto-del-lunedi',
     temi: ['organizzazione', 'skill'],
     parole: ['lunedi'],
