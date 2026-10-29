@@ -37,6 +37,40 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'il-tuo-marketing-manager',
+    temi: ['marketing', 'skill'],
+    parole: ['marketing'],
+    titolo: 'Il tuo marketing manager, con Claude',
+    minuti: 7,
+    sotto: 'Il piano della settimana, i concorrenti, le mail in fila e i testi che suonano come te.',
+    descrizione:
+      'Le 8 skill gratuite del pacchetto Marketing di Anthropic: il piano canale per canale, cosa non dicono i tuoi concorrenti, le mail per chi ti chiede informazioni e il controllo che ogni testo suoni come te. Come si installa e le richieste da copiare. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve, il tuo modo di scrivere',
+      'Come si installa',
+      'Le quattro skill per trovare clienti, e le altre',
+      'Le richieste da copiare: il piano, i concorrenti, le mail, il controllo',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'il-tuo-marchio-su-tutto',
+    temi: ['marketing', 'skill'],
+    parole: ['marchio'],
+    titolo: 'Il tuo marchio su tutto, con Claude',
+    minuti: 6,
+    sotto: 'Il link del tuo sito, e presentazioni, documenti e grafiche escono coi tuoi colori.',
+    descrizione:
+      'brand-style, theme-factory e canvas-design, tre skill gratuite di Anthropic: Claude prende colori, caratteri e logo dal tuo sito e li usa in presentazioni, documenti, poster e grafiche. Come si accendono e le richieste da copiare. Serve un piano a pagamento di Claude.',
+    dentro: [
+      'Cosa sono, cosa ti serve, il tuo marchio',
+      'Come si installa brand-style e come si accendono le altre due',
+      'La pagina di prova coi tuoi colori',
+      'Le richieste da copiare: il marchio, la presentazione, il volantino',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'il-consulente-per-i-bandi',
     temi: ['skill', 'organizzazione'],
     parole: ['bandi'],

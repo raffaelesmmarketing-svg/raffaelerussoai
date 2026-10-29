@@ -44,6 +44,8 @@ const PDF_CON_MAIL: Record<string, string> = {
   'il-tuo-responsabile-del-personale': '/guide/il-tuo-responsabile-del-personale-5fbf85fe78cf.pdf',
   'l-assistenza-clienti-con-claude': '/guide/l-assistenza-clienti-con-claude-c0a7414f2e0c.pdf',
   'le-procedure-con-claude': '/guide/le-procedure-con-claude-2f82ebb687f8.pdf',
+  'il-tuo-marketing-manager': '/guide/il-tuo-marketing-manager-66f0a7dd8e6b.pdf',
+  'il-tuo-marchio-su-tutto': '/guide/il-tuo-marchio-su-tutto-2ab0bf0d6073.pdf',
 }
 
 export type EsitoGuida =

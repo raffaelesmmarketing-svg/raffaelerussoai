@@ -55,6 +55,8 @@ export const GUIDE = [
   { html: '2026-10-29-il-tuo-responsabile-del-personale.html', slug: 'il-tuo-responsabile-del-personale', cartella: 'guide-sorgenti', pdf: 'il-tuo-responsabile-del-personale-5fbf85fe78cf' },
   { html: '2026-10-29-l-assistenza-clienti-con-claude.html', slug: 'l-assistenza-clienti-con-claude', cartella: 'guide-sorgenti', pdf: 'l-assistenza-clienti-con-claude-c0a7414f2e0c' },
   { html: '2026-10-29-le-procedure-con-claude.html', slug: 'le-procedure-con-claude', cartella: 'guide-sorgenti', pdf: 'le-procedure-con-claude-2f82ebb687f8' },
+  { html: '2026-10-29-il-tuo-marketing-manager.html', slug: 'il-tuo-marketing-manager', cartella: 'guide-sorgenti', pdf: 'il-tuo-marketing-manager-66f0a7dd8e6b' },
+  { html: '2026-10-29-il-tuo-marchio-su-tutto.html', slug: 'il-tuo-marchio-su-tutto', cartella: 'guide-sorgenti', pdf: 'il-tuo-marchio-su-tutto-2ab0bf0d6073' },
 ]
 
 const CSS_STAMPA = `
