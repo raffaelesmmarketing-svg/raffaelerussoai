@@ -37,6 +37,40 @@ export type Guida = {
 
 export const guide: Guida[] = [
   {
+    slug: 'rifai-l-app-che-paghi',
+    temi: ['skill', 'agenti'],
+    parole: ['replica'],
+    titolo: 'Rifai l’app che paghi, con Claude Code',
+    minuti: 7,
+    sotto: 'Undici skill gratuite: la mappa dell’app, cosa odiano i suoi utenti, e la tua versione online col tuo marchio.',
+    descrizione:
+      'Replica, undici skill gratuite per Claude Code: studiano un’app che paghi, leggono le recensioni vere per capire cosa odiano gli utenti e ti aiutano a rifarla meglio, col tuo nome e il tuo marchio. Rifanno quello che l’app fa, mai il suo codice o il suo logo. Cosa ti serve, come si installano e da dove partire.',
+    dentro: [
+      'Cosa sono, cosa ti serve, cosa fanno e cosa no',
+      'Come si installano, in tre passaggi',
+      'Le undici, in fila',
+      'Da dove partire: prima le recensioni, poi la mappa',
+    ],
+    conMail: true,
+  },
+  {
+    slug: 'claude-sul-tuo-telefono',
+    temi: ['agenti', 'skill'],
+    parole: ['artemis'],
+    titolo: 'Claude su un telefono Android, con ARTEMIS',
+    minuti: 7,
+    sotto: 'Lo strumento gratuito di Google che fa usare a Claude un telefono Android vero, come una persona.',
+    descrizione:
+      'ARTEMIS di Google, gratuito e open source: Claude apre le app, tocca lo schermo e ti dice com’è andata, su un telefono Android vero o sull’emulatore. Cosa ti serve (anche la chiave di un modello), come si collega a Claude Code e le prime cose da fargli fare.',
+    dentro: [
+      'Cosa fa, cosa ti serve e quanto costa davvero',
+      'Come si collega, in quattro passaggi',
+      'Le richieste da copiare',
+      'La prima prova, senza rischi',
+    ],
+    conMail: true,
+  },
+  {
     slug: 'il-tuo-marketing-manager',
     temi: ['marketing', 'skill'],
     parole: ['marketing'],
@@ -366,7 +400,7 @@ export const guide: Guida[] = [
   {
     slug: 'le-13-skill-social-media-manager',
     temi: ['social', 'skill'],
-    parole: ['social'],
+    parole: ['social', 'profilo'],
     titolo: 'Le 13 skill che trasformano Claude nel tuo social media manager',
     minuti: 8,
     sotto: 'Reel, didascalie, caroselli, piano della settimana, commenti e profilo: scrivono loro, pubblichi tu.',

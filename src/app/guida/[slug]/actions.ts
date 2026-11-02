@@ -13,6 +13,8 @@ const SUPABASE_KEY_PUBBLICA = 'sb_publishable_9Yc0GLvZrQzOV7Ss82kyEQ_jNzTGIpW'
 // slug → PDF delle guide che si sbloccano con la mail. Il nome lo stampa scripts/stampa-guide.mjs e non
 // compare in nessuna pagina: lo riceve solo chi ha lasciato la mail.
 const PDF_CON_MAIL: Record<string, string> = {
+  'rifai-l-app-che-paghi': '/guide/rifai-l-app-che-paghi-eca1c027d90e.pdf',
+  'claude-sul-tuo-telefono': '/guide/claude-sul-tuo-telefono-dc749f4c7094.pdf',
   'agenti-che-scrivono-il-blog': '/guide/agenti-che-scrivono-il-blog-249536f41207.pdf',
   'il-primo-agente-con-claude': '/guide/il-primo-agente-con-claude-d5bd04c0adf5.pdf',
   'le-4-skill-di-claude-per-un-azienda': '/guide/le-4-skill-di-claude-per-un-azienda-21af976f8702.pdf',

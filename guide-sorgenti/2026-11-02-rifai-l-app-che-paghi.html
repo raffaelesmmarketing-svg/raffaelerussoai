@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rifai l’app che paghi, con Claude Code · Raffaele Russo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;500;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0A0F1E;
+      --surface:   #0F1525;
+      --surface2:  #141C30;
+      --border:    #1E2940;
+      --border2:   #253350;
+      --text:      #e8e8ec;
+      --muted:     #7a7a88;
+      --accent:    #84E110;
+      --accent2:   #a8f040;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 88px 24px 64px;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 420px;
+      background: radial-gradient(ellipse, rgba(132,225,16,0.10) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.28);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 12px; font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 9vw, 100px);
+      letter-spacing: 0.04em; line-height: 1;
+      background: linear-gradient(135deg, #ffffff 0%, #d0d0d8 40%, var(--accent) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 24px;
+    }
+    .hero-sub {
+      font-size: clamp(15px, 2.2vw, 18px);
+      color: var(--muted); font-weight: 300;
+      max-width: 620px; margin: 0 auto 40px; line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+    .section-wrap { padding: 64px 24px; border-bottom: 1px solid var(--border); }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(28px, 4.5vw, 48px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .section-intro {
+      color: var(--muted); font-size: 15px;
+      max-width: 600px; margin-bottom: 32px; line-height: 1.7;
+    }
+
+    /* ── OUTPUT GRID ── */
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin-top: 24px;
+    }
+    .output-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .output-card:hover { border-color: rgba(132,225,16,0.3); }
+    .output-icon { font-size: 22px; margin-bottom: 10px; }
+    .output-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .output-card p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── ERROR LIST ── */
+    .err-list { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .err-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid #f87171;
+      border-radius: var(--radius); padding: 18px 22px;
+    }
+    .err-title {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .err-title::before { content: '✗'; color: #f87171; font-weight: 700; }
+    .err-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── PART HEADER ── */
+    .part-header { padding: 56px 24px 0; }
+    .part-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── STEP CARDS ── */
+    .steps-wrapper { padding: 28px 24px 52px; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .step-card:hover { border-color: var(--border2); }
+    .step-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .step-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.1em;
+      color: var(--accent);
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 8px; padding: 4px 10px; white-space: nowrap;
+    }
+    .step-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .step-time  { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .step-body  { padding: 22px 24px; }
+    .step-body p { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.7; }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body strong { color: var(--text); font-weight: 500; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 18px; margin: 12px 0;
+    }
+    .action-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text); line-height: 1.5;
+    }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-item:first-child { padding-top: 0; }
+    .action-arrow { color: var(--accent); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: var(--radius); padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; line-height: 1.6;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .callout.info    { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.22); color: #a8c4fc; }
+    .callout.warning { background: rgba(245,200,66,0.07); border: 1px solid rgba(245,200,66,0.22); color: #f5d98a; }
+    .callout.success { background: rgba(132,225,16,0.07); border: 1px solid rgba(132,225,16,0.22); color: #b4f06a; }
+    .callout.danger  { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: #fca5a5; }
+    .callout strong  { color: inherit; font-weight: 600; }
+
+    /* ── TOOL / ESTENSIONI ── */
+    .ext-list { margin-top: 20px; }
+    .ext-item {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    .ext-item:hover { border-color: rgba(132,225,16,0.3); }
+    .ext-badge {
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.20);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 600; color: var(--accent2);
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .ext-text h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ext-text h4 a { color: var(--accent2); text-decoration: none; }
+    .ext-text h4 a:hover { color: var(--accent); }
+    .ext-text p  { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* ── CTA FINALE ── */
+    .cta-section {
+      padding: 80px 24px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(132,225,16,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-section .section-label { text-align: center; }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      letter-spacing: 0.04em; color: var(--text);
+      margin-bottom: 16px; line-height: 1.1;
+    }
+    .cta-desc {
+      font-size: 16px; color: var(--muted); font-weight: 300;
+      max-width: 520px; margin: 0 auto 36px; line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0D0D0D;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 36px; border-radius: var(--radius);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px; text-align: center;
+    }
+    .footer-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px; letter-spacing: 0.15em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .footer-handle { font-size: 14px; color: var(--accent2); font-weight: 500; text-decoration: none; }
+    .footer-handle:hover { color: var(--accent); }
+    .footer-keyword {
+      display: inline-block; margin-top: 20px;
+      background: rgba(132,225,16,0.10);
+      border: 1px solid rgba(132,225,16,0.22);
+      border-radius: 100px; padding: 6px 18px;
+      font-size: 13px; font-weight: 600; color: var(--accent2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 56px 20px 40px; }
+      .step-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .output-grid { grid-template-columns: 1fr; }
+    }
+  
+    /* ── LE DIECI COSE ── */
+    h1 { font-size: clamp(40px, 7vw, 76px); }
+    .cosa {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); margin-bottom: 18px; overflow: hidden;
+    }
+    .cosa-testa {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px;
+      background: var(--surface2); border-bottom: 1px solid var(--border);
+    }
+    .cosa-numero {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; letter-spacing: 0.06em; line-height: 1;
+      color: var(--accent); min-width: 34px;
+    }
+    .cosa-titolo { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .cosa-corpo { padding: 8px 24px 22px; }
+    .riga { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .riga:last-child { border-bottom: none; padding-bottom: 0; }
+    .riga-etichetta {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent2); margin-bottom: 5px;
+    }
+    .riga p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    .riga p + p { margin-top: 8px; }
+    .prompt {
+      margin-top: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius); padding: 14px 18px;
+      font-size: 14px; color: var(--text); line-height: 1.65;
+    }
+    .prompt-etichetta {
+      display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    }
+    .avviso {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px 22px; margin-bottom: 12px;
+    }
+    .avviso h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .avviso p { font-size: 14px; color: #b9bcc8; line-height: 1.65; }
+    @media (max-width: 600px) {
+      .cosa-testa { padding: 16px 18px; gap: 12px; }
+      .cosa-corpo { padding: 6px 18px 20px; }
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; background: rgba(255,255,255,0.08); padding: 1px 6px; border-radius: 6px; }
+
+    /* ── L'IMMAGINE DI ANTHROPIC ── */
+    .schermata {
+      margin: 14px 0 0;
+      border: 1px solid var(--border2); border-radius: var(--radius);
+      overflow: hidden; background: #131313;
+      break-inside: avoid;
+    }
+    .schermata img { display: block; width: 100%; height: auto; }
+    .didascalia { font-size: 12px; color: var(--muted); line-height: 1.55; margin-top: 8px; }
+    @media print {
+      .cosa { break-inside: auto !important; }
+      .riga, .schermata, .avviso, .prompt { break-inside: avoid !important; }
+      .cosa-testa { break-after: avoid !important; }
+    }
+  </style>
+
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+<header class="hero">
+  <div class="container">
+    <div class="hero-badge"><span></span> Guida Pratica &middot; 7 minuti di lettura &middot; ti serve Claude, con un piano a pagamento</div>
+    <h1>Rifai l’app che paghi, con Claude Code</h1>
+    <p class="hero-sub">Replica sono <strong>undici istruzioni gratuite</strong> per Claude: studiano un’app che paghi, leggono cosa odiano i suoi utenti e ti aiutano a rifarla meglio, col tuo nome e il tuo marchio. Le funzioni sono le stesse; i testi, il logo e il programma sono nuovi, scritti da zero. Non serve saper programmare, ma serve un po’ di pazienza: qui trovi cosa ti serve, come si installano e da dove partire, anche solo per capire in mezz’ora se vale la pena.</p>
+  </div>
+</header>
+
+<section class="section-wrap">
+  <div class="container fade-in">
+    <div class="section-label">Prima di cominciare</div>
+    <div class="section-title">Quattro cose da sapere</div>
+
+    <div class="avviso fade-in">
+      <h4>Cosa sono</h4>
+      <p>Sono undici istruzioni già scritte, che si chiamano «skill», messe online gratis su GitHub (il sito dove si pubblicano i programmi) dall’utente Jakeschincariol, con una licenza che ne permette l’uso a tutti. Si usano in <strong>Claude Code</strong>: è Claude, ma lavora in una cartella del tuo computer, dove scrive e salva i file dell’app. Lavora solo nella cartella che gli dai tu, e prima di fare un’operazione importante ti chiede il permesso.</p>
+    </div>
+
+    <div class="avviso fade-in">
+      <h4>Cosa ti serve</h4>
+      <p>Un computer e un piano a pagamento di Claude, perché Claude Code c’è da <strong>Pro</strong> in su (20 $ al mese, o 200 $ per tutto l’anno). Le skill sono gratis. Alcune usano Python, un programma che sul Mac c’è già quasi sempre: non devi controllarlo tu, te lo dice Claude Code e, se manca, ti spiega come installarlo. Se poi l’app la metti online, servono un dominio e un servizio che la tenga online: di solito pochi euro al mese.</p>
+    </div>
+
+    <div class="avviso fade-in">
+      <h4>Cosa fa, e cosa no</h4>
+      <p>Guarda cosa fa l’app e come la usano le persone, poi la riscrive da zero: stesse funzioni, programma nuovo. Non copia il codice, le immagini, il logo, i testi né i contenuti. Legge le pagine pubbliche dell’app e le schermate che gli fai vedere tu: la password non gliela dai mai. ⚠️ Nelle schermate non lasciare nomi e dati dei tuoi clienti: coprili, o usa un account di prova. E prima di andare online cambia sempre nome, colori e logo.</p>
+    </div>
+
+    <div class="avviso fade-in">
+      <h4>Quanto ci vuole, e la privacy</h4>
+      <p>Per sapere se vale la pena bastano le recensioni e la mappa: mezz’ora. Rifarla tutta è un’altra cosa: per un’app di prenotazioni sono settimane, lavorando con Claude Code un po’ ogni giorno, e la mappa te lo dice prima di cominciare. Prima di dargli documenti dell’azienda: nei piani Free, Pro e Max c’è una voce che permette ad Anthropic di usare le tue chat per migliorare Claude. Per trovarla clicca sul tuo nome in basso a sinistra, apri «Settings» e poi «Privacy» (oppure vai su claude.ai/settings/data-privacy-controls): si chiama «Help improve our AI models». Se non vuoi che le tue chat servano a questo, spegnila. Nei piani Team ed Enterprise, se non cambi niente, i tuoi contenuti non si usano.</p>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="part-header container fade-in">
+    <div class="section-label">La guida</div>
+    <div class="section-title">Installala, una volta sola</div>
+    <p class="section-intro">Tre passaggi, dal computer.</p>
+  </div>
+
+  <div class="steps-wrapper container">
+
+    <div class="cosa fade-in">
+      <div class="cosa-testa">
+        <div class="cosa-numero">01</div>
+        <div class="cosa-titolo">Apri Claude Code</div>
+      </div>
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">Dove lo trovi</div>
+          <p>Scarica l’app di Claude per il computer da <strong>claude.ai/download</strong> (Mac o Windows) ed entra col tuo account. In alto c’è la scheda «Code»: aprila. Prima crea una cartella vuota, per esempio sulla Scrivania («La mia app»), e scegli quella: Replica lavorerà solo lì.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cosa fade-in">
+      <div class="cosa-testa">
+        <div class="cosa-numero">02</div>
+        <div class="cosa-titolo">Installa le undici skill</div>
+      </div>
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">Come si fa</div>
+          <p>Copia tutto il riquadro qui sotto (il link e la riga «install skill»), incollalo nella chat di Claude Code e premi invio: le scarica e le installa lui. Se ti chiede il permesso per un comando (in inglese, «Allow»), leggi cosa sta per fare e consenti.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Da copiare</div>
+          <div class="prompt"><span class="prompt-etichetta">Da copiare</span>https://github.com/Jakeschincariol/replica-skill
+
+install skill
+
+Poi controlla se ho Python 3.8 o più nuovo e, se manca, spiegami come installarlo. Rispondimi in italiano.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cosa fade-in">
+      <div class="cosa-testa">
+        <div class="cosa-numero">03</div>
+        <div class="cosa-titolo">Controlla che ci siano</div>
+      </div>
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">Come</div>
+          <p>Scrivi «/replica» nella chat: sotto la casella compare l’elenco delle undici, da replica-recon a replica-deploy. Se non le vedi, chiudi Claude Code, riaprilo nella stessa cartella e riprova.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="part-header container fade-in">
+    <div class="section-label">Le undici</div>
+    <div class="section-title">In fila, dalla mappa all’app online</div>
+    <p class="section-intro">Per rifare l’app si usano in quest’ordine, perché ognuna parte da quello che ha fatto la precedente. Ma la prima volta non serve partire dalla prima: guarda «Da dove parti», qui sotto.</p>
+  </div>
+
+  <div class="steps-wrapper container">
+
+    <div class="cosa fade-in">
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">01 · La mappa</div>
+          <p><strong>/replica-recon</strong> · Studia l’app: le schermate, i percorsi di chi la usa, i pezzi e i dati. Legge le pagine pubbliche (aiuto, prezzi, scheda dello store) e le schermate che gli fai vedere tu dal tuo account.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">02 · Il progetto</div>
+          <p><strong>/replica-architect</strong> · Sceglie gli strumenti, scrive come sono fatti i dati e l’ordine dei lavori.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">03 · Lo stile</div>
+          <p><strong>/replica-design</strong> · Misura colori, caratteri e spazi dalle schermate e li rifà coi tuoi: niente immagini né testi dell’originale.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">04 · La costruzione</div>
+          <p><strong>/replica-build</strong> · Rifà l’app una schermata alla volta, dalla mappa, e spunta le funzioni man mano.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">05 · La parte che non si vede</div>
+          <p><strong>/replica-backend</strong> · Gli accessi, i dati, i pagamenti, i collegamenti con gli altri programmi.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">06 · Le prove</div>
+          <p><strong>/replica-test</strong> · Prova ogni percorso e segna gli errori, finché i gravi non sono chiusi.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">07 · Il confronto</div>
+          <p><strong>/replica-diff</strong> · Ti dice con un numero quanto somiglia all’originale, e cosa manca.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">08 · Cosa odiano gli utenti</div>
+          <p><strong>/replica-entrepreneur</strong> · Legge le recensioni vere (App Store, G2, Capterra, Reddit), con il link a ognuna, e le trasforma in cose da sistemare nella tua versione.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">09 · Il nome e il marchio</div>
+          <p><strong>/replica-brand</strong> · Le dà un nome, colori e un logo nuovi, e controlla che dell’originale non resti niente.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">10 · Il lancio</div>
+          <p><strong>/replica-launch</strong> · La pagina di presentazione, il prezzo e la scheda per lo store.</p>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">11 · Online</div>
+          <p><strong>/replica-deploy</strong> · L’ultimo controllo, poi la mette online sul tuo dominio, quando gli dici di andare.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <div class="part-header container fade-in">
+    <div class="section-label">Da dove parti</div>
+    <div class="section-title">Prima chiedi se ne vale la pena</div>
+    <p class="section-intro">Il consiglio di chi l’ha creata: prima di rifare un’app, usa da sola la skill delle recensioni (la numero 08). Ti dice cosa odiano i suoi utenti, e se c’è spazio per una versione migliore. Poi la mappa (la 01) ti dice quanto lavoro serve.</p>
+  </div>
+
+  <div class="steps-wrapper container">
+
+    <div class="cosa fade-in">
+      <div class="cosa-corpo">
+        <div class="riga">
+          <div class="riga-etichetta">Le recensioni</div>
+          <div class="prompt"><span class="prompt-etichetta">Da copiare</span>/replica-entrepreneur L’app è [nome dell’app], il sito è [indirizzo]. Leggi le recensioni pubbliche e dimmi cosa odiano gli utenti, con il link a ogni recensione. Rispondimi in italiano.</div>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Poi la mappa</div>
+          <div class="prompt"><span class="prompt-etichetta">Da copiare</span>/replica-recon Il sito dell’app è [indirizzo]. Fammi la mappa delle schermate e delle funzioni, e dimmi quanto lavoro serve per rifarla. Rispondimi in italiano.</div>
+        </div>
+        <div class="riga">
+          <div class="riga-etichetta">Poi, in fila</div>
+          <p>Se le schermate della mappa ti sembrano quelle dell’app, vai avanti una skill alla volta, dalla 02 alla 11. Per ognuna Claude ti spiega cosa ha fatto: se qualcosa non ti torna, chiediglielo in italiano. Prima di andare online, l’ultima fa un controllo e aspetta il tuo «vai».</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section-wrap">
+  <div class="container fade-in">
+    <div class="section-label">Da dove parti</div>
+    <div class="section-title">La prima app da rifare</div>
+    <p class="section-intro">Scegli un’app semplice, che paghi ogni mese e usi solo a metà: un’app di prenotazioni, un modulo per i clienti, uno strumento interno. Il gestionale o la fatturazione no: sono troppo grandi per cominciare. Parti dalle recensioni, poi dalla mappa: in mezz’ora sai se vale la pena e quanto ci vuole.</p>
+
+    <div class="callout warning">
+      <div class="callout-icon">⚠️</div>
+      <div>Se la usi solo tu, in azienda, basta che rispetti le condizioni dell’app che hai già. Se invece la vuoi vendere ad altri, fai i controlli sul nome che ti indica la skill 09 e, prima di incassare, parla con un avvocato: lo consiglia anche chi l’ha creata. E ricorda che dopo la manutenzione è tua: gli aggiornamenti li fai con Claude Code.</div>
+    </div>
+
+    <div class="callout success">
+      <div class="callout-icon">✅</div>
+      <div>Se vuoi farlo insieme, nella chiamata gratuita scegliamo l’app da cui partire e guardiamo la mappa.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-wrap">
+  <div class="container fade-in">
+    <div class="section-label">Strumenti</div>
+    <div class="section-title">Quello che ti serve</div>
+    <p class="section-intro">Le skill sono gratuite. Per usarle ti serve Claude Code, da Pro in su.</p>
+
+    <div class="ext-list">
+      <div class="ext-item fade-in">
+        <div class="ext-badge">GRATIS</div>
+        <div class="ext-text">
+          <h4><a href="https://github.com/Jakeschincariol/replica-skill" target="_blank" rel="noopener">Replica su GitHub ↗</a></h4>
+          <p>Le undici skill, gli attrezzi e le regole complete. In inglese.</p>
+        </div>
+      </div>
+      <div class="ext-item fade-in">
+        <div class="ext-badge">PRO</div>
+        <div class="ext-text">
+          <h4><a href="https://claude.com/pricing" target="_blank" rel="noopener">Claude, i piani ↗</a></h4>
+          <p>Claude Code c’è da Pro in su: 20 $ al mese, o 200 $ per tutto l’anno.</p>
+        </div>
+      </div>
+      <div class="ext-item fade-in">
+        <div class="ext-badge">GRATIS</div>
+        <div class="ext-text">
+          <h4><a href="https://www.python.org/downloads/" target="_blank" rel="noopener">Python ↗</a></h4>
+          <p>Serve agli attrezzi delle skill (dalla versione 3.8). Sul Mac di solito c’è già.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container fade-in">
+    <div class="section-label">Il passo dopo</div>
+    <h2 class="cta-title">Vuoi portare l'intelligenza artificiale nel tuo lavoro, in modo semplice?</h2>
+    <p class="cta-desc">Richiedi una chiamata gratuita con me. In 20 minuti guardiamo come lavori oggi e da dove conviene cominciare nel tuo caso.</p>
+    <a href="https://raffaelerussoai.com/consulenza?da=guida-replica" target="_blank" rel="noopener" class="cta-btn">
+      Richiedi la chiamata gratuita →
+    </a>
+    <p style="font-size: 13px; color: var(--muted); margin-top: 18px; position: relative;">raffaelerussoai.com/consulenza</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-brand">Guida di Raffaele Russo AI</div>
+    <a href="https://instagram.com/raffaelerusso.ai" target="_blank" rel="noopener" class="footer-handle">@raffaelerusso.ai</a>
+    <p style="font-size: 13px; color: var(--muted); margin-top: 12px; font-style: italic;">Domande? Scrivimi su Instagram.</p>
+    <div class="footer-keyword">Hai ricevuto questa guida commentando REPLICA</div>
+    <p style="font-size: 13px; color: var(--muted); margin-top: 12px;">Fonti, lette il 2/11/2026: il README di Replica (github.com/Jakeschincariol/replica-skill, licenza MIT): le undici skill, l’installazione, l’esempio dell’app di prenotazioni, le regole («It rebuilds what an app does, never what it owns», «No guarantee of a perfect clone», «Check before you sell»); la pagina dei prezzi di Claude (claude.com/pricing) e la pagina sulla privacy «How do I change my model improvement privacy settings?» (privacy.claude.com).</p>
+    <p style="font-size: 13px; margin-top: 14px;"><a href="https://raffaelerussoai.com/risorse" class="footer-handle">Le altre guide gratuite: raffaelerussoai.com/risorse</a></p>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const max = document.body.scrollHeight - window.innerHeight;
+    document.getElementById('progressBar').style.width = (window.scrollY / max * 100) + '%';
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

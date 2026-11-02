@@ -57,6 +57,8 @@ export const GUIDE = [
   { html: '2026-10-29-le-procedure-con-claude.html', slug: 'le-procedure-con-claude', cartella: 'guide-sorgenti', pdf: 'le-procedure-con-claude-2f82ebb687f8' },
   { html: '2026-10-29-il-tuo-marketing-manager.html', slug: 'il-tuo-marketing-manager', cartella: 'guide-sorgenti', pdf: 'il-tuo-marketing-manager-66f0a7dd8e6b' },
   { html: '2026-10-29-il-tuo-marchio-su-tutto.html', slug: 'il-tuo-marchio-su-tutto', cartella: 'guide-sorgenti', pdf: 'il-tuo-marchio-su-tutto-2ab0bf0d6073' },
+  { html: '2026-11-02-rifai-l-app-che-paghi.html', slug: 'rifai-l-app-che-paghi', cartella: 'guide-sorgenti', pdf: 'rifai-l-app-che-paghi-eca1c027d90e' },
+  { html: '2026-11-02-claude-sul-tuo-telefono.html', slug: 'claude-sul-tuo-telefono', cartella: 'guide-sorgenti', pdf: 'claude-sul-tuo-telefono-dc749f4c7094' },
 ]
 
 const CSS_STAMPA = `
